@@ -555,6 +555,128 @@
             }
         }
 
+        @media (max-width: 768px) {
+            /* VERTICAL STACK LAYOUT FOR MOBILE/TABLET */
+            
+            body {
+                height: auto !important;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+            
+            .viewport {
+                position: relative;
+                height: auto;
+                overflow: visible;
+                opacity: 1 !important; /* Ensure visibility */
+            }
+
+            .horizontal-track {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+                transform: none !important;
+            }
+
+            section {
+                width: 100%;
+                height: auto;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 60px 20px;
+                position: relative;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+            
+            /* Reset positioning for all absolute elements */
+            .lower-left-content,
+            .what-we-do-container,
+            .project-text,
+            .what-we-do-image,
+            .gallery-image,
+            .peeking-img {
+                position: static;
+                width: 100%;
+                max-width: 100%;
+                margin: 20px 0;
+                transform: none;
+                opacity: 1 !important;
+                height: auto;
+            }
+
+            /* Specific image sizing */
+            .what-we-do-image,
+            .gallery-image,
+            .peeking-img {
+                max-height: 50vh;
+                object-fit: cover;
+            }
+            
+            .lower-left-content {
+                text-align: center;
+                margin-top: 10vh; /* Add some top spacing for the first section */
+            }
+
+            .project-text {
+                padding: 0 10px;
+                margin-bottom: 40px;
+                text-align: left;
+            }
+            
+            /* Team section fixes */
+            .team-wrapper {
+                flex-direction: column;
+                padding: 0;
+                gap: 30px;
+                height: auto;
+            }
+            
+            .team-text-container {
+                max-height: none;
+                overflow: visible;
+                mask-image: none;
+                -webkit-mask-image: none;
+            }
+
+            /* Hide scroll instructions */
+            p[style*="SCROLL TO"] {
+                display: none;
+            }
+            
+            /* Nav adjustments */
+            .fixed-nav-container {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                background: white;
+                padding-top: 15px;
+                padding-bottom: 25px;
+                border-top: 1px solid #eee;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            /* Ensure project list is visible */
+            .projects-container {
+                margin: 0;
+                width: 100%;
+                padding: 0 10px;
+            }
+            
+            .contact-container {
+                margin: 0;
+                width: 100%;
+                padding: 0 10px 100px 10px; /* Padding for bottom nav */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -768,6 +890,9 @@ Clubhouse Circulation Planning</p>
         }
 
         window.addEventListener('scroll', () => {
+            // Mobile Check: Disable scroll-jacking if screen is narrow
+            if (window.innerWidth <= 768) return;
+
             const scrollHeight = document.body.scrollHeight - window.innerHeight;
             const scrollPercent = window.pageYOffset / scrollHeight;
             const bucketSize = 1 / totalStages;
@@ -819,6 +944,15 @@ Clubhouse Circulation Planning</p>
         });
 
         function scrollToStage(index, useFade = false) {
+            // Mobile Check: Normal scroll to element
+            if (window.innerWidth <= 768) {
+                const sections = document.querySelectorAll('.horizontal-track > section');
+                if (sections[index]) {
+                    sections[index].scrollIntoView({ behavior: 'smooth' });
+                }
+                return;
+            }
+
             const scrollHeight = document.body.scrollHeight - window.innerHeight;
             const bucketSize = 1 / totalStages;
             const targetPos = index * bucketSize * scrollHeight;

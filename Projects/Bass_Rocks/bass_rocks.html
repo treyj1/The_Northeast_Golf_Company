@@ -438,6 +438,46 @@
             }
         }
 
+        /* Mobile Caption Styles */
+        .mobile-caption {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        @media (max-width: 900px) {
+            .mobile-caption {
+                display: block;
+            }
+            .mobile-caption h3 {
+                font-family: 'Barlow Semi Condensed', sans-serif;
+                font-size: 1.3rem;
+                font-weight: 400;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-main);
+            }
+            .mobile-caption p {
+                font-family: 'Barlow Semi Condensed', sans-serif;
+                font-size: 1rem;
+                color: var(--text-gray);
+                line-height: 1.5;
+                margin-bottom: 15px;
+            }
+            .mobile-caption a {
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: var(--text-main);
+                text-decoration: none;
+                border-bottom: 1px solid var(--text-main);
+                padding-bottom: 2px;
+            }
+        }
+
         /* iPhone Notch Support */
         @supports (padding: env(safe-area-inset-bottom)) {
             .fixed-nav-container {
@@ -615,6 +655,33 @@
 
         document.querySelectorAll('.gallery-item').forEach(item => observer.observe(item));
         observer.observe(document.getElementById('nextBtn'));
+
+        // 4. Mobile Caption Generator
+        function initMobileCaptions() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                const subtitle = item.getAttribute('data-subtitle');
+                const desc = item.getAttribute('data-description');
+                const linkText = item.getAttribute('data-link-text');
+                const linkUrl = item.getAttribute('data-link-url');
+                
+                if (subtitle || desc) {
+                    const caption = document.createElement('div');
+                    caption.className = 'mobile-caption';
+                    
+                    let html = '';
+                    if (subtitle) html += `<h3>${subtitle}</h3>`;
+                    if (desc) html += `<p>${desc}</p>`;
+                    if (linkText && linkUrl) html += `<a href="${linkUrl}">${linkText}</a>`;
+                    
+                    caption.innerHTML = html;
+                    item.appendChild(caption);
+                }
+            });
+        }
+        
+        // Run on load
+        initMobileCaptions();
 
     </script>
 
