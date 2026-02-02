@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hole 7 Renovation | Bass Rocks Golf Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg'); 
+            background-size: cover; background-position: center;
+            z-index: -1; opacity: 0.15; pointer-events: none;
+        }
+
+        /* --- LAYOUT WRAPPER --- */
+        .project-wrapper {
+            display: flex; width: 100vw; height: 100vh; position: relative;
+        }
+
+        /* --- LEFT PANEL --- */
+        .info-panel {
+            width: 40%; height: 100%; display: flex; flex-direction: column;
+            padding-top: 15vh; padding-left: 8vw; padding-right: 4%; z-index: 10;
+            position: relative; /* For absolute positioning of back link */
+        }
+
+        .static-header { margin-bottom: 3vh; }
+
+        h1 {
+            font-size: 3.5rem; font-weight: var(--akrobat-reg);
+            text-transform: uppercase; letter-spacing: 0.1rem;
+            line-height: 0.9; margin-bottom: 10px;
+        }
+
+        .location-sub {
+            font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px;
+            color: var(--nav-gray); border-bottom: 1px solid #ddd;
+            padding-bottom: 10px; display: inline-block; width: fit-content;
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light); color: var(--text-gray);
+            font-size: 1.1rem; line-height: 1.6; max-width: 450px; margin-bottom: 40px;
+        }
+
+        /* --- TOGGLE NAVIGATION --- */
+        .toggle-nav { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+
+        .toggle-link {
+            font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-main); text-decoration: none;
+            border-bottom: 1px solid var(--text-main); /* Always Underlined */
+            width: fit-content; cursor: pointer;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            opacity: 0.6; padding-bottom: 2px;
+        }
+
+        .toggle-link:hover { opacity: 1; color: var(--nav-gray); }
+        .toggle-link.active { opacity: 1; border-bottom: 2px solid var(--text-main); font-weight: 400; }
+
+        /* --- BACK LINK (Bottom Left) --- */
+        .back-link-corner {
+            position: absolute;
+            bottom: 12vh; /* Positioned above the footer nav area */
+            left: 8vw;    /* Aligned with content */
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.9rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .back-link-corner:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        /* --- RIGHT PANEL --- */
+        .display-panel {
+            width: 60%; height: 100%; position: relative;
+            padding: 10vh 5% 15vh 0; 
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .content-section {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            padding: 0 5vw;
+        }
+        .content-section.active { opacity: 1; pointer-events: auto; }
+
+        .main-image {
+            max-width: 100%; max-height: 65vh;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            object-fit: contain;
+        }
+
+        /* --- PLANS SUB-NAVIGATION --- */
+        .plans-nav-container {
+            margin-top: 15px;
+            width: 100%; max-width: 900px; /* Aligns width with slider max-width */
+            display: flex; 
+            justify-content: center; /* Centers items horizontally */
+            align-items: center;
+            gap: 60px; /* Space between buttons around the center */
+            min-height: 30px;
+        }
+
+        .plans-nav-btn {
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--nav-gray); cursor: pointer;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            display: flex; align-items: center; gap: 8px;
+            user-select: none;
+            /* Ensure buttons don't jump around */
+            min-width: 80px; 
+            justify-content: center;
+        }
+        .plans-nav-btn:hover { color: var(--text-main); }
+        .plans-nav-btn.hidden { opacity: 0; pointer-events: none; }
+
+        /* --- SLIDER STYLES --- */
+        .slider-wrapper {
+            position: relative;
+            width: 100%; max-width: 900px;
+            aspect-ratio: 16 / 9; 
+            max-height: 65vh;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+
+        .slider-image {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        /* The "After/Proposed" image is the background base. 
+           The "Before" image sits on top and is clipped. */
+        .img-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            width: 75%; /* Initial state matched in JS */
+            border-right: 2px solid #fff;
+        }
+        
+        /* Drag Handle */
+        .slider-handle {
+            position: absolute; top: 50%; 
+            left: 75%; /* Match the initial width of img-overlay */
+            transform: translate(-50%, -50%);
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            cursor: ew-resize;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 20;
+        }
+        .slider-handle::after {
+            content: '\2194'; 
+            color: var(--text-main); font-size: 1.2rem;
+        }
+
+        /* Tags */
+        .slider-tag {
+            position: absolute; bottom: 20px;
+            padding: 5px 15px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            text-transform: uppercase; letter-spacing: 1px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            opacity: 0;
+        }
+        .tag-left { left: 20px; opacity: 1; /* Default visible since overlay is 75% */ }
+        .tag-right { right: 20px; }
+        .tag-visible { opacity: 1; }
+
+        /* --- GALLERIES --- */
+        .gallery-grid { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+        .thumb-container {
+            width: 300px; height: 200px; overflow: hidden; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .thumb-container:hover { transform: scale(1.03); }
+        .thumb-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1500; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .lightbox.open { opacity: 1; pointer-events: auto; }
+        .lightbox-img { max-width: 80vw; max-height: 80vh; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .close-btn {
+            position: absolute; top: 40px; right: 40px; font-size: 2rem;
+            color: var(--text-main); cursor: pointer; font-family: var(--akrobat-light);
+            transition: color 0.3s;
+        }
+
+        /* --- FIXED BOTTOM NAV --- */
+        .fixed-nav-container {
+            position: fixed; bottom: 40px; width: 100%;
+            display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2000;
+        }
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+        .nav-links a {
+            text-decoration: none; color: var(--nav-gray); font-size: 0.85rem;
+            font-weight: var(--akrobat-light); letter-spacing: 0.2rem;
+            text-transform: uppercase; cursor: pointer; transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+
+        @media (max-width: 900px) {
+            .project-wrapper {
+                flex-direction: column;
+                height: auto;
+                overflow-y: auto;
+            }
+
+            .info-panel {
+                width: 100%;
+                padding: 100px 5% 20px 5%;
+                height: auto;
+            }
+
+            h1 { font-size: 2.8rem; }
+
+            .display-panel {
+                width: 100%;
+                padding: 20px 5%;
+                height: auto;
+                min-height: 50vh;
+                position: static;
+            }
+
+            .content-section {
+                position: relative;
+                transform: none;
+                top: auto;
+                left: auto;
+                opacity: 1;
+                display: none;
+                padding: 0;
+            }
+            .content-section.active { display: flex; }
+
+            .gallery-grid {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .thumb-container {
+                width: 100%;
+                height: 200px;
+            }
+
+            .back-link-corner {
+                position: static;
+                margin-top: 30px;
+                display: inline-block;
+            }
+
+            .slider-wrapper {
+                max-height: 40vh;
+            }
+
+            .plans-nav-container {
+                gap: 30px;
+            }
+
+            .toggle-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px 20px;
+            }
+
+            /* Navigation */
+            .nav-links { gap: 25px; }
+            .nav-address {
+                font-size: 0.65rem;
+                padding: 0 15px;
+                text-align: center;
+            }
+            .fixed-nav-container { bottom: 25px; }
+        }
+
+        /* TABLET PORTRAIT */
+        @media (max-width: 768px) {
+            .info-panel {
+                padding: 80px 5% 15px 5%;
+            }
+
+            h1 { font-size: 2.4rem; }
+
+            .location-sub { font-size: 1.2rem; }
+
+            .description-text {
+                font-size: 1rem;
+            }
+
+            .toggle-link {
+                font-size: 0.9rem;
+            }
+
+            .main-image {
+                max-height: 50vh;
+            }
+
+            .nav-links { gap: 18px; }
+            .nav-links a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 480px) {
+            .info-panel {
+                padding: 70px 4% 15px 4%;
+            }
+
+            h1 { font-size: 2rem; }
+
+            .location-sub {
+                font-size: 1rem;
+                letter-spacing: 2px;
+            }
+
+            .description-text {
+                font-size: 0.95rem;
+                margin-bottom: 25px;
+            }
+
+            .toggle-link {
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+            }
+
+            .display-panel {
+                min-height: 40vh;
+            }
+
+            .main-image {
+                max-height: 35vh;
+            }
+
+            .thumb-container {
+                height: 180px;
+            }
+
+            .slider-wrapper {
+                max-height: 35vh;
+            }
+
+            .slider-handle {
+                width: 35px;
+                height: 35px;
+            }
+
+            .plans-nav-btn {
+                font-size: 0.8rem;
+            }
+
+            /* Navigation - Compact */
+            .fixed-nav-container {
+                bottom: 15px;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+            .nav-address {
+                font-size: 0.55rem;
+                line-height: 1.4;
+                padding: 0 10px;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+        
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Bass Rocks<br>Golf Club</h1>
+                <span class="location-sub">Hole 7</span>
+            </div>
+            
+            <p class="description-text">
+                The project emphasized the complete reconstruction of the green complex to offer increased pin positions and strategic approach options. It also involved lengthening the hole to meet modern standards while integrating natural rock formations to seamlessly blend with the course's rugged character.
+            </p>
+
+            <div class="toggle-nav">
+                <a class="toggle-link" onclick="switchSection('before')">Before Photos</a>
+                <a class="toggle-link" onclick="switchSection('plans')">Design Plans</a>
+                <a class="toggle-link" onclick="switchSection('construction')">Construction Photos</a>
+            </div>
+
+            <a href="bass_rocks.html" class="back-link-corner">&#8592; Back to Project</a>
+        </div>
+
+        <div class="display-panel">
+            
+            <div id="section-hero" class="content-section active">
+                <img src="Image_BassRocks (8).jpg" alt="Hole 7 Overview" class="main-image">
+            </div>
+
+            <div id="section-before" class="content-section">
+                <div class="gallery-grid">
+                    <div class="thumb-container" onclick="openLightbox('Image_BassRocks (8).jpg')">
+                        <img src="Image_BassRocks (8).jpg" alt="Before View 1">
+                    </div>
+                    <div class="thumb-container" onclick="openLightbox('Image_BassRocks (9).jpg')">
+                        <img src="Image_BassRocks (9).jpg" alt="Before View 2">
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-plans" class="content-section">
+                
+                <div id="plan-view-sheet" class="plan-sub-view" style="width: 100%; display: flex; justify-content: center;">
+                    <img src="BR_Hole07_Render_Sheet (3).jpg" alt="Hole 7 Render Sheet" class="main-image">
+                </div>
+
+                <div id="plan-view-slider" class="plan-sub-view" style="width: 100%; display: none; justify-content: center; position: relative;">
+                    <div class="slider-wrapper" id="slider">
+                        <img src="BR_Hole07_Render_BirdsEye_After (1).jpg" class="slider-image">
+                        <div class="slider-tag tag-right" id="tag-proposed">Proposed</div>
+                        
+                        <div class="img-overlay" id="img-overlay">
+                            <img src="BR_Hole07_Render_BirdsEye_Before (2).jpg" class="slider-image" style="width: auto; max-width: none; height: 100%;">
+                            <div class="slider-tag tag-left" id="tag-before">Before</div>
+                        </div>
+
+                        <div class="slider-handle" id="slider-handle"></div>
+                    </div>
+                </div>
+
+                <div class="plans-nav-container">
+                    <div id="plan-back" class="plans-nav-btn hidden" onclick="togglePlanView('sheet')">
+                        &#8592; Back
+                    </div>
+                    <div id="plan-next" class="plans-nav-btn" onclick="togglePlanView('slider')">
+                        Next &#8594;
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="section-construction" class="content-section">
+                <div class="gallery-grid">
+                    <div class="thumb-container" onclick="openLightbox('BR_Hole_07_Construction (1).JPG')">
+                        <img src="BR_Hole_07_Construction (1).JPG" alt="Construction 1">
+                    </div>
+                    <div class="thumb-container" onclick="openLightbox('BR_Hole_07_Construction (2).jpg')">
+                        <img src="BR_Hole_07_Construction (2).jpg" alt="Construction 2">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <div class="close-btn" onclick="closeLightbox()">&#10005;</div>
+        <img id="lightbox-image" src="" alt="Enlarged View" class="lightbox-img">
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        // 1. Navigation Helper - Fixed to go up two levels
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../index.html';
+        }
+
+        // 2. Main Section Switching
+        function switchSection(sectionName) {
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.toggle-link').forEach(el => el.classList.remove('active'));
+
+            const target = document.getElementById('section-' + sectionName);
+            if (target) target.classList.add('active');
+
+            const links = document.querySelectorAll('.toggle-link');
+            if (sectionName === 'before') links[0].classList.add('active');
+            if (sectionName === 'plans') links[1].classList.add('active');
+            if (sectionName === 'construction') links[2].classList.add('active');
+            
+            // Reset Plans View to default if leaving/returning
+            if(sectionName !== 'plans') {
+                setTimeout(() => togglePlanView('sheet', false), 500);
+            }
+        }
+
+        // 3. Plan Sub-View Switching (Sheet vs Slider)
+        function togglePlanView(view, animate = true) {
+            const sheet = document.getElementById('plan-view-sheet');
+            const slider = document.getElementById('plan-view-slider');
+            const nextBtn = document.getElementById('plan-next');
+            const backBtn = document.getElementById('plan-back');
+
+            // Quick fade logic
+            if (animate) {
+                sheet.style.opacity = '0';
+                slider.style.opacity = '0';
+            }
+
+            setTimeout(() => {
+                if (view === 'slider') {
+                    sheet.style.display = 'none';
+                    slider.style.display = 'flex';
+                    nextBtn.classList.add('hidden');
+                    backBtn.classList.remove('hidden');
+                    updateSliderWidth(); 
+                } else {
+                    sheet.style.display = 'flex';
+                    slider.style.display = 'none';
+                    nextBtn.classList.remove('hidden');
+                    backBtn.classList.add('hidden');
+                }
+
+                if (animate) {
+                    setTimeout(() => {
+                        sheet.style.transition = 'opacity 0.5s';
+                        slider.style.transition = 'opacity 0.5s';
+                        sheet.style.opacity = '1';
+                        slider.style.opacity = '1';
+                    }, 50);
+                }
+            }, animate ? 300 : 0);
+        }
+
+        // 4. Slider Logic
+        const sliderWrapper = document.getElementById('slider');
+        const overlay = document.getElementById('img-overlay');
+        const handle = document.getElementById('slider-handle');
+        const overlayImg = overlay.querySelector('img');
+        const tagBefore = document.getElementById('tag-before');
+        const tagProposed = document.getElementById('tag-proposed');
+        
+        let isDragging = false;
+
+        function updateSliderWidth() {
+            // Keep the inner image full width even when container clips
+            overlayImg.style.width = sliderWrapper.offsetWidth + 'px'; 
+        }
+
+        // New function to strictly set position by percentage
+        function updateSliderPercentage(percentage) {
+            // Clamp 0-100
+            if (percentage < 0) percentage = 0;
+            if (percentage > 100) percentage = 100;
+
+            overlay.style.width = percentage + "%";
+            handle.style.left = percentage + "%";
+
+            // Tag Logic
+            if (percentage > 50) {
+                tagBefore.classList.add('tag-visible');
+                tagProposed.classList.remove('tag-visible');
+            } else {
+                tagBefore.classList.remove('tag-visible');
+                tagProposed.classList.add('tag-visible');
+            }
+        }
+
+        function handleDrag(clientX) {
+            const rect = sliderWrapper.getBoundingClientRect();
+            let pos = clientX - rect.left;
+            
+            let percentage = (pos / rect.width) * 100;
+            updateSliderPercentage(percentage);
+        }
+
+        // Mouse Events
+        handle.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            handleDrag(e.clientX);
+        });
+
+        // Touch Events
+        handle.addEventListener('touchstart', () => isDragging = true);
+        window.addEventListener('touchend', () => isDragging = false);
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            handleDrag(e.touches[0].clientX);
+        });
+
+        // Init
+        window.addEventListener('resize', updateSliderWidth);
+        window.onload = () => {
+             updateSliderWidth();
+             // Explicitly set to 75% on load to match CSS
+             updateSliderPercentage(75);
+        };
+
+        // 5. Lightbox Logic
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-image');
+
+        function openLightbox(imageSrc) {
+            lightboxImg.src = imageSrc;
+            lightbox.classList.add('open');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            setTimeout(() => lightboxImg.src = "", 300);
+        }
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+    </script>
+
+</body>
+</html>

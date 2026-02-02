@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bass Rocks Golf Club | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Updated path: Up two levels to find the index folder */
+            background-image: url('../../index/Topo_Whitinsville.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15; 
+            pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        .project-wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* --- LEFT PANEL (FIXED) --- */
+        .info-panel {
+            width: 40%;
+            height: 100%;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            padding-top: 15vh; 
+            padding-left: 8vw;
+            padding-right: 4%;
+            z-index: 10;
+        }
+
+        /* 1. TITLE & LOCATION */
+        .static-header {
+            margin-bottom: 5vh; 
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            line-height: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .location-sub {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--nav-gray);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* 2. DYNAMIC CONTENT */
+        .dynamic-content-wrapper {
+            flex-grow: 1;
+        }
+
+        .section-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px; 
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+            min-height: 1.5rem; 
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 450px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+        
+        .fading {
+            opacity: 0;
+        }
+
+        /* 3. LINK (Fixed Position) */
+        .dynamic-link {
+            position: absolute;
+            left: 8vw; 
+            bottom: 18%; 
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: opacity 0.5s ease-in-out, color 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .dynamic-link:hover {
+            color: var(--nav-gray);
+            border-bottom-color: var(--nav-gray);
+        }
+
+        .dynamic-link.hidden {
+            display: none;
+        }
+
+        /* --- RIGHT PANEL (SCROLL) --- */
+        .scroll-container {
+            width: 60%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            align-items: center;
+            padding-right: 10%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .gallery-track {
+            display: flex;
+            gap: 6vw; 
+            align-items: center;
+            padding-right: 15vw;
+            padding-left: 12vw; 
+        }
+
+        /* --- GALLERY ITEMS --- */
+        .gallery-item {
+            position: relative;
+            flex-shrink: 0;
+            width: 35vw; 
+            height: 45vh;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.3;
+            transform: scale(0.85); 
+            filter: grayscale(100%);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:nth-child(odd) { margin-top: -8vh; }
+        .gallery-item:nth-child(even) { margin-top: 8vh; }
+
+        .gallery-item.active {
+            opacity: 1;
+            transform: scale(1.05); 
+            filter: grayscale(0%);
+            z-index: 5;
+        }
+
+        /* --- NEXT PROJECT BTN --- */
+        .next-project-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px; 
+            min-width: 25vw; 
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .next-project-wrapper.visible { opacity: 1; }
+
+        .text-link-large {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.4rem; 
+            color: var(--text-main);
+            border-bottom: 1px solid var(--text-main); 
+            padding-bottom: 5px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+        .text-link-small {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            color: var(--nav-gray);
+            border-bottom: 1px solid var(--nav-gray);
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        /* --- FIXED NAV --- */
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            /* Layout Conversion */
+            .project-wrapper {
+                flex-direction: column;
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .info-panel {
+                width: 100%;
+                height: auto;
+                padding: 100px 5% 30px 5%;
+                display: block;
+                position: static;
+            }
+
+            .static-header { margin-bottom: 25px; }
+
+            h1 { font-size: 2.8rem; }
+
+            .dynamic-link {
+                position: static;
+                margin-top: 25px;
+                display: inline-block;
+            }
+
+            .scroll-container {
+                width: 100%;
+                height: auto;
+                overflow-y: visible;
+                padding: 20px 5% 150px;
+                -webkit-mask-image: none;
+                mask-image: none;
+                display: block;
+            }
+
+            .gallery-track {
+                flex-direction: column;
+                gap: 40px;
+                padding-bottom: 50px;
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+                align-items: center;
+            }
+
+            .gallery-item {
+                width: 90%;
+                max-width: 500px;
+                height: 35vh;
+                min-height: 250px;
+                margin-top: 0 !important;
+                opacity: 1;
+                filter: none;
+                transform: none;
+            }
+
+            /* Navigation */
+            .nav-links { gap: 25px; }
+            .nav-address {
+                font-size: 0.65rem;
+                padding: 0 15px;
+                text-align: center;
+            }
+            .fixed-nav-container { bottom: 25px; }
+
+            /* Next Project Section */
+            .next-project-wrapper {
+                opacity: 1;
+                padding: 30px 0;
+            }
+        }
+
+        /* TABLET PORTRAIT */
+        @media (max-width: 768px) {
+            .info-panel {
+                padding: 80px 5% 25px 5%;
+            }
+
+            h1 { font-size: 2.4rem; }
+
+            .section-subtitle { font-size: 1.2rem; }
+
+            .description-text {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .gallery-item {
+                width: 95%;
+                height: 30vh;
+                min-height: 220px;
+            }
+
+            .nav-links { gap: 18px; }
+            .nav-links a {
+                font-size: 0.75rem;
+                letter-spacing: 0.15rem;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 480px) {
+            .info-panel {
+                padding: 70px 4% 20px 4%;
+            }
+
+            h1 { font-size: 2rem; }
+
+            .location-sub {
+                font-size: 0.85rem;
+                letter-spacing: 2px;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .description-text {
+                font-size: 0.95rem;
+            }
+
+            .gallery-item {
+                width: 100%;
+                height: 28vh;
+                min-height: 200px;
+            }
+
+            .gallery-item iframe {
+                pointer-events: auto;
+            }
+
+            /* Navigation - Compact */
+            .fixed-nav-container {
+                bottom: 15px;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+            .nav-address {
+                font-size: 0.55rem;
+                letter-spacing: 0.08rem;
+                line-height: 1.4;
+                padding: 0 10px;
+            }
+
+            /* Text Links */
+            .text-link-large {
+                font-size: 1.1rem;
+                letter-spacing: 2px;
+            }
+            .text-link-small {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+        
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Bass Rocks<br>Golf Club</h1>
+                <span class="location-sub">Gloucester, Massachusetts</span>
+            </div>
+            
+            <div class="dynamic-content-wrapper">
+                <h2 class="section-subtitle" id="dynamic-subtitle">Club History</h2>
+                
+                <p class="description-text" id="dynamic-description">
+                    Bass Rocks Golf Club was founded in 1896 and golf was first played by members in the area now known as "The Meadows," our current 15th through 18th holes. At the time this was a six hole course designed by the Scottish golfer, Alex Findlay. Over the years multiple expansions occurred at the Club, most notably the 1913 expansion to 18 holes by the golf course designer H.C. Leeds (architect of Myopia Hunt Club).
+                    <br><br>
+                    Robert McNeil has been working with the Club for many years, recently presenting a guiding master plan of improvements to the membership in 2024. Scroll through the image gallery to the right to learn more about the master plan and the completed phases of the project.
+                </p>
+            </div>
+
+            <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+        </div>
+
+        <div class="scroll-container" id="scrollContainer">
+            <div class="gallery-track">
+                
+                <div class="gallery-item" 
+                     data-subtitle="Club History"
+                     data-description='Bass Rocks Golf Club was founded in 1896 and golf was first played by members in the area now known as "The Meadows," our current 15th through 18th holes. At the time this was a six hole course designed by the Scottish golfer, Alex Findlay. Over the years multiple expansions occurred at the Club, most notably the 1913 expansion to 18 holes by the golf course designer H.C. Leeds (architect of Myopia Hunt Club).<br><br>Robert McNeil has been working with the Club for many years, recently presenting a guiding master plan of improvements to the membership in 2024. Scroll through the image gallery to the right to learn more about the master plan and the completed phases of the project.'
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (5).jpg" alt="Bass Rocks History">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="2024 Master Plan"
+                     data-description="The 2024 Master Plan focused on enhancing the strategic, aesthetic, and functional characteristics and needs of Bass Rocks. The plan prioritizes high value improvements, including the reconstruction of the second and seventh holes (completed) and reimagining the strategy and styling of the holes in The Meadows."
+                     data-link-text="Learn More about the 2024 Master Plan"
+                     data-link-url="master_plan_bassrocks.html">
+                    <img src="Image_BassRocks (1).jpg" alt="Master Plan Overview">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 2"
+                     data-description="Previously, Hole 2 was a downhill par 3 with a green sloping severely away from the tee. The lack of strategic and visual intrigue, as well as golf balls being hit into surrounding properties, served as the impetus for reimagining what this hole could be."
+                     data-link-text="Learn More about Hole 2"
+                     data-link-url="../../unavailable.html">
+                    <img src="Image_BassRocks (2).jpg" alt="Hole 2 Renovation">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 7"
+                     data-description="Hole 7 was originally built in the 1990's by Philip Wogan as part of a rerouting project in which the current 7th, 8th, and 9th holes were constructed. The 7th has always been an intriguing par 5 with a raised green, rock outcroppings, and interior fairway mounds, but it lacked some of the rugged, old-school charm that permeates the course."
+                     data-link-text="Learn more about Hole 7"
+                     data-link-url="br_hole07.html">
+                    <img src="Image_BassRocks (8).jpg" alt="Hole 7 Renovation">
+                </div>
+
+                <div class="next-project-wrapper" id="nextBtn">
+                    <a href="../../unavailable.html" class="text-link-large">Next Project</a>
+                    <a href="#" onclick="navigateTo(event, 'projects-section')" class="text-link-small">All Projects</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        // 1. Navigation Helper - Updated to go up two levels
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../index.html'; 
+        }
+
+        // 2. Horizontal Scroll on Mouse Wheel
+        const scrollContainer = document.getElementById('scrollContainer');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            if (window.innerWidth > 900) {
+                evt.preventDefault();
+                scrollContainer.scrollLeft += evt.deltaY;
+            }
+        });
+
+        // 3. Dynamic Text & Link Logic
+        const subtitleElement = document.getElementById('dynamic-subtitle');
+        const descriptionElement = document.getElementById('dynamic-description');
+        const linkElement = document.getElementById('dynamic-link');
+        
+        let currentDescription = descriptionElement.innerHTML.trim(); 
+
+        const observerOptions = {
+            root: scrollContainer,
+            rootMargin: '0px -25% 0px -25%',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    if (entry.target.classList.contains('gallery-item')) {
+                        // Gather data
+                        const newSubtitle = entry.target.getAttribute('data-subtitle');
+                        const newText = entry.target.getAttribute('data-description');
+                        const newLinkText = entry.target.getAttribute('data-link-text');
+                        const newLinkUrl = entry.target.getAttribute('data-link-url');
+                        
+                        updateContent(newSubtitle, newText, newLinkText, newLinkUrl);
+                    } else if (entry.target.classList.contains('next-project-wrapper')) {
+                        entry.target.classList.add('visible');
+                    }
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        function updateContent(subtitle, text, linkText, linkUrl) {
+            if (text && text !== currentDescription) {
+                currentDescription = text; 
+                
+                // Fade Out
+                subtitleElement.classList.add('fading');
+                descriptionElement.classList.add('fading');
+                linkElement.classList.add('fading');
+                
+                setTimeout(() => {
+                    // Update Content
+                    subtitleElement.textContent = subtitle;
+                    descriptionElement.innerHTML = text;
+                    
+                    if (linkText && linkText.trim() !== "") {
+                        linkElement.textContent = linkText;
+                        linkElement.href = linkUrl || "#";
+                        linkElement.classList.remove('hidden'); 
+                    } else {
+                        linkElement.classList.add('hidden'); 
+                    }
+
+                    // Fade In
+                    subtitleElement.classList.remove('fading');
+                    descriptionElement.classList.remove('fading');
+                    linkElement.classList.remove('fading');
+
+                }, 500); 
+            }
+        }
+
+        document.querySelectorAll('.gallery-item').forEach(item => observer.observe(item));
+        observer.observe(document.getElementById('nextBtn'));
+
+    </script>
+
+</body>
+</html>

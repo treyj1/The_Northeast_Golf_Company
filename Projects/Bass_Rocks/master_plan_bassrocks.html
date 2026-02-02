@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024 Master Plan | Bass Rocks Golf Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            height: 150vh; /* Reduced height as transition is now faster */
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15; 
+            pointer-events: none;
+        }
+
+        .fixed-page-title {
+            position: fixed;
+            top: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            font-weight: var(--akrobat-reg);
+            color: var(--text-main);
+            z-index: 100; 
+            pointer-events: none; 
+        }
+
+        .full-screen-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 5% 40px 5%; 
+        }
+
+        /* --- SNAPPY TRANSITION LOGIC --- */
+        
+        #video-section {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+            transition: opacity 0.6s ease; /* Faster transition, no delay */
+        }
+
+        #plan-section {
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 0.6s ease; /* Faster transition, no delay */
+        }
+
+        body.show-plan #video-section {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        body.show-plan #plan-section {
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.6s ease;
+        }
+
+        /* --- VIDEO CONTAINER --- */
+        .video-container {
+            width: 80vw;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #000;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .scroll-prompt {
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            color: var(--nav-gray);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-5px);}
+            60% {transform: translateY(-3px);}
+        }
+
+        /* --- MASTER PLAN CONTENT --- */
+        .plan-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 1000px;
+            height: 75vh; 
+            justify-content: center;
+        }
+
+        .plan-image {
+            max-width: 100%;
+            max-height: 50vh; 
+            object-fit: contain;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        .sub-nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            width: 100%;
+        }
+
+        .sub-nav-link {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 3px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sub-nav-link:hover {
+            color: var(--nav-gray);
+            border-bottom-color: var(--nav-gray);
+        }
+
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .nav-links {
+            display: flex; gap: 40px; list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--text-main); }
+
+        .nav-address {
+            color: var(--address-gray);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            font-weight: var(--akrobat-light);
+        }
+
+        @media (max-width: 900px) {
+            .fixed-page-title {
+                font-size: 1.5rem;
+                top: 30px;
+                padding: 0 15px;
+            }
+            .full-screen-section { padding-top: 80px; }
+            .video-container { width: 95vw; }
+            .sub-nav-container { gap: 40px; }
+            .description-text {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+            .plan-image { max-height: 35vh; }
+
+            /* Navigation */
+            .nav-links { gap: 25px; }
+            .nav-address {
+                font-size: 0.65rem;
+                padding: 0 15px;
+                text-align: center;
+            }
+        }
+
+        /* TABLET PORTRAIT */
+        @media (max-width: 768px) {
+            .fixed-page-title {
+                font-size: 1.3rem;
+                line-height: 1.3;
+            }
+
+            .video-container {
+                aspect-ratio: 16 / 10;
+            }
+
+            .scroll-prompt {
+                font-size: 0.8rem;
+            }
+
+            .sub-nav-link {
+                font-size: 0.9rem;
+            }
+
+            .nav-links { gap: 18px; }
+            .nav-links a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 480px) {
+            .fixed-page-title {
+                font-size: 1.1rem;
+                top: 20px;
+                letter-spacing: 0.08rem;
+            }
+
+            .full-screen-section {
+                padding-top: 60px;
+            }
+
+            .scroll-prompt {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+            }
+
+            .plan-content {
+                height: auto;
+                padding-bottom: 120px;
+            }
+
+            .plan-image {
+                max-height: 30vh;
+                margin-bottom: 20px;
+            }
+
+            .description-text {
+                font-size: 0.95rem;
+                margin-bottom: 30px;
+            }
+
+            .sub-nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .sub-nav-link {
+                font-size: 0.85rem;
+            }
+
+            /* Navigation - Compact */
+            .fixed-nav-container {
+                bottom: 15px;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+            .nav-address {
+                font-size: 0.55rem;
+                line-height: 1.4;
+                padding: 0 10px;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="fixed-page-title">2024 Bass Rocks Golf Club Master Plan</div>
+
+    <div class="full-screen-section" id="video-section">
+        <div class="video-container">
+            <iframe 
+                id="promo-video"
+                src="https://www.youtube.com/embed/Ag653DcvD6U?enablejsapi=1" 
+                title="Bass Rocks Master Plan Video" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="scroll-prompt">Scroll to Continue</div>
+    </div>
+
+    <div class="full-screen-section" id="plan-section">
+        <div class="plan-content">
+            <img src="bass_rocks_master_plan_image.jpg" alt="2024 Master Plan Map" class="plan-image">
+            
+            <p class="description-text">
+                The 2024 Master Plan focuses on strategic, aesthetic, and functional enhancements to the golf course. The plan was presented to the membership for approval and select projects were prioritized, resulting in the reconstruction of the 2nd and 7th holes.
+            </p>
+
+            <div class="sub-nav-container">
+                <a href="bass_rocks.html" class="sub-nav-link">&#8592; Bass Rocks</a>
+                <a href="../../unavailable.html" class="sub-nav-link">Hole 2 &#8594;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        const videoIframe = document.getElementById('promo-video');
+
+        // 1. Navigation Helper - Fixed to go up two levels
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../index.html';
+        }
+
+        // 2. Faster Threshold and Video Pause Logic
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            
+            // Reduced threshold: triggers after 80px of scroll
+            const threshold = 80; 
+            
+            if (scrollY > threshold) {
+                if (!document.body.classList.contains('show-plan')) {
+                    document.body.classList.add('show-plan');
+                    // Send pause command to YouTube Iframe
+                    videoIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                }
+            } else {
+                if (document.body.classList.contains('show-plan')) {
+                    document.body.classList.remove('show-plan');
+                    // Optional: Resume video when scrolling back to top
+                    // videoIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

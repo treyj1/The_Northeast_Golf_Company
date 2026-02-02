@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Met Links | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15; 
+            pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        .project-wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* --- LEFT PANEL (FIXED) --- */
+        .info-panel {
+            width: 40%;
+            height: 100%;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            padding-top: 15vh; 
+            padding-left: 8vw;
+            padding-right: 4%;
+            z-index: 10;
+        }
+
+        /* 1. TITLE & LOCATION */
+        .static-header {
+            margin-bottom: 5vh; 
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            line-height: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .location-sub {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--nav-gray);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* 2. DYNAMIC CONTENT */
+        .dynamic-content-wrapper {
+            flex-grow: 1;
+        }
+
+        .section-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px; 
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+            min-height: 1.5rem; 
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 450px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+        
+        .fading {
+            opacity: 0;
+        }
+
+        /* 3. LINK (Fixed Position) */
+        .dynamic-link {
+            position: absolute;
+            left: 8vw; 
+            bottom: 18%; 
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: opacity 0.5s ease-in-out, color 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .dynamic-link:hover {
+            color: var(--nav-gray);
+            border-bottom-color: var(--nav-gray);
+        }
+
+        .dynamic-link.hidden {
+            display: none;
+        }
+
+        /* --- RIGHT PANEL (SCROLL) --- */
+        .scroll-container {
+            width: 60%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            align-items: center;
+            padding-right: 10%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .gallery-track {
+            display: flex;
+            gap: 6vw; 
+            align-items: center;
+            padding-right: 15vw;
+            padding-left: 12vw; 
+        }
+
+        /* --- GALLERY ITEMS --- */
+        .gallery-item {
+            position: relative;
+            flex-shrink: 0;
+            width: 35vw; 
+            height: 45vh;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.3;
+            transform: scale(0.85); 
+            filter: grayscale(100%);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:nth-child(odd) { margin-top: -8vh; }
+        .gallery-item:nth-child(even) { margin-top: 8vh; }
+
+        .gallery-item.active {
+            opacity: 1;
+            transform: scale(1.05); 
+            filter: grayscale(0%);
+            z-index: 5;
+        }
+
+        /* --- NEXT PROJECT BTN --- */
+        .next-project-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px; 
+            min-width: 25vw; 
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .next-project-wrapper.visible { opacity: 1; }
+
+        .text-link-large {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.4rem; 
+            color: var(--text-main);
+            border-bottom: 1px solid var(--text-main); 
+            padding-bottom: 5px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+        .text-link-small {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            color: var(--nav-gray);
+            border-bottom: 1px solid var(--nav-gray);
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        /* --- FIXED NAV --- */
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            /* Layout Conversion */
+            .project-wrapper {
+                flex-direction: column;
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .info-panel {
+                width: 100%;
+                height: auto;
+                padding: 100px 5% 30px 5%;
+                display: block;
+                position: static;
+            }
+
+            .static-header { margin-bottom: 25px; }
+
+            h1 { font-size: 2.8rem; }
+
+            .dynamic-link {
+                position: static;
+                margin-top: 25px;
+                display: inline-block;
+            }
+
+            .scroll-container {
+                width: 100%;
+                height: auto;
+                overflow-y: visible;
+                padding: 20px 5% 150px;
+                -webkit-mask-image: none;
+                mask-image: none;
+                display: block;
+            }
+
+            .gallery-track {
+                flex-direction: column;
+                gap: 40px;
+                padding-bottom: 50px;
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+                align-items: center;
+            }
+
+            .gallery-item {
+                width: 90%;
+                max-width: 500px;
+                height: 35vh;
+                min-height: 250px;
+                margin-top: 0 !important;
+                opacity: 1;
+                filter: none;
+                transform: none;
+            }
+
+            /* Navigation */
+            .nav-links { gap: 25px; }
+            .nav-address {
+                font-size: 0.65rem;
+                padding: 0 15px;
+                text-align: center;
+            }
+            .fixed-nav-container { bottom: 25px; }
+
+            /* Next Project Section */
+            .next-project-wrapper {
+                opacity: 1;
+                padding: 30px 0;
+            }
+        }
+
+        /* TABLET PORTRAIT */
+        @media (max-width: 768px) {
+            .info-panel {
+                padding: 80px 5% 25px 5%;
+            }
+
+            h1 { font-size: 2.4rem; }
+
+            .section-subtitle { font-size: 1.2rem; }
+
+            .description-text {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .gallery-item {
+                width: 95%;
+                height: 30vh;
+                min-height: 220px;
+            }
+
+            .nav-links { gap: 18px; }
+            .nav-links a {
+                font-size: 0.75rem;
+                letter-spacing: 0.15rem;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 480px) {
+            .info-panel {
+                padding: 70px 4% 20px 4%;
+            }
+
+            h1 { font-size: 2rem; }
+
+            .location-sub {
+                font-size: 0.85rem;
+                letter-spacing: 2px;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .description-text {
+                font-size: 0.95rem;
+            }
+
+            .gallery-item {
+                width: 100%;
+                height: 28vh;
+                min-height: 200px;
+            }
+
+            .gallery-item iframe {
+                pointer-events: auto;
+            }
+
+            /* Navigation - Compact */
+            .fixed-nav-container {
+                bottom: 15px;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+            .nav-address {
+                font-size: 0.55rem;
+                letter-spacing: 0.08rem;
+                line-height: 1.4;
+                padding: 0 10px;
+            }
+
+            /* Text Links */
+            .text-link-large {
+                font-size: 1.1rem;
+                letter-spacing: 2px;
+            }
+            .text-link-small {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+        
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Met Links</h1>
+                <span class="location-sub">East Providence, Rhode Island</span>
+            </div>
+            
+            <div class="dynamic-content-wrapper">
+                <h2 class="section-subtitle" id="dynamic-subtitle">Project History</h2>
+                
+                <p class="description-text" id="dynamic-description">
+                    Formerly Metacomet Country Club, this Leonard Byles (1901) / Donald Ross (1924) design was a standout in Rhode Island golf. Playing along Watchemoket Cove, the course hosted many championships and qualifiers, and was loved by members and the community. In 2020 the club closed and the land was purchased for development by Marshall Properties, who had great desire that at least part of this historic course was preserved and restored for the benefit of the public.
+                    <br><br>
+                    Robert McNeil and the Northeast Golf Company were brought on to restore most of the front 9 holes and reroute the course to meet the goals for the property. Construction began June 2023 with Met Links officially opening to the public in 2024.
+                </p>
+            </div>
+
+            <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+        </div>
+
+        <div class="scroll-container" id="scrollContainer">
+            <div class="gallery-track">
+                
+                <div class="gallery-item" 
+                     data-subtitle="Project History"
+                     data-description='Formerly Metacomet Country Club, this Leonard Byles (1901) / Donald Ross (1924) design was a standout in Rhode Island golf. Playing along Watchemoket Cove, the course hosted many championships and qualifiers, and was loved by members and the community. In 2020 the club closed and the land was purchased for development by Marshall Properties, who had great desire that at least part of this historic course was preserved and restored for the benefit of the public.<br><br>Robert McNeil and the Northeast Golf Company were brought on to restore most of the front 9 holes and reroute the course to meet the goals for the property. Construction began June 2023 with Met Links officially opening to the public in 2024.'
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (1).jpg" alt="Met Links Overview">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="The Restoration Plan"
+                     data-description="The restoration focused on preserving the original front nine holes designed by Donald Ross while integrating new elements to create a comprehensive nine-hole golf experience. The Northeast Golf Company worked to recapture the historical Ross concept, saving five additional greens and the practice putting green. The project required creative rerouting to fit nine holes into the available seven-hole space, with old members in mind throughout the development process."
+                     data-link-text="View the Master Plan"
+                     data-link-url="met_links_plan.html">
+                    <img src="Met_Links_Plan.jpg" alt="Met Links Master Plan">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Before the Restoration"
+                     data-description="Prior to the restoration, Metacomet Country Club had been closed since 2020. The property faced an uncertain future with initial development plans calling for retail and residential construction. Community advocacy and Marshall Properties' commitment to preserving golf on the site led to the partnership with Northeast Golf Company to bring new life to this historic Donald Ross design."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (2).jpg" alt="Met Links Before">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Drone Flyover - Full Course"
+                     data-description="Experience Met Links from above with this comprehensive drone flyover of the entire nine-hole course. The video showcases the dramatic elevation changes along Watchemoket Cove, the restored Donald Ross greens, and the natural beauty that makes Met Links one of the premier nine-hole courses in the region."
+                     data-link-text="Visit Met Links Website"
+                     data-link-url="https://www.metlinksgolf.com/">
+                    <iframe src="https://www.youtube.com/embed/dSldDMT6VD4" 
+                            title="Met Links Full Course Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Construction Progress"
+                     data-description="The construction phase began in June 2023 under the guidance of Robert McNeil, ASGCA, and NMP Golf Construction. The project involved careful restoration of the original Ross greens, strategic bunker placement, and sensitive integration of new holes that complement the historic layout. Golf Course Superintendent Paul Jamrog, who had previously worked at Metacomet, returned to oversee the transformation."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (3).jpg" alt="Construction Progress">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Restored Green Complexes"
+                     data-description="The restoration preserved seven of the original Donald Ross holes, maintaining the classic green complexes that made Metacomet famous. Ross's signature back-to-front sloped greens and strategic bunkering were carefully restored, respecting the design heritage while ensuring modern playability and maintenance standards."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (4).jpg" alt="Green Complex">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 1 Flyover"
+                     data-description="The opening hole at Met Links sets the tone for the round. This flyover showcases the strategic design and beautiful setting along the cove. The hole demonstrates the careful balance between preserving Ross's original design intent and creating a modern, accessible golf experience."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/vBL3aEFJyZk" 
+                            title="Met Links Hole 1 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Watchemoket Cove Views"
+                     data-description="Playing along Watchemoket Cove provides stunning water views and dramatic elevation changes throughout the round. The natural setting along the cove was a key element of Ross's original design, and these vistas have been preserved and enhanced in the restoration, creating memorable golf experiences on every hole."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (5).jpg" alt="Cove Views">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 2 Flyover"
+                     data-description="One of the preserved original Donald Ross holes, the second hole demonstrates the strategic brilliance of classic golf course architecture. The flyover reveals the natural contours of the land and how Ross utilized the terrain to create a memorable golf hole."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/QLSwlQxQrLQ" 
+                            title="Met Links Hole 2 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Natural Terrain & Features"
+                     data-description="The course features dramatic elevation changes and natural terrain that create both challenge and beauty. Robert McNeil's restoration work emphasized finding and preserving the hidden values within the landscape, allowing the natural features of the property to shine through in the final design."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (6).jpg" alt="Natural Features">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 3 Flyover"
+                     data-description="The third hole flyover showcases another preserved Ross original, demonstrating the timeless quality of classic golf architecture. The hole's strategic elements and natural beauty make it a favorite among players experiencing the restored course."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/ixkI2MqGTJE" 
+                            title="Met Links Hole 3 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Bunkering & Strategy"
+                     data-description="Strategic bunker placement defines the character of Met Links. The restoration maintained Ross's philosophies on strategic architecture while ensuring the bunkers are properly maintained and visually appealing. Each bunker serves a specific strategic purpose, rewarding thoughtful play."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (7).jpg" alt="Strategic Bunkering">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 4 Flyover"
+                     data-description="The fourth hole represents the seamless integration of preserved Ross design with modern restoration techniques. The flyover reveals how the hole plays along the natural contours of the land, creating both visual interest and strategic challenge."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/QmQOB-UOAxM" 
+                            title="Met Links Hole 4 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Course Conditions"
+                     data-description="Met Links features spectacular playing conditions under the care of Golf Course Superintendent Paul Jamrog. The course demonstrates that a public nine-hole facility can maintain championship-caliber conditions while remaining accessible to golfers of all skill levels. The commitment to excellence is evident in every detail."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (8).jpg" alt="Course Conditions">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 5 Flyover"
+                     data-description="The fifth hole showcases one of the new holes created during the restoration. Built from portions of the original eighth hole, this demonstrates how the Northeast Golf Company thoughtfully integrated new design elements while respecting the property's history and natural features."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/OeX8WJnCJF8" 
+                            title="Met Links Hole 5 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Community Golf"
+                     data-description="Met Links stands as a testament to the power of community advocacy and thoughtful development. What began as a potential loss of historic golf land transformed into a success story of preservation. The course now serves the East Providence community and greater Rhode Island as an accessible, high-quality public golf experience."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (9).jpg" alt="Community Golf">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 6 Flyover"
+                     data-description="The sixth hole, a par 3 created from the approach area of the old eighth hole, plays over a valley to a classic Ross green. The flyover demonstrates how this hole preserves one of the most exhilarating shots from the original Metacomet layout."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/eWY-LZHZamA" 
+                            title="Met Links Hole 6 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Restored Ross Greens"
+                     data-description="The Donald Ross greens are the crown jewels of Met Links. Each green features the subtle contours and strategic pin positions that made Ross one of history's greatest architects. The restoration process carefully preserved these features while ensuring modern maintenance capabilities and excellent playing surfaces."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (10).jpg" alt="Ross Greens">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 7 Flyover"
+                     data-description="The seventh hole flyover showcases another preserved Ross original, demonstrating the variety and strategic interest packed into the nine-hole layout. Each hole offers a unique challenge while maintaining the overall character and flow of the classic design."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/BUZp80_SRfk" 
+                            title="Met Links Hole 7 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="The Met Links Experience"
+                     data-description="Met Links in East Providence represents the rebirth of Rhode Island golf history. This par-34, nine-hole course combines Donald Ross's classic design with Robert McNeil's thoughtful restoration, creating one of the best nine-hole courses in the region. With beautiful elevation changes, wonderful vistas, and spectacular conditions, Met Links proves that preservation and progress can work hand in hand."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Met_Links_Image_After (11).jpg" alt="Met Links Experience">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Hole 8 & 9 Flyover"
+                     data-description="The final two holes of Met Links provide a memorable finish to the round. This flyover showcases how the closing holes maintain the quality and strategic interest established throughout the course, leaving players eager to return."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/8g-fJIPZBWU" 
+                            title="Met Links Holes 8 & 9 Flyover" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Open for Play"
+                     data-description="Met Links is now open to the public, offering tee times for golfers of all skill levels. The course provides an exceptional golf experience that honors the rich history of Metacomet while creating new memories for future generations. Rhode Island's newest golf course is a celebration of classic design, thoughtful restoration, and community spirit."
+                     data-link-text="Book a Tee Time"
+                     data-link-url="https://www.metlinksgolf.com/">
+                    <img src="Met_Links_Image_After (12).jpg" alt="Met Links Today">
+                </div>
+
+                <div class="next-project-wrapper" id="nextBtn">
+                    <a href="../Bass_Rocks/bass_rocks.html" class="text-link-large">Next Project</a>
+                    <a href="#" onclick="navigateTo(event, 'projects-section')" class="text-link-small">All Projects</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        // 1. Navigation Helper
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../index.html'; 
+        }
+
+        // 2. Horizontal Scroll on Mouse Wheel
+        const scrollContainer = document.getElementById('scrollContainer');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            if (window.innerWidth > 900) {
+                evt.preventDefault();
+                scrollContainer.scrollLeft += evt.deltaY;
+            }
+        });
+
+        // 3. Dynamic Text & Link Logic
+        const subtitleElement = document.getElementById('dynamic-subtitle');
+        const descriptionElement = document.getElementById('dynamic-description');
+        const linkElement = document.getElementById('dynamic-link');
+        
+        let currentDescription = descriptionElement.innerHTML.trim(); 
+
+        const observerOptions = {
+            root: scrollContainer,
+            rootMargin: '0px -25% 0px -25%',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    if (entry.target.classList.contains('gallery-item')) {
+                        // Gather data
+                        const newSubtitle = entry.target.getAttribute('data-subtitle');
+                        const newText = entry.target.getAttribute('data-description');
+                        const newLinkText = entry.target.getAttribute('data-link-text');
+                        const newLinkUrl = entry.target.getAttribute('data-link-url');
+                        
+                        updateContent(newSubtitle, newText, newLinkText, newLinkUrl);
+                    } else if (entry.target.classList.contains('next-project-wrapper')) {
+                        entry.target.classList.add('visible');
+                    }
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        function updateContent(subtitle, text, linkText, linkUrl) {
+            if (text && text !== currentDescription) {
+                currentDescription = text; 
+                
+                // Fade Out
+                subtitleElement.classList.add('fading');
+                descriptionElement.classList.add('fading');
+                linkElement.classList.add('fading');
+                
+                setTimeout(() => {
+                    // Update Content
+                    subtitleElement.textContent = subtitle;
+                    descriptionElement.innerHTML = text;
+                    
+                    if (linkText && linkText.trim() !== "") {
+                        linkElement.textContent = linkText;
+                        linkElement.href = linkUrl || "#";
+                        linkElement.classList.remove('hidden'); 
+                    } else {
+                        linkElement.classList.add('hidden'); 
+                    }
+
+                    // Fade In
+                    subtitleElement.classList.remove('fading');
+                    descriptionElement.classList.remove('fading');
+                    linkElement.classList.remove('fading');
+
+                }, 500); 
+            }
+        }
+
+        document.querySelectorAll('.gallery-item').forEach(item => observer.observe(item));
+        observer.observe(document.getElementById('nextBtn'));
+
+    </script>
+
+</body>
+</html>
