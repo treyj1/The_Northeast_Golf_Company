@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Northeast Golf Company - Coming Soon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            height: 100vh; 
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Ensure the image path matches your file structure */
+            background-image: url('index/Topo_Whitinsville.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.2; 
+        }
+
+        .center-content {
+            text-align: center;
+            padding: 0 20px;
+            z-index: 10;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: 0.1rem;
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05rem;
+        }
+
+        a.site-link {
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            color: var(--nav-gray);
+            text-decoration: none;
+            border-bottom: 1px solid var(--nav-gray);
+            padding-bottom: 2px;
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+        }
+
+        a.site-link:hover { 
+            color: var(--text-main); 
+            border-bottom-color: var(--text-main); 
+        }
+
+        /* Responsive scaling for mobile devices */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+            a.site-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="center-content">
+        <h1>Coming Soon</h1>
+        <p>Our current website is being reimagined. <br />Until then, please visit our current website at</p>
+        <a href="https://northeastgolfcompany.com" class="site-link">northeastgolfcompany.com</a>
+    </div>
+
+</body>
+</html>

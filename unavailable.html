@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Progress | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('index/Topo_Whitinsville.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15; 
+        }
+
+        /* NEW: Define the Fade In Animation */
+        @keyframes subtleFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(15px); /* Start slightly lower */
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0); /* Settle into place */
+            }
+        }
+
+        /* Centered Wrapper for this specific page */
+        .message-wrapper {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 100px; /* Space for nav */
+            
+            /* APPLIED ANIMATION: Starts invisible, fades in over 1.2 seconds */
+            opacity: 0; 
+            animation: subtleFadeUp 1.2s ease-out forwards;
+        }
+
+        .content-container {
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        .body-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        /* Link Styling */
+        .go-back-link {
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            color: var(--nav-gray);
+            text-decoration: none;
+            border-bottom: 1px solid var(--nav-gray);
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .go-back-link:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        /* Fixed Navigation */
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .nav-links {
+            display: flex; gap: 40px; list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--text-main); }
+
+        .nav-address {
+            color: var(--address-gray);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            font-weight: var(--akrobat-light);
+        }
+
+        @media (max-width: 900px) {
+            h1 { font-size: 2.5rem; }
+
+            /* Navigation */
+            .nav-links { gap: 25px; }
+            .nav-address {
+                font-size: 0.65rem;
+                padding: 0 15px;
+                text-align: center;
+            }
+            .fixed-nav-container { bottom: 25px; }
+        }
+
+        /* TABLET PORTRAIT */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+
+            .body-text {
+                font-size: 1rem;
+            }
+
+            .content-container {
+                max-width: 90%;
+            }
+
+            .nav-links { gap: 18px; }
+            .nav-links a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+
+            .body-text {
+                font-size: 0.95rem;
+                margin-bottom: 30px;
+            }
+
+            .go-back-link {
+                font-size: 0.75rem;
+            }
+
+            .message-wrapper {
+                padding-bottom: 80px;
+            }
+
+            /* Navigation - Compact */
+            .fixed-nav-container {
+                bottom: 15px;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+            .nav-address {
+                font-size: 0.55rem;
+                letter-spacing: 0.08rem;
+                line-height: 1.4;
+                padding: 0 10px;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="message-wrapper">
+        <div class="content-container">
+            <h1>Coming Soon</h1>
+            <p class="body-text">This page is currently under construction. Please check back later.</p>
+            
+            <a href="#" onclick="navigateTo(event, 'projects-section')" class="go-back-link">Go Back to Projects</a>
+        </div>
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
+            // Save the target ID to the browser's temporary storage
+            sessionStorage.setItem('scrollTarget', sectionId);
+            // Go to index.html cleanly (unavailable.html is in root, so index.html)
+            window.location.href = 'index.html';
+        }
+    </script>
+
+</body>
+</html>
