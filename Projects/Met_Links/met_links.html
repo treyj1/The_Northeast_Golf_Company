@@ -232,6 +232,18 @@
             height: 100%;
         }
 
+        /* Plan Item - Auto Width / No Bars */
+        .gallery-item.plan-item {
+            width: auto;
+            aspect-ratio: auto;
+        }
+        .gallery-item.plan-item img {
+            width: auto;
+            height: 100%;
+            object-fit: contain;
+            background: none;
+        }
+
         /* CTA Button - Updated to Fixed Bottom */
         .cta-btn-left-fixed {
             position: absolute;
@@ -616,7 +628,7 @@
                     </iframe>
                 </div>
 
-                <div class="gallery-item landscape-item" 
+                <div class="gallery-item plan-item" 
                      data-subtitle="The Restoration Plan"
                      data-description="The restoration focused on preserving the original front nine holes designed by Donald Ross while integrating new elements to create a comprehensive nine-hole golf experience. The Northeast Golf Company worked to recapture the historical Ross concept, saving five additional greens and the practice putting green. The project required creative rerouting to fit nine holes into the available seven-hole space, with old members in mind throughout the development process."
                      data-link-text="View the Master Plan"
