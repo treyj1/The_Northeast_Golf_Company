@@ -200,6 +200,11 @@
             height: 100%;
             border: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            pointer-events: none; /* Scroll fix */
+        }
+        
+        .gallery-item.active iframe {
+            pointer-events: auto; /* Enable when active */
         }
 
         .gallery-item:nth-child(odd) { margin-top: -8vh; }
@@ -210,6 +215,45 @@
             transform: scale(1.05); 
             filter: grayscale(0%);
             z-index: 5;
+        }
+
+        /* CTA Button */
+        .cta-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--text-main);
+            padding: 10px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            border: 1px solid var(--text-main);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .cta-btn:hover {
+            background-color: var(--text-main);
+            color: #fff;
+        }
+
+        /* Back Link */
+        .back-projects-link {
+            position: absolute;
+            top: 8vh;
+            left: 8vw;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.8rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease;
+        }
+        .back-projects-link:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
         }
 
         /* --- NEXT PROJECT BTN --- */
@@ -500,6 +544,8 @@
     <div class="project-wrapper">
         
         <div class="info-panel">
+            <a href="../../landing_page.html" class="back-projects-link">&larr; Back to Projects</a>
+
             <div class="static-header">
                 <h1>Met Links</h1>
                 <span class="location-sub">East Providence, Rhode Island</span>
@@ -522,11 +568,29 @@
             <div class="gallery-track">
                 
                 <div class="gallery-item" 
-                     data-subtitle="Project History"
-                     data-description='Formerly Metacomet Country Club, this Leonard Byles (1901) / Donald Ross (1924) design was a standout in Rhode Island golf. Playing along Watchemoket Cove, the course hosted many championships and qualifiers, and was loved by members and the community. In 2020 the club closed and the land was purchased for development by Marshall Properties, who had great desire that at least part of this historic course was preserved and restored for the benefit of the public.<br><br>Robert McNeil and the Northeast Golf Company were brought on to restore most of the front 9 holes and reroute the course to meet the goals for the property. Construction began June 2023 with Met Links officially opening to the public in 2024.'
+                     data-subtitle="The History of Met Links"
+                     data-description='Explore the rich history of the former Metacomet Country Club and its transformation into Met Links. This video captures the legacy of Donald Ross and the vision for preserving golf on this historic site.'
                      data-link-text=""
                      data-link-url="">
-                    <img src="Met_Links_Image_After (1).jpg" alt="Met Links Overview">
+                    <iframe src="https://www.youtube.com/embed/dSldDMT6VD4" 
+                            title="Met Links History" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Met Links Construction"
+                     data-description="Witness the restoration process as Robert McNeil and the Northeast Golf Company bring the Donald Ross vision back to life. From green reconstruction to rerouting, this video showcases the expert craftsmanship behind Met Links."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/dSldDMT6VD4" 
+                            title="Met Links Construction" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -534,7 +598,8 @@
                      data-description="The restoration focused on preserving the original front nine holes designed by Donald Ross while integrating new elements to create a comprehensive nine-hole golf experience. The Northeast Golf Company worked to recapture the historical Ross concept, saving five additional greens and the practice putting green. The project required creative rerouting to fit nine holes into the available seven-hole space, with old members in mind throughout the development process."
                      data-link-text="View the Master Plan"
                      data-link-url="met_links_plan.html">
-                    <img src="Met_Links_Plan.jpg" alt="Met Links Master Plan">
+                    <img src="Met_Links_Plan.png" alt="Met Links Master Plan">
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -543,18 +608,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (2).jpg" alt="Met Links Before">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Drone Flyover - Full Course"
-                     data-description="Experience Met Links from above with this comprehensive drone flyover of the entire nine-hole course. The video showcases the dramatic elevation changes along Watchemoket Cove, the restored Donald Ross greens, and the natural beauty that makes Met Links one of the premier nine-hole courses in the region."
-                     data-link-text="Visit Met Links Website"
-                     data-link-url="https://www.metlinksgolf.com/">
-                    <iframe src="https://www.youtube.com/embed/dSldDMT6VD4" 
-                            title="Met Links Full Course Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -563,6 +617,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (3).jpg" alt="Construction Progress">
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -571,18 +626,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (4).jpg" alt="Green Complex">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 1 Flyover"
-                     data-description="The opening hole at Met Links sets the tone for the round. This flyover showcases the strategic design and beautiful setting along the cove. The hole demonstrates the careful balance between preserving Ross's original design intent and creating a modern, accessible golf experience."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/vBL3aEFJyZk" 
-                            title="Met Links Hole 1 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -591,18 +635,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (5).jpg" alt="Cove Views">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 2 Flyover"
-                     data-description="One of the preserved original Donald Ross holes, the second hole demonstrates the strategic brilliance of classic golf course architecture. The flyover reveals the natural contours of the land and how Ross utilized the terrain to create a memorable golf hole."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/QLSwlQxQrLQ" 
-                            title="Met Links Hole 2 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -611,18 +644,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (6).jpg" alt="Natural Features">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 3 Flyover"
-                     data-description="The third hole flyover showcases another preserved Ross original, demonstrating the timeless quality of classic golf architecture. The hole's strategic elements and natural beauty make it a favorite among players experiencing the restored course."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/ixkI2MqGTJE" 
-                            title="Met Links Hole 3 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -631,18 +653,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (7).jpg" alt="Strategic Bunkering">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 4 Flyover"
-                     data-description="The fourth hole represents the seamless integration of preserved Ross design with modern restoration techniques. The flyover reveals how the hole plays along the natural contours of the land, creating both visual interest and strategic challenge."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/QmQOB-UOAxM" 
-                            title="Met Links Hole 4 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -651,18 +662,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (8).jpg" alt="Course Conditions">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 5 Flyover"
-                     data-description="The fifth hole showcases one of the new holes created during the restoration. Built from portions of the original eighth hole, this demonstrates how the Northeast Golf Company thoughtfully integrated new design elements while respecting the property's history and natural features."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/OeX8WJnCJF8" 
-                            title="Met Links Hole 5 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -671,18 +671,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (9).jpg" alt="Community Golf">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 6 Flyover"
-                     data-description="The sixth hole, a par 3 created from the approach area of the old eighth hole, plays over a valley to a classic Ross green. The flyover demonstrates how this hole preserves one of the most exhilarating shots from the original Metacomet layout."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/eWY-LZHZamA" 
-                            title="Met Links Hole 6 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -691,18 +680,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (10).jpg" alt="Ross Greens">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 7 Flyover"
-                     data-description="The seventh hole flyover showcases another preserved Ross original, demonstrating the variety and strategic interest packed into the nine-hole layout. Each hole offers a unique challenge while maintaining the overall character and flow of the classic design."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/BUZp80_SRfk" 
-                            title="Met Links Hole 7 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -711,18 +689,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (11).jpg" alt="Met Links Experience">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Hole 8 & 9 Flyover"
-                     data-description="The final two holes of Met Links provide a memorable finish to the round. This flyover showcases how the closing holes maintain the quality and strategic interest established throughout the course, leaving players eager to return."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/8g-fJIPZBWU" 
-                            title="Met Links Holes 8 & 9 Flyover" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -731,6 +698,7 @@
                      data-link-text="Book a Tee Time"
                      data-link-url="https://www.metlinksgolf.com/">
                     <img src="Met_Links_Image_After (12).jpg" alt="Met Links Today">
+                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="next-project-wrapper" id="nextBtn">
@@ -768,8 +736,14 @@
         const scrollContainer = document.getElementById('scrollContainer');
         scrollContainer.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
-                evt.preventDefault();
-                scrollContainer.scrollLeft += evt.deltaY;
+                if (evt.deltaY !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaY;
+                } else if (evt.deltaX !== 0) {
+                     // Allow native horizontal scroll but prevent page swipe back
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaX;
+                }
             }
         });
 

@@ -48,6 +48,24 @@
             pointer-events: none;
         }
 
+        /* Back Link */
+        .back-projects-link {
+            position: absolute;
+            top: 8vh;
+            left: 8vw;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.8rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease;
+        }
+        .back-projects-link:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
         /* --- LAYOUT --- */
         .project-wrapper {
             display: flex;
@@ -493,6 +511,7 @@
     <div class="project-wrapper">
         
         <div class="info-panel">
+            <a href="../../landing_page.html" class="back-projects-link">&larr; Back to Projects</a>
             <div class="static-header">
                 <h1>Mendham<br>Golf & Tennis</h1>
                 <span class="location-sub">Mendham, New Jersey</span>
