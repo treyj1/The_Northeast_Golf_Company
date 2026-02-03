@@ -215,6 +215,18 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
+        .gallery-item iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            pointer-events: none; /* Scroll fix */
+        }
+        
+        .gallery-item.active iframe {
+            pointer-events: auto; /* Enable when active */
+        }
+
         .gallery-item:nth-child(odd) { margin-top: -8vh; }
         .gallery-item:nth-child(even) { margin-top: 8vh; }
 
@@ -223,6 +235,21 @@
             transform: scale(1.05); 
             filter: grayscale(0%);
             z-index: 5;
+        }
+
+        /* Landscape Aspect Ratio for Videos/Plan */
+        .gallery-item.landscape-item {
+            aspect-ratio: 16 / 9;
+            width: auto;
+            height: 45vh; /* Keep height consistent, let width adjust */
+        }
+        .gallery-item.landscape-item img {
+            object-fit: contain; /* Ensure full image visibility */
+            background: #000; 
+        }
+        .gallery-item.landscape-item iframe {
+            width: 100%;
+            height: 100%;
         }
 
         /* --- NEXT PROJECT BTN --- */
@@ -536,6 +563,18 @@
         <div class="scroll-container" id="scrollContainer">
             <div class="gallery-track">
                 
+                <div class="gallery-item landscape-item" 
+                     data-subtitle="2024 Master Plan"
+                     data-description="The 2024 Master Plan focuses on strategic, aesthetic, and functional enhancements to the golf course. This video captures the vision for the future of Bass Rocks Golf Club and the key improvements prioritized by the membership."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/Ag653DcvD6U" 
+                            title="Bass Rocks Master Plan Video" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
                 <div class="gallery-item" 
                      data-subtitle="Club History"
                      data-description='Bass Rocks Golf Club was founded in 1896 and golf was first played by members in the area now known as "The Meadows," our current 15th through 18th holes. At the time this was a six hole course designed by the Scottish golfer, Alex Findlay. Over the years multiple expansions occurred at the Club, most notably the 1913 expansion to 18 holes by the golf course designer H.C. Leeds (architect of Myopia Hunt Club).<br><br>Robert McNeil has been working with the Club for many years, recently presenting a guiding master plan of improvements to the membership in 2024. Scroll through the image gallery to the right to learn more about the master plan and the completed phases of the project.'
@@ -544,8 +583,8 @@
                     <img src="Image_BassRocks (5).jpg" alt="Bass Rocks History">
                 </div>
 
-                <div class="gallery-item" 
-                     data-subtitle="2024 Master Plan"
+                <div class="gallery-item landscape-item" 
+                     data-subtitle="2024 Master Plan Map"
                      data-description="The 2024 Master Plan focused on enhancing the strategic, aesthetic, and functional characteristics and needs of Bass Rocks. The plan prioritizes high value improvements, including the reconstruction of the second and seventh holes (completed) and reimagining the strategy and styling of the holes in The Meadows."
                      data-link-text="Learn More about the 2024 Master Plan"
                      data-link-url="master_plan_bassrocks.html">
@@ -566,6 +605,70 @@
                      data-link-text="Learn more about Hole 7"
                      data-link-url="br_hole07.html">
                     <img src="Image_BassRocks (8).jpg" alt="Hole 7 Renovation">
+                </div>
+
+                <div class="gallery-item landscape-item" 
+                     data-subtitle="Hole 7 Vision"
+                     data-description="Architectural renderings visualize the potential of Hole 7, showing the proposed enhancements to bunkering, green complexes, and the overall strategic layout before construction begins."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="BR_Hole07_Render_BirdsEye_After (1).jpg" alt="Hole 7 Render">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Modern Standards"
+                     data-description="The improvements at Bass Rocks ensure that the course meets modern standards of playability and maintenance while honoring its rich history and unique landscape."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (11).jpg" alt="Modern Standards">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Construction Progress"
+                     data-description="A look at the ongoing work to bring the master plan to life. The construction phase involves careful shaping and earthmoving to realize the design intent while preserving the natural character of the landscape."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="BR_Hole_07_Construction (1).JPG" alt="Construction Progress">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Scenic Views"
+                     data-description="Bass Rocks Golf Club is renowned for its stunning vistas and unique New England coastal terrain. The rocky outcrops and rolling fairways provide a visually spectacular golfing experience."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (3).jpg" alt="Scenic Course View">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Course Atmosphere"
+                     data-description="The interplay of light, shadow, and the natural ruggedness of the terrain creates a distinct atmosphere at Bass Rocks, making every round a memorable walk through a beautiful landscape."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (6).jpg" alt="Course Atmosphere">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Rugged Bunker Styling"
+                     data-description="New bunkering at Bass Rocks features a rugged, natural aesthetic that complements the rocky surroundings and provides both strategic challenge and visual interest."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (4).jpg" alt="Bunker Styling">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Strategic Challenges"
+                     data-description="The course design encourages thoughtful play, with well-placed hazards and green complexes that require precision and strategy to navigate successfully."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (7).jpg" alt="Strategic Challenge">
+                </div>
+
+                <div class="gallery-item" 
+                     data-subtitle="Coastal Character"
+                     data-description="The unique coastal environment of Gloucester is reflected in the course's character, with fescue areas and wind-swept vistas defining the experience."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Image_BassRocks (10).jpg" alt="Coastal Character">
                 </div>
 
                 <div class="next-project-wrapper" id="nextBtn">
