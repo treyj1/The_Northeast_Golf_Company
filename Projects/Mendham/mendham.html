@@ -48,10 +48,10 @@
             pointer-events: none;
         }
 
-        /* Back Link */
-        .back-projects-link {
+        /* Back Link - Updated to Bottom */
+        .back-projects-link-bottom {
             position: absolute;
-            top: 8vh;
+            bottom: 8vh;
             left: 8vw;
             text-decoration: none;
             text-transform: uppercase;
@@ -60,8 +60,9 @@
             font-size: 0.8rem;
             border-bottom: 1px solid transparent;
             transition: color 0.3s ease;
+            z-index: 20;
         }
-        .back-projects-link:hover {
+        .back-projects-link-bottom:hover {
             color: var(--text-main);
             border-bottom-color: var(--text-main);
         }
@@ -511,7 +512,6 @@
     <div class="project-wrapper">
         
         <div class="info-panel">
-            <a href="../../landing_page.html" class="back-projects-link">&larr; Back to Projects</a>
             <div class="static-header">
                 <h1>Mendham<br>Golf & Tennis</h1>
                 <span class="location-sub">Mendham, New Jersey</span>
@@ -527,7 +527,10 @@
                 </p>
             </div>
 
-            <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+                <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+            </div>
+
+            <a href="../../landing_page.html" class="back-projects-link-bottom">&larr; Back to Projects</a>
         </div>
 
         <div class="scroll-container" id="scrollContainer">
