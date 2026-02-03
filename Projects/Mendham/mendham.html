@@ -535,7 +535,7 @@
                      data-description="The 15th hole has undergone significant changes to improve both aesthetics and strategy. The green complex has been expanded and surrounding bunkers have been reshaped to offer a variety of recovery shots."
                      data-link-text="View Hole 15 Before & After"
                      data-link-url="mendham_hole15.html">
-                    <img src="Mendham_Image_15_After_optimized.jpg" alt="Hole 15 Renovation">
+                    <img src="Mendham_Image_15_After.jpg" alt="Hole 15 Renovation">
                 </div>
 
                 <div class="gallery-item" 
@@ -581,8 +581,14 @@
         const scrollContainer = document.getElementById('scrollContainer');
         scrollContainer.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
-                evt.preventDefault();
-                scrollContainer.scrollLeft += evt.deltaY;
+                if (evt.deltaY !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaY;
+                } else if (evt.deltaX !== 0) {
+                     // Allow native horizontal scroll but prevent page swipe back
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaX;
+                }
             }
         });
 

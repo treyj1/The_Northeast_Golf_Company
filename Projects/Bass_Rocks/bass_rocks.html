@@ -582,8 +582,13 @@
         const scrollContainer = document.getElementById('scrollContainer');
         scrollContainer.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
-                evt.preventDefault();
-                scrollContainer.scrollLeft += evt.deltaY;
+                if (evt.deltaY !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaY;
+                } else if (evt.deltaX !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaX;
+                }
             }
         });
 
