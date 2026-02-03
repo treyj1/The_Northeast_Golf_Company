@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hole 15 Renovation | Mendham Golf & Tennis Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg'); 
+            background-size: cover; background-position: center;
+            z-index: -1; opacity: 0.15; pointer-events: none;
+        }
+
+        .project-wrapper {
+            display: flex; width: 100vw; height: 100vh; position: relative;
+        }
+
+        .info-panel {
+            width: 40%; height: 100%; display: flex; flex-direction: column;
+            padding-top: 15vh; padding-left: 8vw; padding-right: 4%; z-index: 10;
+            position: relative; 
+        }
+
+        .static-header { margin-bottom: 3vh; }
+
+        h1 {
+            font-size: 3.5rem; font-weight: var(--akrobat-reg);
+            text-transform: uppercase; letter-spacing: 0.1rem;
+            line-height: 0.9; margin-bottom: 10px;
+        }
+
+        .location-sub {
+            font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px;
+            color: var(--nav-gray); border-bottom: 1px solid #ddd;
+            padding-bottom: 10px; display: inline-block; width: fit-content;
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light); color: var(--text-gray);
+            font-size: 1.1rem; line-height: 1.6; max-width: 450px; margin-bottom: 40px;
+        }
+
+        .toggle-nav { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+
+        .toggle-link {
+            font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-main); text-decoration: none;
+            border-bottom: 1px solid var(--text-main);
+            width: fit-content; cursor: pointer;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            opacity: 0.6; padding-bottom: 2px;
+        }
+
+        .toggle-link:hover { opacity: 1; color: var(--nav-gray); }
+        .toggle-link.active { opacity: 1; border-bottom: 2px solid var(--text-main); font-weight: 400; }
+
+        .back-link-corner {
+            position: absolute;
+            bottom: 12vh;
+            left: 8vw;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.9rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .back-link-corner:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        .display-panel {
+            width: 60%; height: 100%; position: relative;
+            padding: 10vh 5% 15vh 0; 
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .content-section {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            padding: 0 5vw;
+        }
+        .content-section.active { opacity: 1; pointer-events: auto; }
+
+        .main-image {
+            max-width: 100%; max-height: 65vh;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            object-fit: contain;
+        }
+
+        /* --- SLIDER STYLES --- */
+        .slider-wrapper {
+            position: relative;
+            width: 100%; max-width: 900px;
+            aspect-ratio: 16 / 9; 
+            max-height: 65vh;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+
+        .slider-image {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .img-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            width: 50%; 
+            border-right: 2px solid #fff;
+        }
+        
+        .slider-handle {
+            position: absolute; top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            cursor: ew-resize;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 20;
+        }
+        .slider-handle::after {
+            content: '\2194'; 
+            color: var(--text-main); font-size: 1.2rem;
+        }
+
+        .slider-tag {
+            position: absolute; bottom: 20px;
+            padding: 5px 15px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            text-transform: uppercase; letter-spacing: 1px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            opacity: 0;
+        }
+        .tag-left { left: 20px; opacity: 1; }
+        .tag-right { right: 20px; }
+        .tag-visible { opacity: 1; }
+
+        /* --- FIXED BOTTOM NAV --- */
+        .fixed-nav-container {
+            position: fixed; bottom: 40px; width: 100%;
+            display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2000;
+        }
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+        .nav-links a {
+            text-decoration: none; color: var(--nav-gray); font-size: 0.85rem;
+            font-weight: var(--akrobat-light); letter-spacing: 0.2rem;
+            text-transform: uppercase; cursor: pointer; transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+
+        @media (max-width: 900px) {
+            .project-wrapper { flex-direction: column; height: auto; overflow-y: auto; }
+            .info-panel { width: 100%; padding: 100px 5% 20px 5%; height: auto; }
+            h1 { font-size: 2.8rem; }
+            .display-panel { width: 100%; padding: 20px 5%; height: auto; min-height: 50vh; position: static; }
+            .content-section { position: relative; transform: none; top: auto; left: auto; opacity: 1; display: none; padding: 0; }
+            .content-section.active { display: flex; }
+            .back-link-corner { position: static; margin-top: 30px; display: inline-block; }
+            .slider-wrapper { max-height: 40vh; }
+            .toggle-nav { flex-direction: row; flex-wrap: wrap; gap: 10px 20px; }
+            .fixed-nav-container { bottom: 25px; }
+        }
+
+        @media (max-width: 480px) {
+            .info-panel { padding: 70px 4% 15px 4%; }
+            h1 { font-size: 2rem; }
+            .slider-wrapper { max-height: 35vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+        
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Mendham<br>Golf & Tennis</h1>
+                <span class="location-sub">Hole 15</span>
+            </div>
+            
+            <p class="description-text">
+                The renovation of Hole 15 focused on revitalizing the green complex and bunkers to restore their classic scale and strategic value. Use the slider to compare the original conditions with the completed renovation.
+            </p>
+
+            <div class="toggle-nav">
+                <a class="toggle-link active" onclick="switchSection('slider')">Before & After</a>
+            </div>
+
+            <a href="mendham.html" class="back-link-corner">&#8592; Back to Project</a>
+        </div>
+
+        <div class="display-panel">
+            
+            <div id="section-slider" class="content-section active">
+                <div class="slider-wrapper" id="slider">
+                    <!-- Base Image (After) -->
+                    <img src="Mendham_Image_15_After_optimized.jpg" class="slider-image">
+                    <div class="slider-tag tag-right" id="tag-after">After</div>
+                    
+                    <!-- Overlay Image (Before) - Clipped -->
+                    <div class="img-overlay" id="img-overlay">
+                        <img src="Mendham_Image_15_Before.jpg" class="slider-image" style="width: auto; max-width: none; height: 100%;">
+                        <div class="slider-tag tag-left" id="tag-before">Before</div>
+                    </div>
+
+                    <div class="slider-handle" id="slider-handle"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../index.html';
+        }
+
+        function switchSection(sectionName) {
+            // Placeholder for if we add more sections later
+        }
+
+        // --- SLIDER LOGIC ---
+        const sliderWrapper = document.getElementById('slider');
+        const overlay = document.getElementById('img-overlay');
+        const handle = document.getElementById('slider-handle');
+        const overlayImg = overlay.querySelector('img');
+        const tagBefore = document.getElementById('tag-before');
+        const tagAfter = document.getElementById('tag-after');
+        
+        let isDragging = false;
+
+        function updateSliderWidth() {
+            // Keep the inner image full width even when container clips
+            overlayImg.style.width = sliderWrapper.offsetWidth + 'px'; 
+        }
+
+        function updateSliderPercentage(percentage) {
+            if (percentage < 0) percentage = 0;
+            if (percentage > 100) percentage = 100;
+
+            overlay.style.width = percentage + "%";
+            handle.style.left = percentage + "%";
+
+            if (percentage > 50) {
+                tagBefore.classList.add('tag-visible');
+                tagAfter.classList.remove('tag-visible');
+            } else {
+                tagBefore.classList.remove('tag-visible');
+                tagAfter.classList.add('tag-visible');
+            }
+        }
+
+        function handleDrag(clientX) {
+            const rect = sliderWrapper.getBoundingClientRect();
+            let pos = clientX - rect.left;
+            let percentage = (pos / rect.width) * 100;
+            updateSliderPercentage(percentage);
+        }
+
+        handle.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            handleDrag(e.clientX);
+        });
+
+        handle.addEventListener('touchstart', () => isDragging = true);
+        window.addEventListener('touchend', () => isDragging = false);
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            handleDrag(e.touches[0].clientX);
+        });
+
+        window.addEventListener('resize', updateSliderWidth);
+        window.onload = () => {
+             updateSliderWidth();
+             updateSliderPercentage(50);
+        };
+    </script>
+
+</body>
+</html>
