@@ -126,11 +126,10 @@
             opacity: 0;
         }
 
-        /* 3. LINK (Fixed Position) */
+        /* 3. DYNAMIC LINK (Moved to flow) */
         .dynamic-link {
-            position: absolute;
-            left: 8vw; 
-            bottom: 18%; 
+            display: inline-block;
+            margin-top: 20px;
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -140,7 +139,6 @@
             padding-bottom: 2px;
             transition: opacity 0.5s ease-in-out, color 0.3s ease;
             cursor: pointer;
-            z-index: 20;
         }
 
         .dynamic-link:hover {
@@ -217,10 +215,11 @@
             z-index: 5;
         }
 
-        /* CTA Button - Updated to Text Link style */
-        .cta-btn-left {
-            display: inline-block;
-            margin-top: 30px;
+        /* CTA Button - Updated to Fixed Bottom */
+        .cta-btn-left-fixed {
+            position: absolute;
+            bottom: 18%;
+            left: 8vw;
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -228,18 +227,19 @@
             text-decoration: none;
             border-bottom: 1px solid var(--text-main);
             padding-bottom: 2px;
-            transition: opacity 0.3s ease, color 0.3s ease;
+            transition: color 0.3s ease;
             cursor: pointer;
+            z-index: 20;
         }
-        .cta-btn-left:hover {
+        .cta-btn-left-fixed:hover {
             color: var(--nav-gray);
             border-bottom-color: var(--nav-gray);
         }
 
-        /* Back Link */
-        .back-projects-link {
+        /* Back Link - Updated to Bottom */
+        .back-projects-link-bottom {
             position: absolute;
-            top: 8vh;
+            bottom: 13%; /* Below Tee Time button */
             left: 8vw;
             text-decoration: none;
             text-transform: uppercase;
@@ -248,8 +248,9 @@
             font-size: 0.8rem;
             border-bottom: 1px solid transparent;
             transition: color 0.3s ease;
+            z-index: 20;
         }
-        .back-projects-link:hover {
+        .back-projects-link-bottom:hover {
             color: var(--text-main);
             border-bottom-color: var(--text-main);
         }
@@ -391,6 +392,13 @@
             .next-project-wrapper {
                 opacity: 1;
                 padding: 30px 0;
+            }
+            
+            /* Mobile adjustments for new links */
+            .cta-btn-left-fixed, .back-projects-link-bottom {
+                position: static;
+                display: block;
+                margin-top: 20px;
             }
         }
 
@@ -542,8 +550,6 @@
     <div class="project-wrapper">
         
         <div class="info-panel">
-            <a href="../../landing_page.html" class="back-projects-link">&larr; Back to Projects</a>
-
             <div class="static-header">
                 <h1>Met Links</h1>
                 <span class="location-sub">East Providence, Rhode Island</span>
@@ -558,10 +564,12 @@
                     Robert McNeil and the Northeast Golf Company were brought on to restore most of the front 9 holes and reroute the course to meet the goals for the property. Construction began June 2023 with Met Links officially opening to the public in 2024.
                 </p>
 
-                <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn-left" target="_blank">Book a Tee Time</a>
+                <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
             </div>
 
-            <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+            <!-- Fixed Bottom Links -->
+            <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn-left-fixed" target="_blank">Book a Tee Time</a>
+            <a href="../../landing_page.html" class="back-projects-link-bottom">&larr; Back to Projects</a>
         </div>
 
         <div class="scroll-container" id="scrollContainer">

@@ -161,7 +161,7 @@
             width: 80%;
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Vertically center children */
+            align-items: flex-start; 
             z-index: 2;
         }
         
@@ -175,7 +175,7 @@
             flex-direction: column;
             gap: 20px;
             text-align: right;
-            /* margin-top removed to allow alignment */
+            margin-top: 90px; /* Aligns with body text below H2 */
         }
 
         .what-we-do-image {
@@ -245,7 +245,7 @@
             display: flex;
             align-items: flex-start;
             gap: 80px;
-            padding: 15vh 10% 0 10%;
+            padding: 15vh 10% 50px 10%; /* Added bottom padding */
             width: 100%;
             height: 100%;
         }
@@ -278,8 +278,9 @@
             padding-right: 10%;
         }
 
-        .contact-info-left {
-            flex-shrink: 0;
+        .contact-info-left h2 {
+            margin-top: 0;
+            line-height: 1;
         }
 
         .project-list {
