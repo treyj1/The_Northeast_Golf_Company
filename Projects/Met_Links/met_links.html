@@ -217,25 +217,23 @@
             z-index: 5;
         }
 
-        /* CTA Button */
-        .cta-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: var(--text-main);
-            padding: 10px 20px;
+        /* CTA Button - Updated to Text Link style */
+        .cta-btn-left {
+            display: inline-block;
+            margin-top: 30px;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: var(--text-main);
             text-decoration: none;
-            border: 1px solid var(--text-main);
-            transition: all 0.3s ease;
-            z-index: 10;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: opacity 0.3s ease, color 0.3s ease;
+            cursor: pointer;
         }
-        .cta-btn:hover {
-            background-color: var(--text-main);
-            color: #fff;
+        .cta-btn-left:hover {
+            color: var(--nav-gray);
+            border-bottom-color: var(--nav-gray);
         }
 
         /* Back Link */
@@ -559,6 +557,8 @@
                     <br><br>
                     Robert McNeil and the Northeast Golf Company were brought on to restore most of the front 9 holes and reroute the course to meet the goals for the property. Construction began June 2023 with Met Links officially opening to the public in 2024.
                 </p>
+
+                <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn-left" target="_blank">Book a Tee Time</a>
             </div>
 
             <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
@@ -572,12 +572,11 @@
                      data-description='Explore the rich history of the former Metacomet Country Club and its transformation into Met Links. This video captures the legacy of Donald Ross and the vision for preserving golf on this historic site.'
                      data-link-text=""
                      data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/dSldDMT6VD4" 
+                    <iframe src="https://www.youtube.com/embed/-0L_VQHTwyA" 
                             title="Met Links History" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                             allowfullscreen>
                     </iframe>
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -585,12 +584,11 @@
                      data-description="Witness the restoration process as Robert McNeil and the Northeast Golf Company bring the Donald Ross vision back to life. From green reconstruction to rerouting, this video showcases the expert craftsmanship behind Met Links."
                      data-link-text=""
                      data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/dSldDMT6VD4" 
+                    <iframe src="https://www.youtube.com/embed/UstmHbUU-T4" 
                             title="Met Links Construction" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                             allowfullscreen>
                     </iframe>
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
                 </div>
 
                 <div class="gallery-item" 
@@ -599,7 +597,7 @@
                      data-link-text="View the Master Plan"
                      data-link-url="met_links_plan.html">
                     <img src="Met_Links_Plan.png" alt="Met Links Master Plan">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -608,7 +606,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (2).jpg" alt="Met Links Before">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -617,7 +615,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (3).jpg" alt="Construction Progress">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -626,7 +624,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (4).jpg" alt="Green Complex">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -635,7 +633,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (5).jpg" alt="Cove Views">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -644,7 +642,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (6).jpg" alt="Natural Features">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -653,7 +651,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (7).jpg" alt="Strategic Bunkering">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -662,7 +660,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (8).jpg" alt="Course Conditions">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -671,7 +669,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (9).jpg" alt="Community Golf">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -680,7 +678,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (10).jpg" alt="Ross Greens">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -689,7 +687,7 @@
                      data-link-text=""
                      data-link-url="">
                     <img src="Met_Links_Image_After (11).jpg" alt="Met Links Experience">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="gallery-item" 
@@ -698,7 +696,7 @@
                      data-link-text="Book a Tee Time"
                      data-link-url="https://www.metlinksgolf.com/">
                     <img src="Met_Links_Image_After (12).jpg" alt="Met Links Today">
-                    <a href="https://foreupsoftware.com/index.php/booking/22800/11966#teetimes" class="cta-btn" target="_blank">Book a Tee Time</a>
+
                 </div>
 
                 <div class="next-project-wrapper" id="nextBtn">

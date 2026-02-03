@@ -161,7 +161,7 @@
             width: 80%;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center; /* Vertically center children */
             z-index: 2;
         }
         
@@ -175,7 +175,7 @@
             flex-direction: column;
             gap: 20px;
             text-align: right;
-            margin-top: 50px;
+            /* margin-top removed to allow alignment */
         }
 
         .what-we-do-image {
@@ -262,12 +262,24 @@
             flex-shrink: 0;
         }
 
-        .team-info h2 { font-size: 3.5rem; margin-bottom: 40px; }
+        .team-info h2 { font-size: 3.5rem; margin-bottom: 60px; }
 
         .projects-container, .contact-container {
             width: 100%;
             margin-left: 15%; 
             margin-top: -18vh; 
+        }
+
+        .contact-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-left: 10%;
+            padding-right: 10%;
+        }
+
+        .contact-info-left {
+            flex-shrink: 0;
         }
 
         .project-list {
@@ -755,7 +767,7 @@
             </section>
 
             <section id="haverhill-2">
-                <img src="Projects/Mendham/Mendham_Image_ (2).jpg" class="peeking-img" id="peek-img-design" alt="Haverhill Render 2">
+                <img src="Projects/Met_Links/Met_Links_Image_After (2).jpg" class="peeking-img" id="peek-img-design" alt="Haverhill Render 2">
                 <div class="project-text" id="text-2">
                     <h2>OUR SERVICES INCLUDE</h2>
                     <p class="body-text">New Golf Course Design
@@ -859,12 +871,14 @@ Clubhouse Circulation Planning</p>
 
             <section id="contact">
                 <div class="contact-container">
-                    <h2 style="font-size: 4rem;">CONTACT US</h2>
-                    <form class="contact-form">
-                        <input type="text" placeholder="NAME" required>
-                        <input type="email" placeholder="EMAIL" required>
-                        <textarea placeholder="QUESTION" rows="4"></textarea>
-                        <button type="submit" style="background: none; border: none; color: var(--nav-gray); font-family: inherit; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer;">SUBMIT</button>
+                    <div class="contact-info-left">
+                        <h2 style="font-size: 4rem;">CONTACT US</h2>
+                    </div>
+                    <form class="contact-form" style="margin-top: 0; width: 50%; max-width: 500px;">
+                        <input type="text" placeholder="NAME" required style="width: 100%; margin: 0;">
+                        <input type="email" placeholder="EMAIL" required style="width: 100%; margin: 0;">
+                        <textarea placeholder="QUESTION" rows="4" style="width: 100%; margin: 0;"></textarea>
+                        <button type="submit" style="background: none; border: none; color: var(--nav-gray); font-family: inherit; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; align-self: flex-start;">SUBMIT</button>
                     </form>
                 </div>
             </section>
