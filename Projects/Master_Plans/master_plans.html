@@ -32,6 +32,12 @@
             overflow: hidden; 
             height: 100vh;
             width: 100vw;
+            opacity: 0; /* Initial state for fade-in */
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
         }
 
         .fixed-background {
@@ -54,12 +60,12 @@
             flex-direction: column;
             height: 100vh;
             padding-bottom: 80px; /* Space for Nav */
-            padding-top: 8vh; /* Increased top padding */
+            padding-top: 8vh;
         }
 
         .header-container {
             padding: 0 5vw;
-            margin-bottom: 5vh; /* Increased margin */
+            margin-bottom: 5vh;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -96,26 +102,25 @@
             overflow-x: auto;
             overflow-y: hidden;
             padding: 0 5vw;
-            /* Hide Scrollbar */
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
         .wall-scroll-container::-webkit-scrollbar { display: none; }
 
-        /* WALL TRACK (Flex Column Wrap for Horizontal flow) */
+        /* WALL TRACK */
         .wall-track {
             display: flex;
             flex-direction: column;
             flex-wrap: wrap;
-            height: 70vh; /* Adjusted for 2 rows of 30vh + margins */
-            align-content: flex-start; /* Start columns from left */
-            padding-right: 10vw; /* End padding */
+            height: 70vh;
+            align-content: flex-start;
+            padding-right: 10vw;
         }
 
         /* IMAGES */
         .gallery-item {
             position: relative;
-            height: 30vh; /* Increased size */
+            height: 30vh;
             width: auto;
             margin-right: 4vw;
             margin-bottom: 3vh;
@@ -127,7 +132,7 @@
 
         .gallery-item img {
             height: 100%;
-            width: auto; /* Maintain aspect ratio */
+            width: auto;
             display: block;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
@@ -138,7 +143,7 @@
             z-index: 10;
         }
 
-        /* SCATTER EFFECT (Variable Offsets) */
+        /* SCATTER EFFECT */
         .gallery-item:nth-child(4n+1) { transform: translateY(0); }
         .gallery-item:nth-child(4n+2) { transform: translateY(2vh); margin-left: 2vw; }
         .gallery-item:nth-child(4n+3) { transform: translateY(-1vh); margin-left: -1vw; }
@@ -154,15 +159,26 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: rgba(255,255,255,0.98);
+            background-color: rgba(255,255,255,0); /* Start transparent */
             justify-content: center;
             align-items: center;
+            transition: background-color 0.5s ease;
+        }
+        .lightbox.active {
+            background-color: rgba(255,255,255,0.98);
         }
 
         .lightbox-content {
             max-width: 90%;
             max-height: 90%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .lightbox.active .lightbox-content {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .close-lightbox {
@@ -172,7 +188,10 @@
             font-size: 40px;
             color: #333;
             cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
+        .lightbox.active .close-lightbox { opacity: 1; }
 
         /* FIXED NAV */
         .fixed-nav-container {
@@ -216,25 +235,12 @@
     <div class="page-container">
         <div class="header-container">
             <h1>Master Plans</h1>
-            <a href="../../landing_page.html" class="back-link">&larr; Back to Home</a>
+            <a href="#" onclick="navigateTo(event, 'start')" class="back-link">&larr; Back to Home</a>
         </div>
 
         <div class="wall-scroll-container" id="scrollContainer">
             <div class="wall-track">
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="bass_rocks_master_plan_image.jpg" alt="Bass Rocks Master Plan">
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="Met_Links_Plan.jpg" alt="Met Links Plan">
-                </div>
-                <!-- Duplicate for wall effect demo since only 2 images exist -->
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="bass_rocks_master_plan_image.jpg" alt="Bass Rocks Master Plan">
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="Met_Links_Plan.jpg" alt="Met Links Plan">
-                </div>
-                 <div class="gallery-item" onclick="openLightbox(this)">
                     <img src="bass_rocks_master_plan_image.jpg" alt="Bass Rocks Master Plan">
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
@@ -263,10 +269,16 @@
     </div>
 
     <script>
+        // Fade In on Load
+        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+
         function navigateTo(e, sectionId) {
             e.preventDefault(); 
+            document.body.style.opacity = 0;
             sessionStorage.setItem('scrollTarget', sectionId);
-            window.location.href = '../../landing_page.html'; 
+            setTimeout(() => {
+                window.location.href = '../../landing_page.html'; 
+            }, 800);
         }
 
         const scrollContainer = document.getElementById('scrollContainer');
@@ -283,13 +295,21 @@
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             const img = element.querySelector('img');
+            
             if (img) {
                 lightbox.style.display = "flex";
                 lightboxImg.src = img.src;
+                void lightbox.offsetWidth;
+                lightbox.classList.add('active');
             }
         }
+
         function closeLightbox() {
-            document.getElementById('lightbox').style.display = "none";
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            setTimeout(() => {
+                lightbox.style.display = "none";
+            }, 500); 
         }
     </script>
 

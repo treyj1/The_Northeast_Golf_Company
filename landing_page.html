@@ -31,6 +31,12 @@
             font-family: 'Barlow Semi Condensed', sans-serif;
             height: 2000vh; 
             overflow-x: hidden;
+            opacity: 0; 
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
         }
 
         .fixed-background {
@@ -789,9 +795,9 @@
                     <p class="body-text">The Northeast Golf Company provides Comprehensive Golf Course Design Services for all types of golf course development, renovation and restoration projects. We enjoy working on exceptional properties, but have become quite adept at embracing the challenges of difficult sites. We believe the best work results from an inherent understanding of the land or course we are given and to find the sometimes hidden values within the landscape. We work closely with our clients. We listen and take goals and objectives seriously. Our experience and commitment to our craft and the collaborative nature of our design approach allows us to take on any type of project. There is no project too small or too large.</p>
                     <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See examples of our...</p>
                     <div class="service-links-left">
-                        <a href="Projects/Master_Plans/master_plans.html" class="more-link">Master Plans</a>
-                        <a href="Projects/Renderings/renderings.html" class="more-link">Renderings</a>
-                        <a href="Projects/Finished_Construction/finished_construction.html" class="more-link">Finished Construction</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Master_Plans/master_plans.html')" class="more-link">Master Plans</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Renderings/renderings.html')" class="more-link">Renderings</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Finished_Construction/finished_construction.html')" class="more-link">Finished Construction</a>
                     </div>
                 </div>
             </section>
@@ -877,18 +883,18 @@
                     <h2 style="font-size: 4rem; margin-bottom: 5px; padding-left: 35px;">PROJECTS</h2>
                     <p style="font-size: 0.8rem; color: var(--address-gray); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 35px; padding-left: 65px;">Select to learn more</p>
                     <ul class="project-list">
-                        <li><a href="Projects/Bass_Rocks/bass_rocks.html">Bass Rocks Golf Club</a></li>
-                        <li><a href="unavailable.html">Bellevue Golf Club</a></li>
-                        <li><a href="unavailable.html">Bergen County Golf Courses</a></li>
-                        <li><a href="unavailable.html">Burlington Country Club</a></li>
-                        <li><a href="unavailable.html">Fairmount Country Club</a></li>
-                        <li><a href="unavailable.html">Fall River Country Club</a></li>
-                        <li><a href="unavailable.html">Haverhill Country Club</a></li>
-                        <li><a href="unavailable.html">Kernwood Country Club</a></li>
-                        <li><a href="unavailable.html">Madison Golf Club</a></li>
-                        <li><a href="Projects/Mendham/mendham.html">Mendham Golf & Tennis Club</a></li>
-                        <li><a href="Projects/Met_Links/met_links.html">Met Links</a></li>
-                        <li><a href="unavailable.html">Milton Hoosic Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Bass_Rocks/bass_rocks.html')">Bass Rocks Golf Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bellevue Golf Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bergen County Golf Courses</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Burlington Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Fairmount Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Fall River Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Haverhill Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Kernwood Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Madison Golf Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Mendham/mendham.html')">Mendham Golf & Tennis Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')">Met Links</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Milton Hoosic Club</a></li>
                     </ul>
                     <a href="unavailable.html" class="see-all-projects" style="margin-top: 45px; display: block; padding-left: 35px; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem; color: var(--nav-gray); text-decoration: none;">See More Projects</a>
                 </div>
@@ -912,6 +918,18 @@
     </div>
 
     <script>
+        // Fade In on Load
+        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+
+        // Fade Out on Navigate
+        function fadeAndNavigate(e, url) {
+            e.preventDefault();
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                window.location.href = url;
+            }, 800);
+        }
+
         const track = document.getElementById('track');
         const viewport = document.getElementById('main-viewport');
         const peekImgDesign = document.getElementById('peek-img-design');

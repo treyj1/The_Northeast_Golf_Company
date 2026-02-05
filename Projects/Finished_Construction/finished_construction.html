@@ -305,21 +305,12 @@
     </div>
 
     <script>
-        // Fade In on Load
-        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
-
-        // Fade Out on Navigate
-        function fadeAndNavigate(e, url) {
-            e.preventDefault();
-            if (url.includes('#')) {
-                const [path, hash] = url.split('#');
-                sessionStorage.setItem('scrollTarget', hash);
-                url = path;
-            }
-            
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
             document.body.style.opacity = 0;
+            sessionStorage.setItem('scrollTarget', sectionId);
             setTimeout(() => {
-                window.location.href = url;
+                window.location.href = '../../landing_page.html'; 
             }, 800);
         }
 

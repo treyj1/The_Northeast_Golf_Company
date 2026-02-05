@@ -281,22 +281,12 @@
     </div>
 
     <script>
-        // Fade In on Load
-        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
-
-        // Fade Out on Navigate
-        function fadeAndNavigate(e, url) {
-            e.preventDefault();
-            // Handle hash navigation manually if needed, but since we are changing pages mostly:
-            if (url.includes('#')) {
-                const [path, hash] = url.split('#');
-                sessionStorage.setItem('scrollTarget', hash); // Use landing page logic
-                url = path;
-            }
-            
+        function navigateTo(e, sectionId) {
+            e.preventDefault(); 
             document.body.style.opacity = 0;
+            sessionStorage.setItem('scrollTarget', sectionId);
             setTimeout(() => {
-                window.location.href = url;
+                window.location.href = '../../landing_page.html'; 
             }, 800);
         }
 
