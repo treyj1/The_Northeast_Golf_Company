@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Plans | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555; 
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15; 
+            pointer-events: none;
+        }
+
+        .back-projects-link-bottom {
+            position: absolute;
+            bottom: 8vh;
+            left: 8vw;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.8rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease;
+            z-index: 20;
+        }
+        .back-projects-link-bottom:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        .project-wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .info-panel {
+            width: 40%;
+            height: 100%;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            padding-top: 15vh; 
+            padding-left: 8vw;
+            padding-right: 4%;
+            z-index: 10;
+        }
+
+        .static-header {
+            margin-bottom: 5vh; 
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            line-height: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .dynamic-content-wrapper {
+            flex-grow: 1;
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 450px;
+        }
+
+        .scroll-container {
+            width: 60%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            align-items: center;
+            padding-right: 10%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .gallery-track {
+            display: flex;
+            gap: 6vw; 
+            align-items: center;
+            padding-right: 15vw;
+            padding-left: 12vw; 
+        }
+
+        .gallery-item {
+            position: relative;
+            flex-shrink: 0;
+            width: 35vw; 
+            height: 45vh;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.3;
+            transform: scale(0.85); 
+            filter: grayscale(100%);
+            cursor: pointer; /* Clickable */
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:nth-child(odd) { margin-top: -8vh; }
+        .gallery-item:nth-child(even) { margin-top: 8vh; }
+
+        .gallery-item.active {
+            opacity: 1;
+            transform: scale(1.05); 
+            filter: grayscale(0%);
+            z-index: 5;
+        }
+
+        /* LIGHTBOX STYLES */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(255,255,255,0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox-content {
+            margin: auto;
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #333;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-lightbox:hover { color: #000; }
+
+        /* FIXED NAV */
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+
+        @media (max-width: 900px) {
+            .project-wrapper { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
+            .info-panel { width: 100%; height: auto; padding: 100px 5% 30px 5%; display: block; position: static; }
+            .scroll-container { width: 100%; height: auto; overflow-y: visible; padding: 20px 5% 150px; display: block; }
+            .gallery-track { flex-direction: column; gap: 40px; padding-bottom: 50px; width: 100%; align-items: center; }
+            .gallery-item { width: 90%; height: 35vh; margin-top: 0 !important; opacity: 1; filter: none; transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Master Plans</h1>
+            </div>
+            <div class="dynamic-content-wrapper">
+                <p class="description-text">
+                    Comprehensive master planning is the foundation of every successful golf course project. Scroll through our gallery to explore a selection of our master plans, showcasing our strategic vision and attention to detail.
+                </p>
+            </div>
+            <a href="../../landing_page.html" class="back-projects-link-bottom">&larr; Back to Home</a>
+        </div>
+
+        <div class="scroll-container" id="scrollContainer">
+            <div class="gallery-track">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="bass_rocks_master_plan_image.jpg" alt="Bass Rocks Master Plan">
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="Met_Links_Plan.jpg" alt="Met Links Plan">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../../landing_page.html">Home</a></li>
+                <li><a href="../../landing_page.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        // Horizontal Scroll
+        const scrollContainer = document.getElementById('scrollContainer');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            if (window.innerWidth > 900) {
+                if (evt.deltaY !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaY;
+                } else if (evt.deltaX !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaX;
+                }
+            }
+        });
+
+        // Intersection Observer for Active State
+        const observerOptions = {
+            root: scrollContainer,
+            rootMargin: '0px -25% 0px -25%',
+            threshold: 0.5
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.gallery-item').forEach(item => observer.observe(item));
+
+        // Lightbox Functions
+        function openLightbox(element) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const img = element.querySelector('img');
+            
+            if (img) {
+                lightbox.style.display = "flex";
+                lightboxImg.src = img.src;
+            }
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
