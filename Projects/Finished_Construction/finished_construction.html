@@ -235,7 +235,7 @@
     <div class="page-container">
         <div class="header-container">
             <h1>Finished Construction</h1>
-            <a href="#" onclick="navigateTo(event, 'haverhill-1')" class="back-link">&larr; Back to Design</a>
+            <a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#haverhill-1')" class="back-link">&larr; Back to Design</a>
         </div>
 
         <div class="wall-scroll-container" id="scrollContainer">
@@ -308,7 +308,6 @@
         // Fade In on Load
         window.addEventListener('load', () => { document.body.classList.add('loaded'); });
 
-        // Fade Out on Navigate
         function fadeAndNavigate(e, url) {
             e.preventDefault();
             if (url.includes('#')) {
@@ -320,15 +319,6 @@
             document.body.style.opacity = 0;
             setTimeout(() => {
                 window.location.href = url;
-            }, 800);
-        }
-
-        function navigateTo(e, sectionId) {
-            e.preventDefault(); 
-            document.body.style.opacity = 0;
-            sessionStorage.setItem('scrollTarget', sectionId);
-            setTimeout(() => {
-                window.location.href = '../../landing_page.html'; 
             }, 800);
         }
 

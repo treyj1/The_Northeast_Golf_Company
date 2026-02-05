@@ -235,7 +235,7 @@
     <div class="page-container">
         <div class="header-container">
             <h1>Renderings</h1>
-            <a href="#" onclick="navigateTo(event, 'haverhill-1')" class="back-link">&larr; Back to Design</a>
+            <a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#haverhill-1')" class="back-link">&larr; Back to Design</a>
         </div>
 
         <div class="wall-scroll-container" id="scrollContainer">
@@ -281,12 +281,20 @@
     </div>
 
     <script>
-        function navigateTo(e, sectionId) {
-            e.preventDefault(); 
+        // Fade In on Load
+        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+
+        function fadeAndNavigate(e, url) {
+            e.preventDefault();
+            if (url.includes('#')) {
+                const [path, hash] = url.split('#');
+                sessionStorage.setItem('scrollTarget', hash);
+                url = path;
+            }
+            
             document.body.style.opacity = 0;
-            sessionStorage.setItem('scrollTarget', sectionId);
             setTimeout(() => {
-                window.location.href = '../../landing_page.html'; 
+                window.location.href = url;
             }, 800);
         }
 
@@ -321,7 +329,7 @@
             lightbox.classList.remove('active');
             setTimeout(() => {
                 lightbox.style.display = "none";
-            }, 500); // Match transition duration
+            }, 500); 
         }
     </script>
 

@@ -235,7 +235,7 @@
     <div class="page-container">
         <div class="header-container">
             <h1>Master Plans</h1>
-            <a href="#" onclick="navigateTo(event, 'haverhill-1')" class="back-link">&larr; Back to Design</a>
+            <a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#haverhill-1')" class="back-link">&larr; Back to Design</a>
         </div>
 
         <div class="wall-scroll-container" id="scrollContainer">
@@ -258,11 +258,11 @@
     <div class="fixed-nav-container">
         <nav>
             <ul class="nav-links">
-                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
-                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
-                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
-                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
-                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#start')">Start</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#team-intro')">Team</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#projects-section')">Projects</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#contact')">Contact</a></li>
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
@@ -272,12 +272,17 @@
         // Fade In on Load
         window.addEventListener('load', () => { document.body.classList.add('loaded'); });
 
-        function navigateTo(e, sectionId) {
-            e.preventDefault(); 
+        function fadeAndNavigate(e, url) {
+            e.preventDefault();
+            if (url.includes('#')) {
+                const [path, hash] = url.split('#');
+                sessionStorage.setItem('scrollTarget', hash);
+                url = path;
+            }
+            
             document.body.style.opacity = 0;
-            sessionStorage.setItem('scrollTarget', sectionId);
             setTimeout(() => {
-                window.location.href = '../../landing_page.html'; 
+                window.location.href = url;
             }, 800);
         }
 
