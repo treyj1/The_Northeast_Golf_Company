@@ -32,6 +32,12 @@
             overflow: hidden; 
             height: 100vh;
             width: 100vw;
+            opacity: 0; /* Initial state for fade-in */
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
         }
 
         .fixed-background {
@@ -54,12 +60,12 @@
             flex-direction: column;
             height: 100vh;
             padding-bottom: 80px; /* Space for Nav */
-            padding-top: 4vh;
+            padding-top: 8vh;
         }
 
         .header-container {
             padding: 0 5vw;
-            margin-bottom: 2vh;
+            margin-bottom: 5vh;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -96,18 +102,17 @@
             overflow-x: auto;
             overflow-y: hidden;
             padding: 0 5vw;
-            /* Hide Scrollbar */
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
         .wall-scroll-container::-webkit-scrollbar { display: none; }
 
-        /* WALL TRACK (Flex Column Wrap for Horizontal flow) */
+        /* WALL TRACK */
         .wall-track {
             display: flex;
             flex-direction: column;
             flex-wrap: wrap;
-            height: 72vh; /* Defines the 'wall' height */
+            height: 70vh;
             align-content: flex-start;
             padding-right: 10vw;
         }
@@ -115,7 +120,7 @@
         /* IMAGES */
         .gallery-item {
             position: relative;
-            height: 22vh; /* Roughly 1/4 of viewport height */
+            height: 30vh;
             width: auto;
             margin-right: 4vw;
             margin-bottom: 3vh;
@@ -127,7 +132,7 @@
 
         .gallery-item img {
             height: 100%;
-            width: auto; /* Maintain aspect ratio */
+            width: auto;
             display: block;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
@@ -138,7 +143,7 @@
             z-index: 10;
         }
 
-        /* SCATTER EFFECT (Variable Offsets) */
+        /* SCATTER EFFECT */
         .gallery-item:nth-child(4n+1) { transform: translateY(0); }
         .gallery-item:nth-child(4n+2) { transform: translateY(2vh); margin-left: 2vw; }
         .gallery-item:nth-child(4n+3) { transform: translateY(-1vh); margin-left: -1vw; }
@@ -154,15 +159,26 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: rgba(255,255,255,0.98);
+            background-color: rgba(255,255,255,0); /* Start transparent */
             justify-content: center;
             align-items: center;
+            transition: background-color 0.5s ease;
+        }
+        .lightbox.active {
+            background-color: rgba(255,255,255,0.98);
         }
 
         .lightbox-content {
             max-width: 90%;
             max-height: 90%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .lightbox.active .lightbox-content {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .close-lightbox {
@@ -172,7 +188,10 @@
             font-size: 40px;
             color: #333;
             cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
+        .lightbox.active .close-lightbox { opacity: 1; }
 
         /* FIXED NAV */
         .fixed-nav-container {
@@ -216,7 +235,7 @@
     <div class="page-container">
         <div class="header-container">
             <h1>Renderings</h1>
-            <a href="../../landing_page.html" class="back-link">&larr; Back to Home</a>
+            <a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html')" class="back-link">&larr; Back to Home</a>
         </div>
 
         <div class="wall-scroll-container" id="scrollContainer">
@@ -251,14 +270,36 @@
     <div class="fixed-nav-container">
         <nav>
             <ul class="nav-links">
-                <li><a href="../../landing_page.html">Home</a></li>
-                <li><a href="../../landing_page.html#contact">Contact</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#start')">Start</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#team-intro')">Team</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#projects-section')">Projects</a></li>
+                <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#contact')">Contact</a></li>
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
     </div>
 
     <script>
+        // Fade In on Load
+        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+
+        // Fade Out on Navigate
+        function fadeAndNavigate(e, url) {
+            e.preventDefault();
+            // Handle hash navigation manually if needed, but since we are changing pages mostly:
+            if (url.includes('#')) {
+                const [path, hash] = url.split('#');
+                sessionStorage.setItem('scrollTarget', hash); // Use landing page logic
+                url = path;
+            }
+            
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                window.location.href = url;
+            }, 800);
+        }
+
         const scrollContainer = document.getElementById('scrollContainer');
         scrollContainer.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
@@ -273,13 +314,24 @@
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             const img = element.querySelector('img');
+            
             if (img) {
                 lightbox.style.display = "flex";
                 lightboxImg.src = img.src;
+                
+                // Trigger reflow
+                void lightbox.offsetWidth;
+                
+                lightbox.classList.add('active');
             }
         }
+
         function closeLightbox() {
-            document.getElementById('lightbox').style.display = "none";
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            setTimeout(() => {
+                lightbox.style.display = "none";
+            }, 500); // Match transition duration
         }
     </script>
 
