@@ -158,34 +158,34 @@
             left: 10%;
             top: 18%;
             bottom: auto;
-            width: 80%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start; 
+            width: 30%;
+            display: block; 
             z-index: 2;
         }
         
         .what-we-do-text {
-            max-width: 580px;
-            padding-right: 5%;
+            max-width: 100%;
+            padding-right: 0;
         }
 
         .service-links-right {
             display: flex;
             flex-direction: column;
             gap: 20px;
-            text-align: right;
-            margin-top: 90px; /* Aligns with body text below H2 */
+            text-align: left;
+            margin-top: 40px; 
         }
 
         .what-we-do-image {
             position: absolute;
-            bottom: 12%;
-            left: 10vw;
-            width: 80vw; 
+            top: 25%;
+            bottom: auto;
+            left: auto;
+            right: 5vw;
+            width: 50vw; 
             height: 55vh; 
             object-fit: cover; 
-            opacity: 0.8; 
+            opacity: 0.9; 
             transition: all 0.3s ease;
         }
 
@@ -196,6 +196,7 @@
             position: absolute;
             left: 10%;
             top: 20%;
+            opacity: 0.9;
         }
 
         .peeking-img {
@@ -313,6 +314,33 @@
             font-size: 0.85rem;
             width: 80%;
             margin: 0 auto;
+        }
+
+        /* CUSTOM STYLES FOR REDESIGNED SECTIONS */
+        #text-1.project-text {
+            left: 10% !important; 
+            width: 30% !important; 
+            max-width: none !important;
+            padding-right: 0 !important;
+        }
+
+        .design-image-right {
+            position: absolute;
+            top: 25%;
+            right: 5vw;
+            width: 50vw;
+            height: 55vh;
+            object-fit: cover;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+        
+        .service-links-left {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+            align-items: flex-start;
         }
         
         /* RESPONSIVE OVERHAUL
@@ -709,7 +737,7 @@
 
     <div class="fixed-background"></div>
 
-    <a id="link-to-mgmt" onclick="scrollToStage(5, true)" class="fixed-cross-nav bottom-right more-link">Golf Course Management &#8594;</a>
+    <a id="link-to-mgmt" onclick="scrollToStage(4, true)" class="fixed-cross-nav bottom-right more-link">Golf Course Management &#8594;</a>
     <a id="link-to-design" onclick="scrollToStage(2, true)" class="fixed-cross-nav bottom-left more-link">&#8592; Golf Course Design</a>
 
     <div class="fixed-nav-container">
@@ -717,9 +745,9 @@
             <ul class="nav-links">
                 <li><a onclick="scrollToStage(0, true)">Start</a></li>
                 <li><a onclick="scrollToStage(1, true)">What We Do</a></li>
-                <li><a onclick="scrollToStage(8, true)">Team</a></li>
-                <li><a onclick="scrollToStage(11, true)">Projects</a></li>
-                <li><a onclick="scrollToStage(12, true)">Contact</a></li>
+                <li><a onclick="scrollToStage(6, true)">Team</a></li>
+                <li><a onclick="scrollToStage(9, true)">Projects</a></li>
+                <li><a onclick="scrollToStage(10, true)">Contact</a></li>
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
@@ -744,55 +772,51 @@
                     <div class="what-we-do-text">
                         <h2 style="font-size: 4rem; margin-bottom: 20px;">WHAT WE DO</h2>
                         <p class="body-text">The Northeast Golf Company is a multi-disciplinary firm offering Comprehensive Golf Course Design and Operations Management services. From award-winning restorations to full-service agronomic programming and business analytics, we help clubs find the hidden value within their landscape while fostering unique "community cultures". Select a discipline to the right to learn more about our specific capabilities.</p>
-                    </div>
-                    <div class="service-links-right">
-                        <a onclick="scrollToStage(2, true)" class="more-link">Golf Course Design</a>
-                        <a onclick="scrollToStage(5, true)" class="more-link">Golf Course Management</a>
+                        <div class="service-links-right">
+                            <a onclick="scrollToStage(2, true)" class="more-link">Golf Course Design</a>
+                            <a onclick="scrollToStage(4, true)" class="more-link">Golf Course Management</a>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section id="design-intro">
-                <div class="lower-left-content">
-                    <h2 style="font-size: 5.5rem;">GOLF COURSE DESIGN</h2>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px; padding-left: 30px;">SCROLL TO LEARN MORE</p>
-                </div>
-            </section>
+
 
             <section id="haverhill-1">
-                <img src="index/Section_(2).png" class="gallery-image" alt="Landscape Analysis">
-                <div class="project-text" id="text-1">
+                <img src="Projects/Met_Links/Met_Links_Image_After (1).jpg" class="design-image-right" alt="Met Links Design">
+                <div class="project-text design-text-left" id="text-1">
                     <h2>GOLF COURSE DESIGN</h2>
                     <p class="body-text">The Northeast Golf Company provides Comprehensive Golf Course Design Services for all types of golf course development, renovation and restoration projects. We enjoy working on exceptional properties, but have become quite adept at embracing the challenges of difficult sites. We believe the best work results from an inherent understanding of the land or course we are given and to find the sometimes hidden values within the landscape. We work closely with our clients. We listen and take goals and objectives seriously. Our experience and commitment to our craft and the collaborative nature of our design approach allows us to take on any type of project. There is no project too small or too large.</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See examples of our...</p>
+                    <div class="service-links-left">
+                        <a href="unavailable.html" class="more-link">Master Plans</a>
+                        <a href="unavailable.html" class="more-link">Renderings</a>
+                        <a href="unavailable.html" class="more-link">Finished Construction</a>
+                    </div>
                 </div>
             </section>
 
             <section id="haverhill-2">
                 <img src="Projects/Met_Links/Met_Links_Image_After (2).jpg" class="peeking-img" id="peek-img-design" alt="Haverhill Render 2">
                 <div class="project-text" id="text-2">
-                    <h2>OUR SERVICES INCLUDE</h2>
-                    <p class="body-text">New Golf Course Design
-Renovation of Existing Golf Courses
-Restoration of Classic Designs
-Comprehensive Golf Course Enhancement Planning
-Golf Community Planning
-Unique Golf Amenity Designs (short courses, putting courses, challenge courses)
-Practice Facility Design
-Clubhouse Circulation Planning</p>
+                    <p class="body-text">- We offer a full range of golf course design services including:
+                    <p class="body-text">- New Golf Course Design
+                    <p class="body-text">- Renovation of Existing Golf Courses
+                    <p class="body-text">- Restoration of Classic Designs
+                    <p class="body-text">- Comprehensive Golf Course Enhancement Planning
+                    <p class="body-text">- Golf Community Planning
+                    <p class="body-text">- Unique Golf Amenity Designs (short courses, putting courses, challenge courses)
+                    <p class="body-text">- Practice Facility Design
+                    <p class="body-text">- Clubhouse Circulation Planning</p>
                 </div>
             </section>
 
-            <section id="management-intro">
-                <div class="lower-left-content">
-                    <h2 style="font-size: 5.5rem;">GOLF COURSE MANAGEMENT</h2>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px; padding-left: 30px;">SCROLL TO LEARN MORE</p>
-                </div>
-            </section>
+
 
             <section id="management-1">
                 <img src="index/Image_Bristol_Clubhouse.jpg" class="gallery-image" alt="Bristol Clubhouse">
                 <div class="project-text" id="text-3">
-                    <h2 style="margin-bottom: 20px;">About Our Services</h2>
+                    <h2 style="margin-bottom: 20px;">Golf Course Management</h2>
                     <p class="body-text">NGC Golf Operations Management provides full-service golf course operations management services to clubs, owners, municipalities and financial institutions. NGC is unique in many ways, most importantly in our collaborative approach to serving our partner clubs. We bring a seasoned team of thinkers to all aspects of golf operations including day to day management, staffing and training, agronomic care and food and beverage services.</p>
                     <p class="body-text">We specifically customize our approach to achieve measured success for our partners. Our management team brings over 50 years of combined experience and excellence to each relationship with the objective to provide the highest level of course conditioning and unmatched player experience. NGC brings the proper expertise to each property to guide the vision with unwavering work ethic, best practices, data driven decision making and out of the box marketing creativity to maximize property opportunities and profitability.</p>
                 </div>
@@ -901,7 +925,7 @@ Clubhouse Circulation Planning</p>
             document.getElementById('text-3'),
             document.getElementById('text-4')
         ];
-        const totalStages = 13; 
+        const totalStages = 11; 
 
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
@@ -937,32 +961,37 @@ Clubhouse Circulation Planning</p>
             track.style.transform = `translateX(-${targetTranslate}vw)`;
 
             // Fixed Button Fades
+            // Design starts at stage 2, Management starts at stage 4
             let mgmtOp = 0;
             if (stageProgress > 1.4 && stageProgress < 2.0) mgmtOp = (stageProgress - 1.4) / 0.6;
-            else if (stageProgress >= 2.0 && stageProgress <= 4.2) mgmtOp = 1;
-            else if (stageProgress > 4.2 && stageProgress < 4.8) mgmtOp = 1 - (stageProgress - 4.2) / 0.6;
+            else if (stageProgress >= 2.0 && stageProgress <= 3.2) mgmtOp = 1;
+            else if (stageProgress > 3.2 && stageProgress < 3.8) mgmtOp = 1 - (stageProgress - 3.2) / 0.6;
             linkToMgmt.style.opacity = mgmtOp;
             linkToMgmt.style.pointerEvents = mgmtOp > 0.1 ? 'auto' : 'none';
 
             let desOp = 0;
-            if (stageProgress > 4.4 && stageProgress < 5.0) desOp = (stageProgress - 4.4) / 0.6;
-            else if (stageProgress >= 5.0 && stageProgress <= 7.2) desOp = 1;
-            else if (stageProgress > 7.2 && stageProgress < 7.8) desOp = 1 - (stageProgress - 7.2) / 0.6;
+            if (stageProgress > 3.4 && stageProgress < 4.0) desOp = (stageProgress - 3.4) / 0.6;
+            else if (stageProgress >= 4.0 && stageProgress <= 5.2) desOp = 1;
+            else if (stageProgress > 5.2 && stageProgress < 5.8) desOp = 1 - (stageProgress - 5.2) / 0.6;
             linkToDesign.style.opacity = desOp;
             linkToDesign.style.pointerEvents = desOp > 0.1 ? 'auto' : 'none';
 
             // Project Text Fades
-            textBlocks[0].style.opacity = stageProgress < 3.3 ? getFade(stageProgress, 2.4, 3.0) : 1 - getFade(stageProgress, 3.6, 4.2);
-            textBlocks[1].style.opacity = stageProgress < 4.3 ? getFade(stageProgress, 3.4, 4.0) : 1 - getFade(stageProgress, 4.6, 5.2);
-            textBlocks[2].style.opacity = stageProgress < 6.3 ? getFade(stageProgress, 5.4, 6.0) : 1 - getFade(stageProgress, 6.6, 7.2);
-            textBlocks[3].style.opacity = stageProgress < 7.3 ? getFade(stageProgress, 6.4, 7.0) : 1 - getFade(stageProgress, 7.6, 8.2);
+            // text-1 (Design 1): Stage 2
+            // text-2 (Design 2): Stage 3
+            // text-3 (Mgmt 1): Stage 4
+            // text-4 (Mgmt 2): Stage 5
+            textBlocks[0].style.opacity = stageProgress < 2.3 ? getFade(stageProgress, 1.4, 2.0) : 1 - getFade(stageProgress, 2.6, 3.2);
+            textBlocks[1].style.opacity = stageProgress < 3.3 ? getFade(stageProgress, 2.4, 3.0) : 1 - getFade(stageProgress, 3.6, 4.2);
+            textBlocks[2].style.opacity = stageProgress < 4.3 ? getFade(stageProgress, 3.4, 4.0) : 1 - getFade(stageProgress, 4.6, 5.2);
+            textBlocks[3].style.opacity = stageProgress < 5.3 ? getFade(stageProgress, 4.4, 5.0) : 1 - getFade(stageProgress, 5.6, 6.2);
             
             // Image Opacity
-            if (stageProgress > 2.6 && stageProgress < 4) peekImgDesign.style.opacity = 0.3 + ((stageProgress - 2.6) * 0.7);
-            else if (stageProgress >= 4) peekImgDesign.style.opacity = 1;
+            if (stageProgress > 1.6 && stageProgress < 3) peekImgDesign.style.opacity = 0.3 + ((stageProgress - 1.6) * 0.6); // adjusted range for 0.9 max
+            else if (stageProgress >= 3) peekImgDesign.style.opacity = 0.9;
 
-            if (stageProgress > 5.6 && stageProgress < 7) peekImgMgmt.style.opacity = 0.3 + ((stageProgress - 5.6) * 0.7);
-            else if (stageProgress >= 7) peekImgMgmt.style.opacity = 1;
+            if (stageProgress > 4.6 && stageProgress < 6) peekImgMgmt.style.opacity = 0.3 + ((stageProgress - 4.6) * 0.6);
+            else if (stageProgress >= 6) peekImgMgmt.style.opacity = 0.9;
         });
 
         function scrollToStage(index, useFade = false) {
@@ -1012,7 +1041,13 @@ Clubhouse Circulation Planning</p>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const targetId = sessionStorage.getItem('scrollTarget');
+            const savedScrollPos = sessionStorage.getItem('savedScrollPos');
             
+            // Save scroll position on unload
+            window.addEventListener('beforeunload', () => {
+                sessionStorage.setItem('savedScrollPos', window.scrollY);
+            });
+
             if (targetId) {
                 const tempStyle = document.getElementById('temp-hide');
                 if(tempStyle) tempStyle.remove();
@@ -1021,7 +1056,7 @@ Clubhouse Circulation Planning</p>
                 const index = sections.findIndex(sec => sec.id === targetId);
                 
                 if (index !== -1) {
-                    const totalStages = 13; 
+                    const totalStages = 11; 
                     const scrollHeight = document.body.scrollHeight - window.innerHeight;
                     const bucketSize = 1 / totalStages;
                     const targetPos = index * bucketSize * scrollHeight;
@@ -1046,6 +1081,36 @@ Clubhouse Circulation Planning</p>
                     });
                 }
                 sessionStorage.removeItem('scrollTarget');
+            } else if (savedScrollPos) {
+                // Restore to nearest stage
+                const track = document.getElementById('track');
+                const viewport = document.getElementById('main-viewport');
+                const scrollHeight = document.body.scrollHeight - window.innerHeight;
+                const totalStages = 11;
+                
+                // Calculate which stage was mostly visible
+                const bucketSize = 1 / totalStages;
+                const savedProgress = parseFloat(savedScrollPos) / scrollHeight;
+                const stageIndex = Math.round(savedProgress / bucketSize);
+                
+                // Snap to that stage
+                const targetPos = stageIndex * bucketSize * scrollHeight;
+                const targetTranslate = Math.min(stageIndex * 100, (totalStages - 1) * 100);
+
+                track.style.transition = 'none';
+                viewport.style.opacity = 0;
+
+                window.scrollTo({ top: targetPos, behavior: 'auto' });
+                track.style.transform = `translateX(-${targetTranslate}vw)`;
+
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        viewport.style.opacity = 1;
+                        setTimeout(() => {
+                            track.style.transition = 'transform 0.85s cubic-bezier(0.19, 1, 0.22, 1)';
+                        }, 500);
+                    }, 50);
+                });
             }
         });
     </script>
