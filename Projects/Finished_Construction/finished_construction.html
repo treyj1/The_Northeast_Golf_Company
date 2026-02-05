@@ -305,6 +305,24 @@
     </div>
 
     <script>
+        // Fade In on Load
+        window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+
+        // Fade Out on Navigate
+        function fadeAndNavigate(e, url) {
+            e.preventDefault();
+            if (url.includes('#')) {
+                const [path, hash] = url.split('#');
+                sessionStorage.setItem('scrollTarget', hash);
+                url = path;
+            }
+            
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                window.location.href = url;
+            }, 800);
+        }
+
         function navigateTo(e, sectionId) {
             e.preventDefault(); 
             document.body.style.opacity = 0;
