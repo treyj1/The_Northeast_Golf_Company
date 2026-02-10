@@ -55,14 +55,31 @@
 
         .fixed-nav-container {
             position: fixed;
-            bottom: 40px;
+            bottom: 50px; 
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
             z-index: 1000;
-            pointer-events: none; /* Let clicks pass through empty areas */
+            pointer-events: none;
+        }
+
+        .nav-logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-logo-item img {
+            height: 30px;
+            width: auto;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-logo-item img:hover {
+            opacity: 1;
         }
 
         .nav-links, .nav-address {
@@ -131,7 +148,10 @@
             flex-shrink: 0;
             position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             overflow: visible; 
         }
 
@@ -140,6 +160,7 @@
             text-transform: uppercase;
             line-height: 1;
             letter-spacing: 0.05rem;
+            margin-bottom: 20px;
         }
 
         .body-text {
@@ -148,81 +169,83 @@
             font-size: 1.05rem;
             line-height: 1.5;
             margin-bottom: 1.2rem;
+            text-align: center;
         }
 
         .lower-left-content {
             position: absolute;
-            left: 10%;
+            left: 50%;
             bottom: 22%;
-            max-width: 580px;
-            width: 80%;
-            padding-right: 5%;
+            transform: translateX(-50%);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
         }
 
         .what-we-do-container {
             position: absolute;
-            left: 10%;
-            top: 18%;
-            bottom: auto;
-            width: 30%;
-            display: block; 
+            left: 50%;
+            top: 55%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 700px;
             z-index: 2;
         }
         
         .what-we-do-text {
             max-width: 100%;
-            padding-right: 0;
         }
 
         .service-links-right {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             gap: 20px;
-            text-align: left;
             margin-top: 40px; 
         }
 
         .what-we-do-image {
             position: absolute;
-            top: 25%;
-            bottom: auto;
-            left: auto;
-            right: 5vw;
-            width: 50vw; 
-            height: 55vh; 
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60vw; 
+            height: 35vh; 
             object-fit: cover; 
             opacity: 0.9; 
             transition: all 0.3s ease;
         }
 
         .gallery-image {
-            width: 45vw;
-            height: 55vh;
+            width: 60vw;
+            height: 35vh;
             object-fit: cover;
             position: absolute;
-            left: 10%;
-            top: 20%;
+            left: 50%;
+            top: 15%;
+            transform: translateX(-50%);
             opacity: 0.9;
         }
 
         .peeking-img {
-            width: 45vw;
-            height: 55vh;
+            width: 60vw;
+            height: 35vh;
             object-fit: cover;
             position: absolute;
-            left: 10%; 
-            top: 20%;
+            left: 50%; 
+            top: 15%;
+            transform: translateX(-50%);
             opacity: 0.3;
         }
 
         .project-text {
             position: absolute;
-            left: 58%;
-            top: 20%; 
-            max-width: 450px;
-            width: 35%; 
-            padding-right: 5%;
+            left: 50%;
+            top: 55%; 
+            transform: translateX(-50%);
+            max-width: 700px;
+            width: 80%; 
             opacity: 0;
+            text-align: center;
         }
 
         .project-text h2 {
@@ -250,44 +273,48 @@
 
         .team-wrapper {
             display: flex;
-            align-items: flex-start;
-            gap: 80px;
-            padding: 15vh 10% 50px 10%; /* Added bottom padding */
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 40px;
+            padding: 10vh 10% 50px 10%;
             width: 100%;
             height: 100%;
         }
 
         .team-text-container {
-            max-width: 550px;
-            padding-right: 5%;
+            max-width: 800px;
+            width: 100%;
         }
 
         .portrait {
-            width: 350px;
-            height: 480px;
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            aspect-ratio: 350/480;
             object-fit: cover;
             flex-shrink: 0;
         }
 
-        .team-info h2 { font-size: 3.5rem; margin-bottom: 60px; }
+        .team-info h2 { font-size: 3.5rem; margin-bottom: 30px; }
 
         .projects-container, .contact-container {
             width: 100%;
-            margin-left: 15%; 
             margin-top: -18vh; 
         }
 
         .contact-container {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-left: 10%;
-            padding-right: 10%;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 0 10%;
         }
 
         .contact-info-left h2 {
             margin-top: 0;
             line-height: 1;
+            margin-bottom: 40px;
         }
 
         .project-list {
@@ -295,7 +322,10 @@
             grid-template-columns: 1fr 1fr;
             gap: 12px 40px;
             list-style: none;
-            padding-left: 35px;
+            padding: 0;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .project-list a {
@@ -307,7 +337,7 @@
             transition: color 0.3s ease;
         }
 
-        .contact-form { display: flex; flex-direction: column; gap: 25px; margin-top: 35px; }
+        .contact-form { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 500px; }
 
         .contact-form input, .contact-form textarea {
             background: transparent;
@@ -318,24 +348,18 @@
             outline: none;
             text-transform: uppercase;
             font-size: 0.85rem;
-            width: 80%;
-            margin: 0 auto;
+            width: 100%;
         }
 
         /* CUSTOM STYLES FOR REDESIGNED SECTIONS */
-        #text-1.project-text {
-            left: 10% !important; 
-            width: 30% !important; 
-            max-width: none !important;
-            padding-right: 0 !important;
-        }
 
         .design-image-right {
             position: absolute;
-            top: 25%;
-            right: 5vw;
-            width: 50vw;
-            height: 55vh;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60vw;
+            height: 35vh;
             object-fit: cover;
             opacity: 0.9;
             transition: all 0.3s ease;
@@ -343,275 +367,18 @@
         
         .service-links-left {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            justify-content: center;
+            gap: 20px;
             margin-top: 15px;
-            align-items: flex-start;
         }
         
-        /* RESPONSIVE OVERHAUL
-           This handles the narrow screen layout logic
+        /* 
+           RESPONSIVE OVERHAUL
+           Triggers at 1300px to handle "half-screen" desktop windows
         */
-        @media (max-width: 1100px) {
-
-            /* 1. Hide the jump buttons (Cross Nav) to prevent overlap */
-            .fixed-cross-nav { display: none !important; }
-
-            /* 2. Typography Scaling */
-            h1, h2 { font-size: 4rem; }
-            .lower-left-content h1 { font-size: 4rem; }
-            .lower-left-content h2 { font-size: 4rem; }
-
-            /* 3. Adjust Team Layout */
-            .team-wrapper {
-                flex-direction: column;
-                gap: 30px;
-                padding-top: 10vh;
-            }
-            .portrait {
-                width: 100%;
-                max-width: 350px;
-                height: 35vh;
-            }
-            .team-text-container {
-                max-height: 35vh;
-                overflow-y: auto;
-                -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-                mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-                padding-bottom: 20px;
-            }
-            .team-info h2 { font-size: 3rem; }
-
-            /* 4. Adjust "What We Do" */
-            .what-we-do-container {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
-                top: 55%;
-                bottom: auto;
-            }
-            .service-links-right {
-                text-align: left;
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-
-            /* 5. DESIGN & MANAGEMENT SECTIONS */
-            .what-we-do-image {
-                position: absolute;
-                top: 15%;
-                left: 10%;
-                height: 35vh;
-                width: 80vw;
-                margin-left: 0; 
-            }
-            .gallery-image, .peeking-img {
-                top: 15%;
-                left: 10%;
-                height: 35vh;
-                width: 80vw;
-            }
-
-            .project-text {
-                left: 10%;
-                top: 55%;
-                width: 80vw;
-                max-width: none;
-                height: 30vh;
-                overflow-y: auto;
-                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                padding-right: 15px;
-                padding-bottom: 20px;
-            }
-
-            /* 6. Navigation Spacing */
-            .nav-links { gap: 25px; }
-            .nav-address {
-                font-size: 0.65rem;
-                letter-spacing: 0.1rem;
-                padding: 0 15px;
-                text-align: center;
-            }
-            .fixed-nav-container { bottom: 25px; }
-
-            /* 7. Projects Grid - Single Column */
-            .project-list {
-                grid-template-columns: 1fr;
-                padding-left: 20px;
-            }
-
-            /* 8. Contact & Projects Container */
-            .contact-container, .projects-container {
-                margin-left: 10%;
-                margin-right: 5%;
-            }
-        }
-
-        /* TABLET PORTRAIT */
-        @media (max-width: 768px) {
-            /* Hero Title Scaling */
-            .lower-left-content h1,
-            .lower-left-content h2 { font-size: 3rem; }
-
-            /* Section Title Scaling */
-            #what-we-do h2 { font-size: 3rem; }
-            .team-info h2 { font-size: 2.5rem; }
-            #projects-section h2 { font-size: 3rem; }
-            #contact h2 { font-size: 3rem; }
-
-            /* Content Positioning */
-            .lower-left-content {
-                left: 5%;
-                bottom: 20%;
-                width: 90%;
-                padding-right: 5%;
-            }
-
-            /* What We Do Section */
-            .what-we-do-container {
-                left: 5%;
-                width: 90%;
-            }
-
-            /* Team Section Adjustments */
-            .team-wrapper {
-                padding: 8vh 5% 0 5%;
-            }
-            .portrait {
-                max-width: 280px;
-                height: 30vh;
-            }
-            .team-text-container {
-                max-height: 40vh;
-            }
-
-            /* Projects & Contact */
-            .projects-container,
-            .contact-container {
-                margin-left: 5%;
-                margin-right: 5%;
-            }
-
-            /* Navigation */
-            .nav-links { gap: 18px; }
-            .nav-links a {
-                font-size: 0.75rem;
-                letter-spacing: 0.15rem;
-            }
-            .nav-address {
-                font-size: 0.6rem;
-                max-width: 90%;
-            }
-        }
-
-        /* MOBILE */
-        @media (max-width: 480px) {
-            /* Hero Title - Mobile Optimized */
-            .lower-left-content h1,
-            .lower-left-content h2 {
-                font-size: 2.2rem;
-                letter-spacing: 0.02rem;
-            }
-            .lower-left-content h1 span {
-                white-space: normal;
-            }
-
-            /* Section Titles */
-            #what-we-do h2 { font-size: 2.2rem; }
-            .team-info h2 { font-size: 2rem; }
-            #projects-section h2 { font-size: 2.2rem; }
-            #contact h2 { font-size: 2.2rem; }
-
-            /* Body Text */
-            .body-text {
-                font-size: 0.95rem;
-                line-height: 1.6;
-            }
-
-            /* Navigation - Compact Mode */
-            .fixed-nav-container {
-                bottom: 15px;
-                gap: 8px;
-            }
-            .nav-links {
-                gap: 12px;
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 0 10px;
-            }
-            .nav-links a {
-                font-size: 0.7rem;
-                letter-spacing: 0.1rem;
-            }
-            .nav-address {
-                font-size: 0.55rem;
-                letter-spacing: 0.08rem;
-                line-height: 1.4;
-                padding: 0 10px;
-            }
-
-            /* Image Sections */
-            .gallery-image,
-            .peeking-img,
-            .what-we-do-image {
-                width: 90vw;
-                left: 5%;
-                height: 30vh;
-            }
-
-            .project-text {
-                left: 5%;
-                width: 90vw;
-                height: 35vh;
-                top: 50%;
-            }
-
-            /* Team Section */
-            .team-wrapper {
-                padding: 5vh 5% 0 5%;
-                gap: 20px;
-            }
-            .portrait {
-                max-width: 100%;
-                height: 25vh;
-            }
-            .team-text-container {
-                max-height: 45vh;
-            }
-
-            /* Service Links - Stack Vertically */
-            .service-links-right {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            /* Projects List */
-            .project-list {
-                padding-left: 10px;
-                gap: 10px 20px;
-            }
-            .project-list a {
-                font-size: 0.85rem;
-            }
-
-            /* Contact Form - Prevent iOS zoom */
-            .contact-form input,
-            .contact-form textarea {
-                font-size: 16px;
-            }
-        }
-
-        /* iPhone Notch Support */
-        @supports (padding: env(safe-area-inset-bottom)) {
-            .fixed-nav-container {
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-        }
-
-        @media (max-width: 768px) {
-            /* VERTICAL STACK LAYOUT FOR MOBILE/TABLET */
+        @media (max-width: 1300px) {
             
+            /* 1. Reset Body & Scrolling */
             body {
                 height: auto !important;
                 overflow-x: hidden;
@@ -622,7 +389,7 @@
                 position: relative;
                 height: auto;
                 overflow: visible;
-                opacity: 1 !important; /* Ensure visibility */
+                opacity: 1 !important;
             }
 
             .horizontal-track {
@@ -633,6 +400,7 @@
                 transform: none !important;
             }
 
+            /* 2. Standardize Sections to Vertical Stacks */
             section {
                 width: 100%;
                 height: auto;
@@ -641,93 +409,167 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                padding: 60px 20px;
+                padding: 100px 5% 120px 5%; /* Top/Bottom padding for nav */
                 position: relative;
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
-            
-            /* Reset positioning for all absolute elements */
+
+            /* 3. Reset All Absolute Positioning */
             .lower-left-content,
             .what-we-do-container,
             .project-text,
             .what-we-do-image,
+            .design-image-right,
             .gallery-image,
-            .peeking-img {
-                position: static;
-                width: 100%;
-                max-width: 100%;
-                margin: 20px 0;
-                transform: none;
+            .peeking-img,
+            .team-wrapper,
+            .projects-container,
+            .contact-container {
+                position: static !important;
+                width: 100% !important;
+                max-width: 700px !important;
+                margin: 0 auto !important;
+                transform: none !important;
                 opacity: 1 !important;
-                height: auto;
-            }
-
-            /* Specific image sizing */
-            .what-we-do-image,
-            .gallery-image,
-            .peeking-img {
-                max-height: 50vh;
-                object-fit: cover;
-            }
-            
-            .lower-left-content {
                 text-align: center;
-                margin-top: 10vh; /* Add some top spacing for the first section */
+                height: auto !important;
             }
 
-            .project-text {
-                padding: 0 10px;
-                margin-bottom: 40px;
-                text-align: left;
-            }
-            
-            /* Team section fixes */
-            .team-wrapper {
-                flex-direction: column;
-                padding: 0;
-                gap: 30px;
-                height: auto;
-            }
-            
-            .team-text-container {
-                max-height: none;
-                overflow: visible;
-                mask-image: none;
-                -webkit-mask-image: none;
+            /* 4. Ensure Image-on-Top Order & Sizing */
+            .what-we-do-image,
+            .design-image-right,
+            .gallery-image,
+            .peeking-img,
+            .portrait {
+                order: -1; /* Move to top of flex container */
+                margin-bottom: 40px !important;
+                max-height: 50vh !important;
+                width: 100% !important;
+                object-fit: cover !important;
+                display: block !important;
             }
 
-            /* Hide scroll instructions */
-            p[style*="SCROLL TO"] {
-                display: none;
+            /* 5. Typography Scaling */
+            h1, h2 { 
+                font-size: clamp(2.5rem, 8vw, 4rem) !important; 
+                margin-bottom: 25px !important;
+                line-height: 1.1 !important;
             }
             
-            /* Nav adjustments */
+            .body-text {
+                font-size: 1.1rem;
+                line-height: 1.6;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+
+            /* 6. Navigation Adjustments */
             .fixed-nav-container {
                 position: fixed;
-                bottom: 0;
-                left: 0;
-                background: white;
-                padding-top: 15px;
-                padding-bottom: 25px;
+                bottom: 20px; /* Raised from 0 */
+                background: rgba(255, 255, 255, 0.98);
+                padding: 20px 0 35px 0; /* Increased padding */
+                backdrop-filter: blur(10px);
                 border-top: 1px solid #eee;
+                border-radius: 20px; /* Optional: adds a more defined 'bar' look on mobile */
+                width: 90%;
+                left: 5%;
+            }
+
+            .nav-logo-item img {
+                height: 25px; /* Slightly smaller for mobile */
             }
             
             .nav-links {
-                justify-content: center;
+                gap: 15px; /* Tighter gap for small screens */
                 flex-wrap: wrap;
+                justify-content: center;
+                margin-bottom: 10px;
             }
-            
-            /* Ensure project list is visible */
+
+            .nav-address {
+                font-size: 0.65rem;
+                padding: 0 15px;
+            }
+
+            /* Hide Desktop-only Elements */
+            .fixed-cross-nav, p[style*="SCROLL TO"] {
+                display: none !important;
+            }
+
+            /* 7. Specific Section Fixes */
+            .service-links-right, .service-links-left {
+                justify-content: center;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 20px;
+                margin-top: 20px;
+            }
+
+            .team-wrapper {
+                padding: 0;
+                gap: 0;
+            }
+
             .projects-container {
-                margin: 0;
-                width: 100%;
-                padding: 0 10px;
+                text-align: center;
+                padding: 0 20px;
+            }
+
+            .projects-container h2 {
+                padding-left: 0 !important;
+            }
+
+            .projects-container p {
+                padding-left: 0 !important;
+            }
+
+            .project-list {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px 30px;
+                padding-left: 0;
+                text-align: left; /* Keep names left aligned within their column */
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .see-all-projects {
+                padding-left: 0 !important;
+                margin-top: 40px !important;
+            }
+
+            .contact-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-form {
+                width: 100% !important;
+                margin-top: 40px !important;
             }
             
-            .contact-container {
-                margin: 0;
-                width: 100%;
-                padding: 0 10px 100px 10px; /* Padding for bottom nav */
+            .contact-form input, .contact-form textarea {
+                width: 100% !important;
+            }
+        }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 600px) {
+            section { padding: 80px 20px 100px 20px; }
+            h1, h2 { font-size: 2.2rem !important; }
+            .nav-links { gap: 12px; }
+            .nav-links a { font-size: 0.75rem; }
+            
+            .project-list {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
             }
         }
 
@@ -743,12 +585,10 @@
 
     <div class="fixed-background"></div>
 
-    <a id="link-to-mgmt" onclick="scrollToStage(4, true)" class="fixed-cross-nav bottom-right more-link">Golf Course Management &#8594;</a>
-    <a id="link-to-design" onclick="scrollToStage(2, true)" class="fixed-cross-nav bottom-left more-link">&#8592; Golf Course Design</a>
-
     <div class="fixed-nav-container">
         <nav>
             <ul class="nav-links">
+                <li class="nav-logo-item"><img src="index/NGC_Logo.png" alt="NGC Logo" onclick="scrollToStage(0, true)" style="cursor: pointer;"></li>
                 <li><a onclick="scrollToStage(0, true)">Start</a></li>
                 <li><a onclick="scrollToStage(1, true)">What We Do</a></li>
                 <li><a onclick="scrollToStage(6, true)">Team</a></li>
@@ -764,6 +604,7 @@
             
             <section id="start">
                 <div class="lower-left-content">
+                    <img src="index/NGC_Logo.png" alt="NGC Logo" style="width: 180px; height: auto; margin-bottom: 40px;">
                     <h1 style="font-size: 5.5rem;">
                         <span style="display: block; white-space: nowrap;">THE NORTHEAST</span>
                         <span style="display: block; white-space: nowrap;">GOLF COMPANY</span>
@@ -790,7 +631,7 @@
 
             <section id="haverhill-1">
                 <img src="Projects/Met_Links/Met_Links_Image_After (1).jpg" class="design-image-right" alt="Met Links Design">
-                <div class="project-text design-text-left" id="text-1">
+                <div class="project-text design-text-left">
                     <h2>GOLF COURSE DESIGN</h2>
                     <p class="body-text">The Northeast Golf Company provides Comprehensive Golf Course Design Services for all types of golf course development, renovation and restoration projects. We enjoy working on exceptional properties, but have become quite adept at embracing the challenges of difficult sites. We believe the best work results from an inherent understanding of the land or course we are given and to find the sometimes hidden values within the landscape. We work closely with our clients. We listen and take goals and objectives seriously. Our experience and commitment to our craft and the collaborative nature of our design approach allows us to take on any type of project. There is no project too small or too large.</p>
                     <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See examples of our...</p>
@@ -805,15 +646,17 @@
             <section id="haverhill-2">
                 <img src="Projects/Met_Links/Met_Links_Image_After (2).jpg" class="peeking-img" id="peek-img-design" alt="Haverhill Render 2">
                 <div class="project-text" id="text-2">
-                    <p class="body-text">- We offer a full range of golf course design services including:
-                    <p class="body-text">- New Golf Course Design
-                    <p class="body-text">- Renovation of Existing Golf Courses
-                    <p class="body-text">- Restoration of Classic Designs
-                    <p class="body-text">- Comprehensive Golf Course Enhancement Planning
-                    <p class="body-text">- Golf Community Planning
-                    <p class="body-text">- Unique Golf Amenity Designs (short courses, putting courses, challenge courses)
-                    <p class="body-text">- Practice Facility Design
-                    <p class="body-text">- Clubhouse Circulation Planning</p>
+                    <p class="body-text" style="text-align: center !important;">We offer a full range of golf course design services including:</p>
+                    <div style="text-align: left !important; max-width: 600px; margin: 20px auto 0 auto; display: block;">
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- New Golf Course Design</p>
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Renovation of Existing Golf Courses</p>
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Restoration of Classic Designs</p>
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Comprehensive Golf Course Enhancement Planning</p>
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Golf Community Planning</p>
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Unique Golf Amenity Designs (short courses, putting courses, challenge courses)</p>
+                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Practice Facility Design</p>
+                        <p class="body-text" style="text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Clubhouse Circulation Planning</p>
+                    </div>
                 </div>
             </section>
 
@@ -955,7 +798,7 @@
 
         window.addEventListener('scroll', () => {
             // Mobile Check: Disable scroll-jacking if screen is narrow
-            if (window.innerWidth <= 768) return;
+            if (window.innerWidth <= 1300) return;
 
             const scrollHeight = document.body.scrollHeight - window.innerHeight;
             const scrollPercent = window.pageYOffset / scrollHeight;
@@ -1014,7 +857,7 @@
 
         function scrollToStage(index, useFade = false) {
             // Mobile Check: Normal scroll to element
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1300) {
                 const sections = document.querySelectorAll('.horizontal-track > section');
                 if (sections[index]) {
                     sections[index].scrollIntoView({ behavior: 'smooth' });

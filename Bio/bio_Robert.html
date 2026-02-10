@@ -68,19 +68,23 @@
 
         .bio-header {
             display: flex;
-            align-items: flex-start;
-            gap: 60px;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
             margin-bottom: 60px;
+            text-align: center;
         }
 
         .portrait {
-            width: 400px;
+            width: 100%;
+            max-width: 450px;
             height: auto;
             flex-shrink: 0;
         }
 
         .bio-content {
-            flex-grow: 1;
+            width: 100%;
+            max-width: 800px;
         }
 
         h1 {
