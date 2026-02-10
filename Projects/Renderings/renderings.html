@@ -193,10 +193,10 @@
         }
         .lightbox.active .close-lightbox { opacity: 1; }
 
-        /* FIXED NAV */
+        /* --- FIXED NAV --- */
         .fixed-nav-container {
             position: fixed;
-            bottom: 40px;
+            bottom: 50px; 
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -205,8 +205,39 @@
             z-index: 2000;
             pointer-events: none;
         }
-        .nav-links, .nav-address { pointer-events: auto; }
-        .nav-links { display: flex; gap: 40px; list-style: none; }
+
+        .nav-logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+
+        .nav-logo-item img {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+
+        .nav-logo-item img:hover {
+            opacity: 1;
+        }
+
+        .nav-links, .nav-address {
+            pointer-events: auto;
+        }
+
+        .nav-links { 
+            display: flex; 
+            gap: 40px; 
+            list-style: none; 
+            justify-content: center;
+            align-items: center;
+        }
+
         .nav-links a {
             text-decoration: none;
             color: var(--nav-gray);
@@ -218,14 +249,71 @@
             transition: color 0.3s ease;
         }
         .nav-links a:hover { color: var(--text-main); }
-        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+        .nav-address { 
+            color: var(--address-gray); 
+            font-size: 0.75rem; 
+            letter-spacing: 0.15rem; 
+            text-transform: uppercase; 
+            font-weight: var(--akrobat-light); 
+        }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1300px) {
+            .page-container {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .header-container {
+                margin-bottom: 2vh;
+                padding-top: 20px;
+            }
+
             .wall-track { flex-direction: row; flex-wrap: wrap; height: auto; justify-content: center; }
             .gallery-item { width: 45%; height: 25vh; margin: 10px; }
-            .wall-scroll-container { overflow-y: auto; }
-            h1 { font-size: 3rem; }
-        }
+            
+            .wall-scroll-container { 
+                overflow-y: auto; 
+                flex-grow: 1;
+                padding-bottom: 250px;
+                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+                mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+            }
+
+            h1 { font-size: 2.5rem; }
+
+            .fixed-nav-container {
+                bottom: 30px;
+                padding: 10px 0;
+                left: 0;
+            }
+
+            .nav-logo-item {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .nav-logo-item img {
+                height: 60px;
+                margin-top: -15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                margin-bottom: 5px;
+                padding-left: 85px;
+                justify-content: center;
+            }
+
+            .nav-address {
+                font-size: 0.7rem;
+                padding: 0 15px;
+                margin-top: 0;
+                letter-spacing: 0.1rem;
+                text-align: center;
+            }
     </style>
 </head>
 <body>
@@ -270,6 +358,9 @@
     <div class="fixed-nav-container">
         <nav>
             <ul class="nav-links">
+                <li class="nav-logo-item">
+                    <img src="../../index/NGC_Logo.png" alt="NGC Logo" onclick="fadeAndNavigate(event, '../../landing_page.html#start')">
+                </li>
                 <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#start')">Start</a></li>
                 <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#what-we-do')">What We Do</a></li>
                 <li><a href="#" onclick="fadeAndNavigate(event, '../../landing_page.html#team-intro')">Team</a></li>
@@ -290,6 +381,10 @@
                 const [path, hash] = url.split('#');
                 sessionStorage.setItem('scrollTarget', hash);
                 url = path;
+            }
+            // Ensure we point to landing_page.html if url is index.html
+            if (url.endsWith('index.html')) {
+                url = url.replace('index.html', 'landing_page.html');
             }
             
             document.body.style.opacity = 0;
