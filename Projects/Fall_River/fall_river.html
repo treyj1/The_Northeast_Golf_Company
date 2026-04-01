@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fall River Country Club | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555;
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        .project-wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* --- LEFT PANEL (FIXED) --- */
+        .info-panel {
+            width: 40%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-top: 15vh;
+            padding-left: 8vw;
+            padding-right: 4%;
+            z-index: 10;
+        }
+
+        /* 1. TITLE & LOCATION */
+        .static-header {
+            margin-bottom: 5vh;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            line-height: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .location-sub {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--nav-gray);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* 2. DYNAMIC CONTENT */
+        .dynamic-content-wrapper {
+            flex-grow: 1;
+        }
+
+        .section-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+            min-height: 1.5rem;
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 450px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .fading {
+            opacity: 0;
+        }
+
+        /* 3. DYNAMIC LINK (Moved to flow) */
+        .dynamic-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: opacity 0.5s ease-in-out, color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dynamic-link:hover {
+            color: var(--nav-gray);
+            border-bottom-color: var(--nav-gray);
+        }
+
+        .dynamic-link.hidden {
+            display: none;
+        }
+
+        /* --- RIGHT PANEL (SCROLL) --- */
+        .scroll-container {
+            width: 60%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            align-items: center;
+            padding-right: 10%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .gallery-track {
+            display: flex;
+            gap: 6vw;
+            align-items: center;
+            padding-right: 15vw;
+            padding-left: 12vw;
+        }
+
+        /* --- GALLERY ITEMS --- */
+        .gallery-item {
+            position: relative;
+            flex-shrink: 0;
+            width: 35vw;
+            height: 45vh;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.3;
+            transform: scale(0.85);
+            filter: grayscale(100%);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+
+        .gallery-item:nth-child(odd) { margin-top: -8vh; }
+        .gallery-item:nth-child(even) { margin-top: 8vh; }
+
+        .gallery-item.active {
+            opacity: 1;
+            transform: scale(1.05);
+            filter: grayscale(0%);
+            z-index: 5;
+        }
+
+        /* Landscape Aspect Ratio for Videos */
+        .gallery-item.landscape-item {
+            aspect-ratio: 16 / 9;
+            width: auto;
+            height: 45vh;
+        }
+        .gallery-item.landscape-item img {
+            object-fit: contain;
+            background: #000;
+        }
+        .gallery-item.landscape-item iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Plan Item - Auto Width / No Bars */
+        .gallery-item.plan-item {
+            width: auto;
+            aspect-ratio: auto;
+        }
+        .gallery-item.plan-item img {
+            width: auto;
+            height: 100%;
+            object-fit: contain;
+            background: none;
+        }
+
+        /* CTA Button */
+        .cta-btn-left-fixed {
+            position: absolute;
+            bottom: 12vh;
+            left: 8vw;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+        }
+        .cta-btn-left-fixed:hover {
+            color: var(--nav-gray);
+            border-bottom-color: var(--nav-gray);
+        }
+
+        /* Back Link */
+        .back-projects-link-bottom {
+            position: absolute;
+            bottom: 8vh;
+            left: 8vw;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.8rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease;
+            z-index: 20;
+        }
+        .back-projects-link-bottom:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        /* --- NEXT PROJECT BTN --- */
+        .next-project-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            min-width: 25vw;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .next-project-wrapper.visible { opacity: 1; }
+
+        .text-link-large {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 5px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+        .text-link-small {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            color: var(--nav-gray);
+            border-bottom: 1px solid var(--nav-gray);
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .mobile-caption {
+            display: none;
+        }
+
+        /* --- FIXED NAV --- */
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 50px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+            pointer-events: none;
+        }
+
+        .nav-logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+
+        .nav-logo-item img {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+
+        .nav-logo-item img:hover {
+            opacity: 1;
+        }
+
+        .nav-links, .nav-address {
+            pointer-events: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address {
+            color: var(--address-gray);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            font-weight: var(--akrobat-light);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1300px) {
+            .project-wrapper {
+                flex-direction: column;
+                overflow: hidden;
+                height: 100vh;
+            }
+
+            .info-panel {
+                width: 100%;
+                height: auto;
+                padding: 100px 5% 30px 5%;
+                display: block;
+                position: static;
+                flex-shrink: 0;
+            }
+
+            .static-header { margin-bottom: 25px; }
+
+            h1 { font-size: 2.8rem; }
+
+            .dynamic-content-wrapper, #dynamic-link {
+                display: none !important;
+            }
+
+            .scroll-container {
+                width: 100%;
+                flex-grow: 1;
+                overflow-y: auto;
+                padding: 20px 5% 250px;
+                display: block;
+                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+                mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+            }
+
+            .gallery-track {
+                flex-direction: column;
+                gap: 40px;
+                padding-left: 0;
+                padding-right: 0;
+                width: 100%;
+                align-items: center;
+            }
+
+            .gallery-item {
+                width: 90%;
+                max-width: 500px;
+                height: auto;
+                min-height: 250px;
+                margin-top: 0 !important;
+                opacity: 1;
+                filter: none;
+                transform: none;
+            }
+
+            .mobile-caption {
+                display: block !important;
+                margin-top: 25px;
+                text-align: center;
+                padding-bottom: 30px;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .mobile-caption h3 {
+                font-family: 'Barlow Semi Condensed', sans-serif;
+                font-size: clamp(1.2rem, 4vw, 1.5rem);
+                font-weight: 400;
+                margin-bottom: 12px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-main);
+            }
+
+            .mobile-caption p {
+                font-family: 'Barlow Semi Condensed', sans-serif;
+                font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+                color: var(--text-gray);
+                line-height: 1.6;
+                margin-bottom: 15px;
+                font-weight: 300;
+            }
+
+            .mobile-caption a {
+                display: inline-block;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: var(--text-main);
+                text-decoration: none;
+                border-bottom: 1px solid var(--text-main);
+                padding-bottom: 2px;
+                margin-top: 5px;
+            }
+
+            .fixed-nav-container { bottom: 30px; }
+
+            .nav-logo-item {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .nav-logo-item img {
+                height: 60px;
+                margin-top: -15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                margin-bottom: 5px;
+                padding-left: 85px;
+                justify-content: center;
+            }
+
+            .nav-address {
+                font-size: 0.7rem;
+                padding: 0 15px;
+                margin-top: 0;
+                letter-spacing: 0.1rem;
+                text-align: center;
+            }
+
+            .next-project-wrapper {
+                opacity: 1;
+                padding: 30px 0 120px 0;
+            }
+
+            .cta-btn-left-fixed, .back-projects-link-bottom {
+                position: static;
+                display: block;
+                margin-top: 20px;
+            }
+        }
+
+        /* iPhone Notch Support */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Fall River Country Club</h1>
+                <span class="location-sub">Fall River, Massachusetts</span>
+            </div>
+
+            <div class="dynamic-content-wrapper">
+                <h2 class="section-subtitle" id="dynamic-subtitle">Project History</h2>
+
+                <p class="description-text" id="dynamic-description">
+                    Originally opened in 1895, Fall River Country Club is a timeless New England private golf club steeped in history. Situated along the banks of the Taunton River, the club features water views on 17 of its 18 holes, along with beautiful vistas from its full-service Clubhouse.
+                    <br><br>
+                    The holes now known as the "Old Nine" were considered one of the best layouts in New England by both Bobby Jones and Francis Ouimet, who played exhibition matches here alongside Harry Vardon. In 2022, the club hired Robert McNeil, ASGCA to present a master plan of improvements, beginning a new chapter in the club's storied history.
+                </p>
+
+                <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+            </div>
+
+            <!-- Fixed Bottom Links -->
+            <a href="https://www.fallrivercc.com/" class="cta-btn-left-fixed" target="_blank">Visit Club Website</a>
+            <a href="../../landing_page.html" class="back-projects-link-bottom">&larr; Back to Projects</a>
+        </div>
+
+        <div class="scroll-container" id="scrollContainer">
+            <div class="gallery-track">
+
+                <!-- YouTube: Fall River Golf 4 -->
+                <div class="gallery-item landscape-item"
+                     data-subtitle="Hole 4 Renovation"
+                     data-description="In the winter of 2022–2023, Robert McNeil, ASGCA and the Northeast Golf Company renovated the 4th hole at Fall River Country Club, creating a stunning short par-4 over the water. This video walks through the renovation process and the transformation of one of the club's most memorable holes."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/8JgrC_N8DRo"
+                            title="Fall River Country Club Hole 4 Renovation"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <!-- Image 1: Aerial color — completed bunkering & green -->
+                <div class="gallery-item"
+                     data-subtitle="Completed Bunkering Complex"
+                     data-description="The completed 4th hole showcases a dramatic sweep of bunkering along the left side of the approach, framing a well-guarded green. The intricate bunker shaping creates both visual drama and strategic challenge, hallmarks of Robert McNeil's design philosophy."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="FR_Image_ (1).jpg" alt="Fall River Country Club - Completed Bunkering Complex">
+                </div>
+
+                <!-- Image 2: B&W — construction/shaping in progress -->
+                <div class="gallery-item"
+                     data-subtitle="Shaping the New Hole"
+                     data-description="During construction in the winter of 2022–2023, the form of the new bunkering began to emerge from the landscape. The bunker shaping process is captured here before sod and sand, revealing the dramatic scale of the earthwork undertaken to create the renovated 4th hole."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="FR_Image_ (2).jpg" alt="Fall River Country Club - Bunker Construction">
+                </div>
+
+                <!-- Image 3: Color, ground-level across water/wetlands -->
+                <div class="gallery-item"
+                     data-subtitle="The Water Hole"
+                     data-description="Viewed from across the Taunton River wetlands, the new 4th hole reveals its dramatic setting. Water and natural vegetation frame the approach, creating one of the most visually striking holes in New England. The Northeast Golf Company embraced the natural landscape to create a memorable short par-4."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="FR_Image_ (3).jpg" alt="Fall River Country Club - Water Hole View">
+                </div>
+
+                <!-- Image 4: Color, close-up bunker complex -->
+                <div class="gallery-item"
+                     data-subtitle="Bunker Detail"
+                     data-description="The intricate bunker complex guarding the 4th green reflects Robert McNeil's commitment to bold, natural-looking bunkering that rewards strategic play. Grass islands, sand fingers, and naturalistic edges blend seamlessly into the surrounding wetland environment."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="FR_Image_ (4).jpg" alt="Fall River Country Club - Bunker Detail">
+                </div>
+
+                <div class="next-project-wrapper" id="nextBtn">
+                    <a href="../Met_Links/met_links.html" class="text-link-large">Next Project</a>
+                    <a href="#" onclick="navigateTo(event, 'projects-section')" class="text-link-small">All Projects</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li class="nav-logo-item">
+                    <img src="../../index/NGC_Logo.png" alt="NGC Logo" onclick="navigateTo(event, 'start')">
+                </li>
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        // 1. Navigation Helper
+        function navigateTo(e, sectionId) {
+            e.preventDefault();
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../landing_page.html';
+        }
+
+        // 2. Horizontal Scroll on Mouse Wheel
+        const scrollContainer = document.getElementById('scrollContainer');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            if (window.innerWidth > 900) {
+                if (evt.deltaY !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaY;
+                } else if (evt.deltaX !== 0) {
+                    evt.preventDefault();
+                    scrollContainer.scrollLeft += evt.deltaX;
+                }
+            }
+        });
+
+        // 3. Dynamic Text & Link Logic
+        const subtitleElement = document.getElementById('dynamic-subtitle');
+        const descriptionElement = document.getElementById('dynamic-description');
+        const linkElement = document.getElementById('dynamic-link');
+
+        let currentDescription = descriptionElement.innerHTML.trim();
+
+        const observerOptions = {
+            root: scrollContainer,
+            rootMargin: window.innerWidth > 1300 ? '0px -25% 0px -25%' : '-25% 0px -25% 0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+
+                    if (entry.target.classList.contains('gallery-item')) {
+                        const newSubtitle = entry.target.getAttribute('data-subtitle');
+                        const newText = entry.target.getAttribute('data-description');
+                        const newLinkText = entry.target.getAttribute('data-link-text');
+                        const newLinkUrl = entry.target.getAttribute('data-link-url');
+
+                        updateContent(newSubtitle, newText, newLinkText, newLinkUrl);
+                    } else if (entry.target.classList.contains('next-project-wrapper')) {
+                        entry.target.classList.add('visible');
+                    }
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        function updateContent(subtitle, text, linkText, linkUrl) {
+            if (text && text !== currentDescription) {
+                currentDescription = text;
+
+                subtitleElement.classList.add('fading');
+                descriptionElement.classList.add('fading');
+                linkElement.classList.add('fading');
+
+                setTimeout(() => {
+                    subtitleElement.textContent = subtitle;
+                    descriptionElement.innerHTML = text;
+
+                    if (linkText && linkText.trim() !== "") {
+                        linkElement.textContent = linkText;
+                        linkElement.href = linkUrl || "#";
+                        linkElement.classList.remove('hidden');
+                    } else {
+                        linkElement.classList.add('hidden');
+                    }
+
+                    subtitleElement.classList.remove('fading');
+                    descriptionElement.classList.remove('fading');
+                    linkElement.classList.remove('fading');
+
+                }, 500);
+            }
+        }
+
+        document.querySelectorAll('.gallery-item').forEach(item => observer.observe(item));
+        observer.observe(document.getElementById('nextBtn'));
+
+        // 4. Mobile Caption Generator
+        function initMobileCaptions() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                const subtitle = item.getAttribute('data-subtitle');
+                const desc = item.getAttribute('data-description');
+                const linkText = item.getAttribute('data-link-text');
+                const linkUrl = item.getAttribute('data-link-url');
+
+                if (subtitle || desc) {
+                    const caption = document.createElement('div');
+                    caption.className = 'mobile-caption';
+
+                    let html = '';
+                    if (subtitle) html += `<h3>${subtitle}</h3>`;
+                    if (desc) html += `<p>${desc}</p>`;
+                    if (linkText && linkUrl) html += `<a href="${linkUrl}">${linkText}</a>`;
+
+                    caption.innerHTML = html;
+                    item.appendChild(caption);
+                }
+            });
+        }
+
+        initMobileCaptions();
+
+    </script>
+
+</body>
+</html>
