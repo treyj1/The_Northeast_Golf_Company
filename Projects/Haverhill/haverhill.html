@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haverhill Country Club | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555;
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .back-projects-link-bottom {
+            position: absolute;
+            bottom: 8vh;
+            left: 8vw;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--nav-gray);
+            font-size: 0.8rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease;
+            z-index: 20;
+        }
+        .back-projects-link-bottom:hover {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        .project-wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .info-panel {
+            width: 40%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-top: 15vh;
+            padding-left: 8vw;
+            padding-right: 4%;
+            z-index: 10;
+        }
+
+        .static-header { margin-bottom: 5vh; flex-shrink: 0; }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            line-height: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .location-sub {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--nav-gray);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .dynamic-content-wrapper { flex-grow: 1; }
+
+        .section-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: var(--akrobat-reg);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+            min-height: 1.5rem;
+        }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 450px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .fading { opacity: 0; }
+
+        .dynamic-link {
+            position: absolute;
+            left: 8vw;
+            bottom: 18%;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: opacity 0.5s ease-in-out, color 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+        }
+        .dynamic-link:hover { color: var(--nav-gray); border-bottom-color: var(--nav-gray); }
+        .dynamic-link.hidden { display: none; }
+
+        .scroll-container {
+            width: 60%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            align-items: center;
+            padding-right: 10%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .gallery-track {
+            display: flex;
+            gap: 6vw;
+            align-items: center;
+            padding-right: 15vw;
+            padding-left: 12vw;
+        }
+
+        .gallery-item {
+            position: relative;
+            flex-shrink: 0;
+            width: 35vw;
+            height: 45vh;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.3;
+            transform: scale(0.85);
+            filter: grayscale(100%);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:nth-child(odd) { margin-top: -8vh; }
+        .gallery-item:nth-child(even) { margin-top: 8vh; }
+
+        .gallery-item.active {
+            opacity: 1;
+            transform: scale(1.05);
+            filter: grayscale(0%);
+            z-index: 5;
+        }
+
+        .gallery-item.plan-item {
+            width: auto;
+            aspect-ratio: auto;
+        }
+        .gallery-item.plan-item img {
+            width: auto;
+            height: 100%;
+            object-fit: contain;
+            background: none;
+        }
+
+        .next-project-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            min-width: 25vw;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .next-project-wrapper.visible { opacity: 1; }
+
+        .text-link-large {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 5px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+        .text-link-small {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            color: var(--nav-gray);
+            border-bottom: 1px solid var(--nav-gray);
+            padding-bottom: 2px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .mobile-caption { display: none; }
+
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 50px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+            pointer-events: none;
+        }
+        .nav-logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .nav-logo-item img {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .nav-logo-item img:hover { opacity: 1; }
+        .nav-links, .nav-address { pointer-events: auto; }
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nav-gray);
+            font-size: 0.85rem;
+            font-weight: var(--akrobat-light);
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address {
+            color: var(--address-gray);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            font-weight: var(--akrobat-light);
+        }
+
+        @media (max-width: 1300px) {
+            .project-wrapper { flex-direction: column; overflow: hidden; height: 100vh; }
+            .info-panel { width: 100%; height: auto; padding: 100px 5% 30px 5%; display: block; position: static; flex-shrink: 0; }
+            .static-header { margin-bottom: 25px; }
+            h1 { font-size: 2.8rem; }
+            .dynamic-content-wrapper, #dynamic-link { display: none !important; }
+            .scroll-container { width: 100%; flex-grow: 1; overflow-y: auto; padding: 20px 5% 250px; display: block; -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%); mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%); }
+            .gallery-track { flex-direction: column; gap: 40px; padding-left: 0; padding-right: 0; width: 100%; align-items: center; }
+            .gallery-item { width: 90%; max-width: 500px; height: auto; min-height: 250px; margin-top: 0 !important; opacity: 1; filter: none; transform: none; }
+            .mobile-caption { display: block !important; margin-top: 25px; text-align: center; padding-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
+            .mobile-caption h3 { font-family: 'Barlow Semi Condensed', sans-serif; font-size: clamp(1.2rem, 4vw, 1.5rem); font-weight: 400; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); }
+            .mobile-caption p { font-family: 'Barlow Semi Condensed', sans-serif; font-size: clamp(0.95rem, 3.5vw, 1.1rem); color: var(--text-gray); line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
+            .mobile-caption a { display: inline-block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-main); text-decoration: none; border-bottom: 1px solid var(--text-main); padding-bottom: 2px; margin-top: 5px; }
+            .fixed-nav-container { bottom: 30px; }
+            .nav-logo-item { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); }
+            .nav-logo-item img { height: 60px; margin-top: -15px; }
+            .nav-links { gap: 15px; flex-wrap: wrap; margin-bottom: 5px; padding: 0 85px; justify-content: center; }
+            .nav-address { font-size: 0.7rem; padding: 0 15px; margin-top: 0; letter-spacing: 0.1rem; text-align: center; }
+            .next-project-wrapper { opacity: 1; padding: 30px 0 120px 0; }
+        }
+
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container { padding-bottom: env(safe-area-inset-bottom); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="project-wrapper">
+
+        <div class="info-panel">
+            <div class="static-header">
+                <h1>Haverhill<br>Country Club</h1>
+                <span class="location-sub">Haverhill, Massachusetts</span>
+            </div>
+
+            <div class="dynamic-content-wrapper">
+                <h2 class="section-subtitle" id="dynamic-subtitle">Enhancement Plan</h2>
+                <p class="description-text" id="dynamic-description">
+                    In 2024, Haverhill Country Club engaged Robert McNeil, ASGCA to develop a comprehensive Golf Course Enhancement Plan for its historic layout at 58 Brickett Lane in Haverhill, Massachusetts. The plan provides detailed recommendations across all 18 holes — addressing bunkering, green complexes, tree management, drainage, cart paths, and practice facilities — designed to honor the club's legacy while elevating strategy and playing conditions for years to come.
+                </p>
+            </div>
+
+            <a id="dynamic-link" href="#" class="dynamic-link hidden">Learn More</a>
+            <a href="../../landing_page.html" class="back-projects-link-bottom">&larr; Back to Projects</a>
+        </div>
+
+        <div class="scroll-container" id="scrollContainer">
+            <div class="gallery-track">
+
+                <div class="gallery-item"
+                     data-subtitle="Enhancement Plan"
+                     data-description="In 2024, Haverhill Country Club engaged Robert McNeil, ASGCA to develop a comprehensive Golf Course Enhancement Plan. The plan addresses all 18 holes with detailed recommendations for bunkering, green complexes, tree management, drainage, and practice facilities — designed to honor the club's legacy while elevating strategy and playing conditions."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Hole 1 Tee - PathTracer.jpg" alt="Haverhill Hole 1 Tee Rendering">
+                </div>
+
+                <div class="gallery-item"
+                     data-subtitle="Hole 1 — Behind the Green"
+                     data-description="A photorealistic PathTracer rendering looking back from behind the 1st green captures the proposed character of the opening hole. New bunkering and refined green surrounds frame a welcoming but strategically engaging start to the round at Haverhill Country Club."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Behind Hole 1 - PathTracer.jpg" alt="Haverhill Behind Hole 1 Rendering">
+                </div>
+
+                <div class="gallery-item"
+                     data-subtitle="Hole 2 — Design Vision"
+                     data-description="The proposed renovation of Hole 2 introduces bold, naturalistic bunkering that challenges approach shots while enhancing the visual drama of the hole. PathTracer rendering illustrates the refined strategy and aesthetic character envisioned in the enhancement plan."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Hole 2 (1) - PathTracer.jpg" alt="Haverhill Hole 2 Rendering">
+                </div>
+
+                <div class="gallery-item"
+                     data-subtitle="Hole 8 — Tee Shot"
+                     data-description="The view from the tee on Hole 8 illustrates the strategic complexity proposed for this hole. The rendering reveals the interplay of fairway contours, tree lines, and bunkering that will reward thoughtful course management."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Hole 8 Tee - PathTracer.jpg" alt="Haverhill Hole 8 Tee Rendering">
+                </div>
+
+                <div class="gallery-item"
+                     data-subtitle="Hole 8 — Approach"
+                     data-description="The proposed approach to Hole 8 showcases the refined bunkering character and green complex design. Strategically placed hazards create clear risk-reward opportunities while the naturalistic shaping blends seamlessly with the surrounding landscape."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Hole 8 (1) - PathTracer.jpg" alt="Haverhill Hole 8 Approach Rendering">
+                </div>
+
+                <div class="gallery-item"
+                     data-subtitle="Hole 8 — Green Complex"
+                     data-description="A closer look at the proposed Hole 8 green complex reveals the intricate bunker shaping and green surrounds envisioned in the enhancement plan. The design balances recovery options with meaningful penalties for errant shots."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Hole 8 (2) - PathTracer.jpg" alt="Haverhill Hole 8 Green Rendering">
+                </div>
+
+                <div class="gallery-item"
+                     data-subtitle="Hole 8 — Alternate View"
+                     data-description="An alternate rendering of Hole 8 highlights the depth and sculptural quality of the proposed bunkering. The PathTracer visualization brings the design intent to life with accurate lighting and material representation."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Hole 8 (3) - PathTracer.jpg" alt="Haverhill Hole 8 Alternate View">
+                </div>
+
+                <div class="gallery-item plan-item"
+                     data-subtitle="Master Plan"
+                     data-description="The 2024 Haverhill Country Club Golf Course Enhancement Plan illustrates Robert McNeil's comprehensive vision for all 18 holes. The plan serves as a guiding document for prioritizing and phasing improvements across the property."
+                     data-link-text=""
+                     data-link-url="">
+                    <img src="Haverhill_Master_Plan.jpg" alt="Haverhill Country Club Master Plan">
+                </div>
+
+                <div class="next-project-wrapper" id="nextBtn">
+                    <a href="../Fall_River/fall_river.html" class="text-link-large">Next Project</a>
+                    <a href="#" onclick="navigateTo(event, 'projects-section')" class="text-link-small">All Projects</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li class="nav-logo-item">
+                    <img src="../../index/NGC_Logo.png" alt="NGC Logo" onclick="navigateTo(event, 'start')">
+                </li>
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+    </div>
+
+    <script>
+        function navigateTo(e, sectionId) {
+            e.preventDefault();
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../landing_page.html';
+        }
+
+        const scrollContainer = document.getElementById('scrollContainer');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            if (window.innerWidth > 900) {
+                if (evt.deltaY !== 0) { evt.preventDefault(); scrollContainer.scrollLeft += evt.deltaY; }
+                else if (evt.deltaX !== 0) { evt.preventDefault(); scrollContainer.scrollLeft += evt.deltaX; }
+            }
+        });
+
+        const subtitleElement = document.getElementById('dynamic-subtitle');
+        const descriptionElement = document.getElementById('dynamic-description');
+        const linkElement = document.getElementById('dynamic-link');
+        let currentDescription = descriptionElement.innerHTML.trim();
+
+        const observerOptions = {
+            root: scrollContainer,
+            rootMargin: window.innerWidth > 1300 ? '0px -25% 0px -25%' : '-25% 0px -25% 0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.classList.contains('gallery-item')) {
+                        updateContent(
+                            entry.target.getAttribute('data-subtitle'),
+                            entry.target.getAttribute('data-description'),
+                            entry.target.getAttribute('data-link-text'),
+                            entry.target.getAttribute('data-link-url')
+                        );
+                    } else if (entry.target.classList.contains('next-project-wrapper')) {
+                        entry.target.classList.add('visible');
+                    }
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        function updateContent(subtitle, text, linkText, linkUrl) {
+            if (text && text !== currentDescription) {
+                currentDescription = text;
+                subtitleElement.classList.add('fading');
+                descriptionElement.classList.add('fading');
+                linkElement.classList.add('fading');
+                setTimeout(() => {
+                    subtitleElement.textContent = subtitle;
+                    descriptionElement.innerHTML = text;
+                    if (linkText && linkText.trim() !== '') {
+                        linkElement.textContent = linkText;
+                        linkElement.href = linkUrl || '#';
+                        linkElement.classList.remove('hidden');
+                    } else {
+                        linkElement.classList.add('hidden');
+                    }
+                    subtitleElement.classList.remove('fading');
+                    descriptionElement.classList.remove('fading');
+                    linkElement.classList.remove('fading');
+                }, 500);
+            }
+        }
+
+        document.querySelectorAll('.gallery-item').forEach(item => observer.observe(item));
+        observer.observe(document.getElementById('nextBtn'));
+
+        function initMobileCaptions() {
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                const subtitle = item.getAttribute('data-subtitle');
+                const desc = item.getAttribute('data-description');
+                const linkText = item.getAttribute('data-link-text');
+                const linkUrl = item.getAttribute('data-link-url');
+                if (subtitle || desc) {
+                    const caption = document.createElement('div');
+                    caption.className = 'mobile-caption';
+                    let html = '';
+                    if (subtitle) html += `<h3>${subtitle}</h3>`;
+                    if (desc) html += `<p>${desc}</p>`;
+                    if (linkText && linkUrl) html += `<a href="${linkUrl}">${linkText}</a>`;
+                    caption.innerHTML = html;
+                    item.appendChild(caption);
+                }
+            });
+        }
+        initMobileCaptions();
+    </script>
+
+</body>
+</html>

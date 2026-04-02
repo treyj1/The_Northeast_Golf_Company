@@ -496,30 +496,19 @@
             }
 
             .nav-logo-item {
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                transform: translateY(-50%);
+                display: none;
             }
 
-            .nav-logo-item img {
-                height: 60px; /* Matched desktop size */
-                margin-top: -15px; /* Matched desktop offset */
+            .nav-address {
+                display: none;
             }
-            
+
             .nav-links {
                 gap: 15px; /* Tighter gap for small screens */
                 flex-wrap: wrap;
                 justify-content: center;
-                margin-bottom: 5px; /* Tighter gap to address */
-                padding-left: 85px; /* Make room for the logo on the left */
-            }
-
-            .nav-address {
-                font-size: 0.7rem; /* Slightly larger */
-                padding: 0 15px;
-                margin-top: 0;
-                letter-spacing: 0.1rem;
+                margin-bottom: 5px;
+                padding: 0 20px;
             }
 
             /* Hide Desktop-only Elements */
@@ -769,13 +758,13 @@
                     <ul class="project-list">
                         <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Bass_Rocks/bass_rocks.html')">Bass Rocks Golf Club</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bellevue Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bergen County Golf Courses</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Bergen_County/bergen_county.html')">Bergen County Golf Courses</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Burlington Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Fairmount Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Fairmount/fairmount.html')">Fairmount Country Club</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Fall_River/fall_river.html')">Fall River Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Haverhill Country Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Haverhill/haverhill.html')">Haverhill Country Club</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Kernwood Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Madison Golf Club</a></li>
+                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Madison/madison.html')">Madison Golf Club</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Mendham/mendham.html')">Mendham Golf & Tennis Club</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')">Met Links</a></li>
                         <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Milton Hoosic Club</a></li>
@@ -795,6 +784,13 @@
                         <textarea placeholder="QUESTION" rows="4" style="width: 100%; margin: 0;"></textarea>
                         <button type="submit" style="background: none; border: none; color: var(--nav-gray); font-family: inherit; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; align-self: flex-start;">SUBMIT</button>
                     </form>
+                </div>
+            </section>
+
+            <section id="closing-card">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;">
+                    <img src="index/NGC_Logo.png" alt="NGC Logo" style="height: 120px; width: auto; opacity: 0.9;">
+                    <div class="nav-address" style="display: block; font-size: 0.8rem; letter-spacing: 0.2rem; text-align: center;">THE NORTHEAST GOLF COMPANY<br>118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
                 </div>
             </section>
 
@@ -827,7 +823,7 @@
             document.getElementById('text-3'),
             document.getElementById('text-4')
         ];
-        const totalStages = 11; 
+        const totalStages = 12;
 
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
@@ -957,7 +953,7 @@
                 const index = sections.findIndex(sec => sec.id === targetId);
                 
                 if (index !== -1) {
-                    const totalStages = 11; 
+                    const totalStages = 12;
                     const scrollHeight = document.body.scrollHeight - window.innerHeight;
                     const bucketSize = 1 / totalStages;
                     const targetPos = index * bucketSize * scrollHeight;
@@ -987,8 +983,8 @@
                 const track = document.getElementById('track');
                 const viewport = document.getElementById('main-viewport');
                 const scrollHeight = document.body.scrollHeight - window.innerHeight;
-                const totalStages = 11;
-                
+                const totalStages = 12;
+
                 // Calculate which stage was mostly visible
                 const bucketSize = 1 / totalStages;
                 const savedProgress = parseFloat(savedScrollPos) / scrollHeight;
