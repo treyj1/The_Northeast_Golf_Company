@@ -298,6 +298,8 @@
             font-weight: var(--akrobat-light);
         }
 
+        .hamburger-btn { display: none; }
+
         @media (max-width: 1300px) {
             .project-wrapper { flex-direction: column; overflow: hidden; height: 100vh; }
             .info-panel { width: 100%; height: auto; padding: 100px 5% 30px 5%; display: block; position: static; flex-shrink: 0; }
@@ -314,8 +316,15 @@
             .fixed-nav-container { bottom: 30px; }
             .nav-logo-item { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); }
             .nav-logo-item img { height: 60px; margin-top: -15px; }
-            .nav-links { gap: 15px; flex-wrap: wrap; margin-bottom: 5px; padding: 0 85px; justify-content: center; }
-            .nav-address { font-size: 0.7rem; padding: 0 15px; margin-top: 0; letter-spacing: 0.1rem; text-align: center; }
+            .back-projects-link-bottom { display: none; }
+            .hamburger-btn { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; background: transparent; border: none; cursor: pointer; padding: 10px; pointer-events: auto; }
+            .hamburger-btn span { display: block; width: 24px; height: 2px; background-color: var(--nav-gray); border-radius: 2px; transition: transform 0.25s ease, opacity 0.25s ease; }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(2) { opacity: 0; }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+            .nav-links { display: none; flex-direction: column; align-items: center; gap: 20px; padding: 20px 40px; background: rgba(255, 255, 255, 0.97); box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08); border-radius: 12px; margin-bottom: 5px; }
+            .fixed-nav-container.nav-open .nav-links { display: flex; }
+            .nav-address { display: none; }
             .next-project-wrapper { opacity: 1; padding: 30px 0 120px 0; }
         }
 
@@ -438,6 +447,11 @@
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 
     <script>
@@ -531,6 +545,16 @@
             });
         }
         initMobileCaptions();
+
+        function toggleNav() {
+            document.querySelector('.fixed-nav-container').classList.toggle('nav-open');
+        }
+        document.addEventListener('click', function(e) {
+            var nav = document.querySelector('.fixed-nav-container');
+            if (nav && nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+                nav.classList.remove('nav-open');
+            }
+        });
     </script>
 
 </body>
