@@ -362,23 +362,32 @@
 
         /* RESPONSIVE */
         @media (max-width: 1300px) {
-            /* Layout Conversion */
+            /* Layout: project-wrapper becomes the scroll container */
             .project-wrapper {
                 flex-direction: column;
-                overflow: hidden;
                 height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             .info-panel {
                 width: 100%;
                 height: auto;
-                padding: 90px 6% 25px 6%;
+                padding: 40px 0 0 0;
                 display: block;
                 position: static;
                 flex-shrink: 0;
             }
 
-            .static-header { margin-bottom: 15px; }
+            /* Sticky title bar — h1 + location pin at top as content scrolls */
+            .static-header {
+                position: sticky;
+                top: 0;
+                background: rgba(255, 255, 255, 0.98);
+                padding: 15px 6% 10px;
+                z-index: 10;
+                margin-bottom: 0;
+            }
 
             h1 { font-size: 2.4rem; }
 
@@ -393,15 +402,20 @@
                 color: var(--text-gray);
                 line-height: 1.6;
                 font-weight: 300;
-                margin-top: 12px;
+                padding: 12px 6% 28px;
             }
 
+            /* Scroll container: no longer scrolls itself */
             .scroll-container {
                 width: 100%;
-                flex-grow: 1;
-                overflow-y: auto;
+                height: auto;
+                overflow-y: visible;
+                overflow-x: hidden;
                 padding: 0 0 120px;
                 display: block;
+                flex-grow: 0;
+                -webkit-mask-image: none !important;
+                mask-image: none !important;
             }
 
             .gallery-track {
@@ -411,6 +425,7 @@
                 padding-right: 0;
                 width: 100%;
                 align-items: stretch;
+                white-space: normal;
             }
 
             .gallery-item {
@@ -422,6 +437,7 @@
                 opacity: 1;
                 filter: none;
                 transform: none;
+                flex-shrink: unset;
             }
 
             .gallery-item img {
@@ -435,6 +451,7 @@
                 aspect-ratio: 16 / 9;
                 height: auto;
                 display: block;
+                pointer-events: auto;
             }
 
             .mobile-caption {
@@ -475,12 +492,10 @@
                 margin-top: 4px;
             }
 
-            /* Navigation Fixes */
+            /* Navigation */
             .fixed-nav-container { bottom: 30px; }
 
-            .nav-logo-item {
-                display: none;
-            }
+            .nav-logo-item { display: none; }
 
             .back-projects-link-bottom { display: none; }
 
@@ -538,14 +553,12 @@
                 transform: translateY(0);
                 pointer-events: auto;
             }
-            .nav-address {
-                display: none;
-            }
+            .nav-address { display: none; }
 
             /* Next Project Section */
             .next-project-wrapper {
                 opacity: 1;
-                padding: 30px 0 120px 0;
+                padding: 30px 0 60px 0;
             }
         }
 
@@ -590,19 +603,7 @@
         <div class="scroll-container" id="scrollContainer">
             <div class="gallery-track">
                 
-                <div class="gallery-item landscape-item" 
-                     data-subtitle="2024 Master Plan"
-                     data-description="The 2024 Master Plan focuses on strategic, aesthetic, and functional enhancements to the golf course. This video captures the vision for the future of Bass Rocks Golf Club and the key improvements prioritized by the membership."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/Ag653DcvD6U" 
-                            title="Bass Rocks Master Plan Video" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
-                </div>
-
-                <div class="gallery-item" 
+                <div class="gallery-item"
                      data-subtitle="Club History"
                      data-description='Bass Rocks Golf Club was founded in 1896 and golf was first played by members in the area now known as "The Meadows," our current 15th through 18th holes. At the time this was a six hole course designed by the Scottish golfer, Alex Findlay. Over the years multiple expansions occurred at the Club, most notably the 1913 expansion to 18 holes by the golf course designer H.C. Leeds (architect of Myopia Hunt Club).<br><br>Robert McNeil has been working with the Club for many years, recently presenting a guiding master plan of improvements to the membership in 2024. Scroll through the image gallery to the right to learn more about the master plan and the completed phases of the project.'
                      data-link-text=""
@@ -610,12 +611,24 @@
                     <img src="Image_BassRocks (5).jpg" alt="Bass Rocks History">
                 </div>
 
-                <div class="gallery-item landscape-item" 
+                <div class="gallery-item landscape-item"
                      data-subtitle="2024 Master Plan Map"
                      data-description="The 2024 Master Plan focused on enhancing the strategic, aesthetic, and functional characteristics and needs of Bass Rocks. The plan prioritizes high value improvements, including the reconstruction of the second and seventh holes (completed) and reimagining the strategy and styling of the holes in The Meadows."
                      data-link-text="Learn More about the 2024 Master Plan"
                      data-link-url="master_plan_bassrocks.html">
                     <img src="Image_BassRocks (1).jpg" alt="Master Plan Overview">
+                </div>
+
+                <div class="gallery-item landscape-item"
+                     data-subtitle="2024 Master Plan"
+                     data-description="The 2024 Master Plan focuses on strategic, aesthetic, and functional enhancements to the golf course. This video captures the vision for the future of Bass Rocks Golf Club and the key improvements prioritized by the membership."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/Ag653DcvD6U"
+                            title="Bass Rocks Master Plan Video"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                    </iframe>
                 </div>
 
                 <div class="gallery-item" 
