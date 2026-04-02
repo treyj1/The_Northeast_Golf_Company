@@ -453,13 +453,13 @@
             .gallery-image,
             .peeking-img {
                 order: -1; /* Move to top of flex container */
-                margin-bottom: 40px !important;
                 width: 100vw !important;
                 max-width: 100vw !important;
                 max-height: none !important;
                 aspect-ratio: 16 / 9;
                 object-fit: cover !important;
                 display: block !important;
+                margin: 0 0 40px 0 !important; /* Override 0 auto so align-items: center controls positioning */
             }
 
             .portrait {
