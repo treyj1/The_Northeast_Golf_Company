@@ -446,6 +446,9 @@
     <script>
         // Fade In on Load
         window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) { document.body.style.opacity = ''; document.body.classList.add('loaded'); }
+        });
 
         function fadeAndNavigate(e, url) {
             e.preventDefault();
