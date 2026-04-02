@@ -112,6 +112,8 @@
             font-weight: var(--akrobat-light);
         }
 
+        .hamburger-btn { display: none; }
+
         .fixed-cross-nav {
             position: fixed;
             bottom: 15vh; 
@@ -499,16 +501,51 @@
                 display: none;
             }
 
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 10px;
+                pointer-events: auto;
+            }
+            .hamburger-btn span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background-color: var(--nav-gray);
+                border-radius: 2px;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(2) {
+                opacity: 0;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                padding: 20px 40px;
+                background: rgba(255, 255, 255, 0.97);
+                box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
+                border-radius: 12px;
+                margin-bottom: 5px;
+            }
+            .fixed-nav-container.nav-open .nav-links {
+                display: flex;
+            }
             .nav-address {
                 display: none;
-            }
-
-            .nav-links {
-                gap: 15px; /* Tighter gap for small screens */
-                flex-wrap: wrap;
-                justify-content: center;
-                margin-bottom: 5px;
-                padding: 0 20px;
             }
 
             /* Hide Desktop-only Elements */
@@ -627,6 +664,11 @@
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 
     <div class="viewport" id="main-viewport">
@@ -639,7 +681,7 @@
                         <span style="display: block; white-space: nowrap;">THE NORTHEAST</span>
                         <span style="display: block; white-space: nowrap;">GOLF COMPANY</span>
                     </h1>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px;">SCROLL TO CONTINUE</p>
+                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px; color: #555555;">SCROLL TO CONTINUE</p>
                 </div>
             </section>
 
@@ -706,13 +748,20 @@
                 <div class="project-text" id="text-4">
                     <p class="body-text">Robert McNeil, ASGCA, leader of the team at NGC brings over 30 years of broad reaching industry experience as a practicing golf course architect (member of the prestigious American Society of Golf Course Architects), course owner, maintenance manager and operations director. Understanding that it takes a great team to build a great company, NGC has created an incredible collaborative framework partnering with the best in the business to fit each client with the perfectly suited guiding consultants.</p>
                     <p class="body-text">Through Robert's award-winning design and construction experience, NGC can also help to accelerate golf course enhancements to reach desired quality goals and to provide for added revenue opportunities. NGC is committed to focused local staffing initiatives reaching "into the community" for those that will "serve the community". As golf is a game for all…we take great pride in creating "community cultures" at our clubs. We are keen that golf in many respects is local, and we enjoy embracing the local ethos to help define a club's personality.</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See the Courses We Manage...</p>
+                    <div class="service-links-left">
+                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="more-link">Met Links</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Kings Crossing</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Bristol Golf Park</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">The Orchards</a>
+                    </div>
                 </div>
             </section>
 
             <section id="team-intro">
                 <div class="project-text" style="opacity: 1;">
                     <h2>THE TEAM</h2>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px;">SCROLL TO CONTINUE</p>
+                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px; color: #555555;">SCROLL TO CONTINUE</p>
                 </div>
             </section>
 
@@ -800,6 +849,9 @@
     <script>
         // Fade In on Load
         window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) { document.body.classList.add('loaded'); }
+        });
 
         // Fade Out on Navigate
         function fadeAndNavigate(e, url) {
@@ -936,6 +988,16 @@
     </script>
 
     <script>
+        function toggleNav() {
+            document.querySelector('.fixed-nav-container').classList.toggle('nav-open');
+        }
+        document.addEventListener('click', function(e) {
+            var nav = document.querySelector('.fixed-nav-container');
+            if (nav && nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+                nav.classList.remove('nav-open');
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             const targetId = sessionStorage.getItem('scrollTarget');
             const savedScrollPos = sessionStorage.getItem('savedScrollPos');
@@ -951,8 +1013,16 @@
 
                 const sections = Array.from(document.querySelectorAll('#track > section'));
                 const index = sections.findIndex(sec => sec.id === targetId);
-                
-                if (index !== -1) {
+
+                if (window.innerWidth <= 1300) {
+                    // Mobile: scroll viewport vertically to the section
+                    if (index !== -1 && sections[index]) {
+                        const vp = document.getElementById('main-viewport');
+                        setTimeout(function() {
+                            vp.scrollTo({ top: sections[index].offsetTop, behavior: 'auto' });
+                        }, 100);
+                    }
+                } else if (index !== -1) {
                     const totalStages = 12;
                     const scrollHeight = document.body.scrollHeight - window.innerHeight;
                     const bucketSize = 1 / totalStages;
@@ -961,7 +1031,7 @@
 
                     const track = document.getElementById('track');
                     const viewport = document.getElementById('main-viewport');
-                    
+
                     track.style.transition = 'none';
                     viewport.style.opacity = 0;
 
