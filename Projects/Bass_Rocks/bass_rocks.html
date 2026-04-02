@@ -379,17 +379,25 @@
                 flex-shrink: 0;
             }
 
-            /* Sticky title bar — h1 + location pin at top as content scrolls */
+            /* Only h1 sticks — location and intro scroll away */
             .static-header {
-                position: sticky;
-                top: 0;
-                background: rgba(255, 255, 255, 0.98);
-                padding: 15px 6% 10px;
-                z-index: 10;
+                position: static;
                 margin-bottom: 0;
             }
 
-            h1 { font-size: 2.4rem; }
+            h1 {
+                font-size: 2.4rem;
+                position: sticky;
+                top: 0;
+                background: rgba(255, 255, 255, 0.98);
+                padding: 15px 6% 12px;
+                z-index: 10;
+            }
+
+            .location-sub {
+                display: block;
+                padding: 6px 6% 0;
+            }
 
             /* Hide dynamic desktop text — mobile uses static intro + per-image captions */
             .dynamic-content-wrapper, #dynamic-link {
