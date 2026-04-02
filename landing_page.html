@@ -398,9 +398,9 @@
                 height: 100vh;
                 overflow-y: auto;
                 opacity: 1 !important;
-                padding-bottom: 250px; /* Space so last content isn't masked */
-                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
-                mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+                padding-bottom: 80px;
+                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 96%);
+                mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 96%);
             }
 
             .horizontal-track {
@@ -546,8 +546,8 @@
                 background: rgba(255, 255, 255, 0.97);
                 transform: translateY(110%);
                 transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
-                mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
                 z-index: 998;
                 pointer-events: none;
             }
@@ -674,7 +674,7 @@
                 <li><a onclick="scrollToStage(10, true)">Contact</a></li>
             </ul>
         </nav>
-        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <div class="nav-address">SAUNDERSTOWN, RHODE ISLAND</div>
         <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
             <span></span>
             <span></span>
@@ -751,6 +751,13 @@
                     <h2 style="margin-bottom: 20px;">Golf Course Management</h2>
                     <p class="body-text">NGC Golf Operations Management provides full-service golf course operations management services to clubs, owners, municipalities and financial institutions. NGC is unique in many ways, most importantly in our collaborative approach to serving our partner clubs. We bring a seasoned team of thinkers to all aspects of golf operations including day to day management, staffing and training, agronomic care and food and beverage services.</p>
                     <p class="body-text">We specifically customize our approach to achieve measured success for our partners. Our management team brings over 50 years of combined experience and excellence to each relationship with the objective to provide the highest level of course conditioning and unmatched player experience. NGC brings the proper expertise to each property to guide the vision with unwavering work ethic, best practices, data driven decision making and out of the box marketing creativity to maximize property opportunities and profitability.</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See the Courses We Manage...</p>
+                    <div class="service-links-left">
+                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="more-link">Met Links</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Kings Crossing</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Bristol Golf Park</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">The Orchards</a>
+                    </div>
                 </div>
             </section>
 
@@ -759,13 +766,6 @@
                 <div class="project-text" id="text-4">
                     <p class="body-text">Robert McNeil, ASGCA, leader of the team at NGC brings over 30 years of broad reaching industry experience as a practicing golf course architect (member of the prestigious American Society of Golf Course Architects), course owner, maintenance manager and operations director. Understanding that it takes a great team to build a great company, NGC has created an incredible collaborative framework partnering with the best in the business to fit each client with the perfectly suited guiding consultants.</p>
                     <p class="body-text">Through Robert's award-winning design and construction experience, NGC can also help to accelerate golf course enhancements to reach desired quality goals and to provide for added revenue opportunities. NGC is committed to focused local staffing initiatives reaching "into the community" for those that will "serve the community". As golf is a game for all…we take great pride in creating "community cultures" at our clubs. We are keen that golf in many respects is local, and we enjoy embracing the local ethos to help define a club's personality.</p>
-                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See the Courses We Manage...</p>
-                    <div class="service-links-left">
-                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="more-link">Met Links</a>
-                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Kings Crossing</a>
-                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Bristol Golf Park</a>
-                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">The Orchards</a>
-                    </div>
                 </div>
             </section>
 
@@ -850,7 +850,7 @@
             <section id="closing-card">
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;">
                     <img src="index/NGC_Logo.png" alt="NGC Logo" style="height: 120px; width: auto; opacity: 0.9;">
-                    <div class="nav-address" style="display: block; font-size: 0.8rem; letter-spacing: 0.2rem; text-align: center;">THE NORTHEAST GOLF COMPANY<br>118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+                    <div class="nav-address" style="display: block; font-size: 0.8rem; letter-spacing: 0.2rem; text-align: center;">THE NORTHEAST GOLF COMPANY<br>SAUNDERSTOWN, RHODE ISLAND</div>
                 </div>
             </section>
 
