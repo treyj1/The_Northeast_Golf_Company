@@ -562,8 +562,20 @@
             }
 
             /* Hide Desktop-only Elements */
-            .fixed-cross-nav, p[style*="SCROLL TO"] {
+            .fixed-cross-nav {
                 display: none !important;
+            }
+
+            /* Scroll to Continue: show at bottom center of section */
+            p[style*="SCROLL TO"] {
+                display: block !important;
+                position: absolute !important;
+                bottom: 100px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                white-space: nowrap !important;
+                margin: 0 !important;
+                text-align: center !important;
             }
 
             /* 7. Specific Section Fixes */
@@ -719,7 +731,7 @@
                 <div class="project-text design-text-left" id="text-1">
                     <h2>GOLF COURSE DESIGN</h2>
                     <p class="body-text">The Northeast Golf Company provides Comprehensive Golf Course Design Services for all types of golf course development, renovation and restoration projects. We enjoy working on exceptional properties, but have become quite adept at embracing the challenges of difficult sites. We believe the best work results from an inherent understanding of the land or course we are given and to find the sometimes hidden values within the landscape. We work closely with our clients. We listen and take goals and objectives seriously. Our experience and commitment to our craft and the collaborative nature of our design approach allows us to take on any type of project. There is no project too small or too large.</p>
-                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See examples of our...</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase; text-align: center;">See examples of our...</p>
                     <div class="service-links-left">
                         <a href="#" onclick="fadeAndNavigate(event, 'Projects/Master_Plans/master_plans.html')" class="more-link">Master Plans</a>
                         <a href="#" onclick="fadeAndNavigate(event, 'Projects/Renderings/renderings.html')" class="more-link">Renderings</a>
@@ -753,7 +765,7 @@
                     <h2 style="margin-bottom: 20px;">Golf Course Management</h2>
                     <p class="body-text">NGC Golf Operations Management provides full-service golf course operations management services to clubs, owners, municipalities and financial institutions. NGC is unique in many ways, most importantly in our collaborative approach to serving our partner clubs. We bring a seasoned team of thinkers to all aspects of golf operations including day to day management, staffing and training, agronomic care and food and beverage services.</p>
                     <p class="body-text">We specifically customize our approach to achieve measured success for our partners. Our management team brings over 50 years of combined experience and excellence to each relationship with the objective to provide the highest level of course conditioning and unmatched player experience. NGC brings the proper expertise to each property to guide the vision with unwavering work ethic, best practices, data driven decision making and out of the box marketing creativity to maximize property opportunities and profitability.</p>
-                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See the Courses We Manage...</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase; text-align: center;">See the Courses We Manage...</p>
                     <div class="service-links-left">
                         <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="more-link">Met Links</a>
                         <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Kings Crossing</a>
