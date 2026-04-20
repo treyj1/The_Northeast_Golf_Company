@@ -369,72 +369,202 @@
             width: 100%;
         }
 
-        /* ---- START SECTION: editorial cover ---- */
+        /* ---- START SECTION ---- */
         #start {
-            align-items: flex-start;
-            justify-content: flex-start;
-            text-align: left;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             padding: 0;
         }
 
         .start-inner {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
             height: 100%;
             width: 100%;
-            padding: 6vh 8vw 5vh;
+            gap: 18px;
+            position: relative;
         }
 
         .start-brand-mark {
-            flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
+            align-items: center;
+            gap: 15px;
         }
 
         .start-logo {
-            height: 90px;
+            height: 110px;
             width: auto;
             opacity: 0.85;
         }
 
         .start-company-name {
-            font-size: 1.1rem;
-            letter-spacing: 0.05rem;
-            color: var(--text-main);
-            font-weight: 400;
-            margin: 0;
-        }
-
-        .start-headline-wrap {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-        }
-
-        .start-headline {
-            font-size: clamp(2.8rem, 5.5vw, 6rem);
-            font-weight: 600;
-            line-height: 1.0;
-            letter-spacing: -0.02em;
-            color: var(--text-main);
-            margin: 0;
-        }
-
-        .start-headline em {
-            font-style: italic;
-            font-weight: 400;
+            font-size: 1.15rem;
+            letter-spacing: 0.1rem;
             color: var(--text-gray);
+            font-weight: 300;
+            margin: 0;
         }
 
         .start-scroll-hint {
-            flex-shrink: 0;
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 0.75rem;
             letter-spacing: 0.1rem;
             color: var(--address-gray);
             font-weight: 300;
             margin: 0;
+            white-space: nowrap;
+        }
+
+        /* ---- PROJECTS SECTION: card grid ---- */
+        #projects-section {
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 5vh 3vw 0;
+            text-align: left;
+        }
+
+        .projects-section-header {
+            width: 100%;
+            margin-bottom: 2vh;
+            padding: 0 0.5vw;
+            flex-shrink: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+        }
+
+        .projects-section-header h2 {
+            margin: 0;
+        }
+
+        .projects-section-header p {
+            font-size: 0.8rem;
+            color: var(--address-gray);
+            letter-spacing: 0.05rem;
+            margin: 0;
+        }
+
+        .project-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            width: 100%;
+        }
+
+        .project-card {
+            position: relative;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            background-color: #f0ece4;
+        }
+
+        .project-card.has-image {
+            background-color: #1a1a1a;
+        }
+
+        .project-card-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-card-bg {
+            transform: scale(1.05);
+        }
+
+        .project-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%);
+        }
+
+        .project-card-number {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            font-size: 0.68rem;
+            font-weight: 300;
+            letter-spacing: 0.04rem;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .project-card.no-image .project-card-number {
+            color: var(--text-gray);
+        }
+
+        .project-card-arrow {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.55);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-card-arrow {
+            transform: translateX(3px);
+        }
+
+        .project-card.no-image .project-card-arrow {
+            color: var(--text-gray);
+        }
+
+        .project-card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px;
+        }
+
+        .project-card-tag {
+            display: inline-block;
+            font-size: 0.52rem;
+            letter-spacing: 0.12rem;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.6);
+            padding: 2px 5px;
+            margin-bottom: 6px;
+        }
+
+        .project-card.no-image .project-card-tag {
+            border-color: rgba(0,0,0,0.2);
+            color: var(--text-gray);
+        }
+
+        .project-card-name {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #ffffff;
+            line-height: 1.2;
+            margin: 0 0 2px 0;
+        }
+
+        .project-card.no-image .project-card-name {
+            color: var(--text-main);
+        }
+
+        .project-card-location {
+            font-size: 0.62rem;
+            letter-spacing: 0.03rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 300;
+        }
+
+        .project-card.no-image .project-card-location {
+            color: var(--text-gray);
         }
 
         /* ---- DESIGN SERVICES SECTION ---- */
@@ -505,18 +635,26 @@
 
             /* Start section mobile overrides */
             #start {
-                align-items: flex-start !important;
-                justify-content: flex-start !important;
-                padding: 0 !important;
                 min-height: 100vh;
             }
             .start-inner {
-                padding: 10vh 7% 8vh !important;
                 min-height: 100vh;
             }
-            .start-headline {
-                font-size: clamp(2.2rem, 8vw, 3.5rem) !important;
-                line-height: 1.05 !important;
+            .start-scroll-hint {
+                bottom: 80px !important;
+            }
+
+            /* Project cards mobile */
+            #projects-section {
+                padding: 6vh 0 80px !important;
+            }
+            .projects-section-header {
+                padding: 0 16px !important;
+                margin-bottom: 12px !important;
+            }
+            .project-cards {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 2px !important;
             }
 
             /* 1. Reset Body & Scrolling */
@@ -738,32 +876,6 @@
                 text-align: justify !important;
             }
 
-            .projects-container {
-                text-align: center;
-                padding: 0 20px;
-            }
-
-            .projects-container h2 {
-                padding-left: 0 !important;
-            }
-
-            .projects-container p {
-                padding-left: 0 !important;
-            }
-
-            .project-list {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px 30px;
-                padding-left: 0;
-                text-align: left; /* Keep names left aligned within their column */
-                max-width: 600px;
-                margin: 0 auto;
-            }
-
-            .see-all-projects {
-                padding-left: 0 !important;
-                margin-top: 40px !important;
-            }
 
             .contact-container {
                 flex-direction: column;
@@ -787,9 +899,8 @@
             .nav-links { gap: 12px; }
             .nav-links a { font-size: 0.75rem; }
             
-            .project-list {
-                grid-template-columns: 1fr;
-                text-align: center;
+            .project-cards {
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -839,11 +950,6 @@
                     <div class="start-brand-mark">
                         <img src="index/NGC_Logo.png" alt="NGC Logo" class="start-logo">
                         <p class="start-company-name">The Northeast Golf Company</p>
-                    </div>
-                    <div class="start-headline-wrap">
-                        <h1 class="start-headline">
-                            Golf courses<br>drawn from the<br><em>ground up.</em>
-                        </h1>
                     </div>
                     <p class="start-scroll-hint">Scroll to continue</p>
                 </div>
@@ -967,24 +1073,148 @@
             </section>
 
             <section id="projects-section">
-                <div class="projects-container">
-                    <h2 style="margin-bottom: 5px; padding-left: 35px;">Projects</h2>
-                    <p style="font-size: 0.8rem; color: var(--address-gray); letter-spacing: 0.5px; margin-bottom: 35px; padding-left: 65px;">Select to learn more</p>
-                    <ul class="project-list">
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Bass_Rocks/bass_rocks.html')">Bass Rocks Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bellevue Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Bergen_County/bergen_county.html')">Bergen County Golf Courses</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Burlington Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Fairmount/fairmount.html')">Fairmount Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Fall_River/fall_river.html')">Fall River Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Haverhill/haverhill.html')">Haverhill Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Kernwood Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Madison/madison.html')">Madison Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Mendham/mendham.html')">Mendham Golf & Tennis Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')">Met Links</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Milton Hoosic Club</a></li>
-                    </ul>
-                    <a href="unavailable.html" class="see-all-projects" style="margin-top: 45px; display: block; padding-left: 35px; letter-spacing: 0.5px; font-size: 0.9rem; color: var(--nav-gray); text-decoration: none;">See More Projects</a>
+                <div class="projects-section-header">
+                    <h2>Projects</h2>
+                    <p>Select to learn more</p>
+                </div>
+                <div class="project-cards">
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Bass_Rocks/bass_rocks.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Bass_Rocks/BR_Hole07_Render_Aerial_Before (2).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">01</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Bass Rocks Golf Club</div>
+                            <div class="project-card-location">Gloucester, MA</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">02</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Bellevue Golf Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Bergen_County/bergen_county.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Bergen_County/Bergen_County_Master_Plan.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">03</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Bergen County Golf</div>
+                            <div class="project-card-location">Bergen County, NJ</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">04</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Burlington Country Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Fairmount/fairmount.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Fairmount/Fairmount_Master_Plan.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">05</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Fairmount Country Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Fall_River/fall_river.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Fall_River/Fall_River_Master_Plan.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">06</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Fall River Country Club</div>
+                            <div class="project-card-location">Fall River, MA</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Haverhill/haverhill.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Haverhill/Behind Hole 1 - PathTracer.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">07</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Haverhill Country Club</div>
+                            <div class="project-card-location">Haverhill, MA</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">08</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Kernwood Country Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Madison/madison.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Madison/Madison_Image_(1).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">09</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Madison Golf Club</div>
+                            <div class="project-card-location">Madison, NJ</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Mendham/mendham.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Mendham/Mendham_Image_ (1).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">10</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Mendham Golf &amp; Tennis</div>
+                            <div class="project-card-location">Mendham, NJ</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Met_Links/Met_Links_Image_After (1).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">11</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">MANAGEMENT</div>
+                            <div class="project-card-name">Met Links</div>
+                            <div class="project-card-location">Staten Island, NY</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">12</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Milton Hoosic Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
                 </div>
             </section>
 
