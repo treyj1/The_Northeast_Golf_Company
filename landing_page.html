@@ -6,7 +6,7 @@
     <title>The Northeast Golf Company</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -369,6 +369,74 @@
             width: 100%;
         }
 
+        /* ---- START SECTION: editorial cover ---- */
+        #start {
+            align-items: flex-start;
+            justify-content: flex-start;
+            text-align: left;
+            padding: 0;
+        }
+
+        .start-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 6vh 8vw 5vh;
+        }
+
+        .start-brand-mark {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .start-logo {
+            height: 42px;
+            width: auto;
+            opacity: 0.85;
+        }
+
+        .start-company-name {
+            font-size: 0.85rem;
+            letter-spacing: 0.1rem;
+            color: var(--text-gray);
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .start-headline-wrap {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .start-headline {
+            font-size: clamp(3.5rem, 9.5vw, 10rem);
+            font-weight: 600;
+            line-height: 1.0;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .start-headline em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text-gray);
+        }
+
+        .start-scroll-hint {
+            flex-shrink: 0;
+            font-size: 0.75rem;
+            letter-spacing: 0.1rem;
+            color: var(--address-gray);
+            font-weight: 300;
+            margin: 0;
+        }
+
         /* CUSTOM STYLES FOR REDESIGNED SECTIONS */
         
         /* 
@@ -377,6 +445,22 @@
         */
         @media (max-width: 1300px) {
             
+            /* Start section mobile overrides */
+            #start {
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+                padding: 0 !important;
+                min-height: 100vh;
+            }
+            .start-inner {
+                padding: 10vh 7% 8vh !important;
+                min-height: 100vh;
+            }
+            .start-headline {
+                font-size: clamp(3rem, 11vw, 5rem) !important;
+                line-height: 1.05 !important;
+            }
+
             /* 1. Reset Body & Scrolling */
             body {
                 height: 100vh !important;
@@ -693,13 +777,17 @@
         <div class="horizontal-track" id="track">
             
             <section id="start">
-                <div class="project-text" style="opacity: 1;">
-                    <img src="index/NGC_Logo.png" alt="NGC Logo" style="width: 250px; height: auto; margin-bottom: 40px;">
-                    <h1>
-                        <span style="display: block; white-space: nowrap;">The Northeast</span>
-                        <span style="display: block; white-space: nowrap;">Golf Company</span>
-                    </h1>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px; color: #555555;">Scroll to continue</p>
+                <div class="start-inner">
+                    <div class="start-brand-mark">
+                        <img src="index/NGC_Logo.png" alt="NGC Logo" class="start-logo">
+                        <p class="start-company-name">Northeast Golf Company</p>
+                    </div>
+                    <div class="start-headline-wrap">
+                        <h1 class="start-headline">
+                            Golf courses<br>drawn <em>from</em> the<br>ground <em>up.</em>
+                        </h1>
+                    </div>
+                    <p class="start-scroll-hint">Scroll to continue</p>
                 </div>
             </section>
 
