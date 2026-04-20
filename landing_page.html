@@ -304,7 +304,7 @@
         /* haverhill-1: Img Right, Txt Left (already handled by defaults) */
 
         /* haverhill-2: Img Left, Txt Right */
-        #haverhill-2 #peek-img-design { left: 8vw; right: auto; }
+
         #haverhill-2 #text-2 { right: 8vw; left: auto; }
 
         /* management-1: Img Right, Txt Left */
@@ -437,6 +437,54 @@
             margin: 0;
         }
 
+        /* ---- DESIGN SERVICES SECTION ---- */
+        #haverhill-2 {
+            text-align: left;
+        }
+
+        .services-layout {
+            display: flex;
+            gap: 7vw;
+            align-items: flex-start;
+            width: 82vw;
+            max-width: 1200px;
+        }
+
+        .services-left {
+            width: 28%;
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .services-left h2 {
+            margin-bottom: 18px;
+        }
+
+        .services-left .body-text {
+            color: var(--text-gray);
+            font-weight: 300;
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .services-list {
+            flex: 1;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .services-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-size: 1.05rem;
+            font-weight: 300;
+            color: var(--text-main);
+            font-family: 'Newsreader', serif;
+            line-height: 1.4;
+        }
+
         /* CUSTOM STYLES FOR REDESIGNED SECTIONS */
         
         /* 
@@ -445,6 +493,16 @@
         */
         @media (max-width: 1300px) {
             
+            /* Design services section mobile */
+            .services-layout {
+                flex-direction: column;
+                width: 100%;
+                gap: 30px;
+            }
+            .services-left {
+                width: 100%;
+            }
+
             /* Start section mobile overrides */
             #start {
                 align-items: flex-start !important;
@@ -822,19 +880,21 @@
             </section>
 
             <section id="haverhill-2">
-                <img src="Projects/Met_Links/Met_Links_Image_After (2).jpg" class="peeking-img" id="peek-img-design" alt="Haverhill Render 2">
-                <div class="project-text" id="text-2">
-                    <p class="body-text" style="text-align: center !important;">We offer a full range of golf course design services including:</p>
-                    <div style="text-align: left !important; max-width: 600px; margin: 20px auto 0 auto; display: block;">
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- New Golf Course Design</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Renovation of Existing Golf Courses</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Restoration of Classic Designs</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Comprehensive Golf Course Enhancement Planning</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Golf Community Planning</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Unique Golf Amenity Designs (short courses, putting courses, challenge courses)</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Practice Facility Design</p>
-                        <p class="body-text" style="text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Clubhouse Circulation Planning</p>
+                <div class="services-layout" id="text-2">
+                    <div class="services-left">
+                        <h2>Design Services</h2>
+                        <p class="body-text">We offer a full range of golf course design services, tailored to each property and client vision.</p>
                     </div>
+                    <ul class="services-list">
+                        <li>New Golf Course Design</li>
+                        <li>Renovation of Existing Golf Courses</li>
+                        <li>Restoration of Classic Designs</li>
+                        <li>Comprehensive Golf Course Enhancement Planning</li>
+                        <li>Golf Community Planning</li>
+                        <li>Unique Golf Amenity Designs</li>
+                        <li>Practice Facility Design</li>
+                        <li>Clubhouse Circulation Planning</li>
+                    </ul>
                 </div>
             </section>
 
