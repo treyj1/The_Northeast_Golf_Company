@@ -373,17 +373,32 @@
             .info-panel {
                 width: 100%;
                 height: auto;
-                padding: 70px 6% 20px;
+                padding: 0;
                 display: block;
                 position: static;
                 flex-shrink: 0;
             }
 
-            .static-header { margin-bottom: 0; }
+            .static-header {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                background: rgba(255, 255, 255, 0.92);
+                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+                padding: 20px 6% 14px;
+                margin-bottom: 0;
+            }
 
-            h1 { font-size: 2.4rem; }
+            h1 {
+                font-size: 1.2rem;
+                letter-spacing: 0.2rem;
+                line-height: 1.2;
+            }
+            h1 br { display: none; }
 
-            .location-sub { display: block; }
+            .location-sub { display: none; }
 
             /* Hide dynamic desktop text — mobile uses static intro + per-image captions */
             .dynamic-content-wrapper, #dynamic-link {
@@ -396,7 +411,7 @@
                 color: var(--text-gray);
                 line-height: 1.6;
                 font-weight: 300;
-                padding: 12px 6% 28px;
+                padding: 24px 6% 28px;
             }
 
             /* Scroll container: no longer scrolls itself */
