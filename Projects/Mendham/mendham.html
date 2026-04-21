@@ -343,15 +343,29 @@
             .info-panel {
                 width: 100%;
                 height: auto;
-                padding: 100px 5% 30px 5%;
+                padding: 20px 5% 14px 5%;
                 display: block;
                 position: static;
                 flex-shrink: 0;
+                background: rgba(255, 255, 255, 0.92);
+                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+                z-index: 15;
             }
 
-            .static-header { margin-bottom: 25px; }
+            .static-header { margin-bottom: 0; }
 
-            h1 { font-size: 2.8rem; }
+            h1 {
+                font-size: 1.2rem;
+                letter-spacing: 0.2rem;
+                line-height: 1.2;
+            }
+            h1 br { display: none; }
+
+            .location-sub {
+                display: none;
+            }
 
             /* Hide static dynamic text in header on mobile - it now scrolls with images */
             .dynamic-content-wrapper, #dynamic-link {
