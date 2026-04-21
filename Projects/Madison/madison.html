@@ -446,12 +446,12 @@
         }
 
         const scrollContainer = document.getElementById('scrollContainer');
-        scrollContainer.addEventListener('wheel', (evt) => {
+        window.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
                 if (evt.deltaY !== 0) { evt.preventDefault(); scrollContainer.scrollLeft += evt.deltaY; }
                 else if (evt.deltaX !== 0) { evt.preventDefault(); scrollContainer.scrollLeft += evt.deltaX; }
             }
-        });
+        }, { passive: false });
 
         const subtitleElement = document.getElementById('dynamic-subtitle');
         const descriptionElement = document.getElementById('dynamic-description');

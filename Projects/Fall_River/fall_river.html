@@ -663,7 +663,7 @@
 
         // 2. Horizontal Scroll on Mouse Wheel
         const scrollContainer = document.getElementById('scrollContainer');
-        scrollContainer.addEventListener('wheel', (evt) => {
+        window.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
                 if (evt.deltaY !== 0) {
                     evt.preventDefault();
@@ -673,7 +673,7 @@
                     scrollContainer.scrollLeft += evt.deltaX;
                 }
             }
-        });
+        }, { passive: false });
 
         // 3. Dynamic Text & Link Logic
         const subtitleElement = document.getElementById('dynamic-subtitle');
