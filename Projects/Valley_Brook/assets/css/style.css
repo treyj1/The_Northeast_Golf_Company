@@ -466,20 +466,6 @@ ol.notes .ndots { display: inline-flex; gap: .28rem; margin-right: .5rem; vertic
   border-bottom: 1px solid var(--rule-soft);
 }
 
-/* ---------- Hole 13 narrative ---------- */
-.flood-note {
-  margin: 2.4rem 0; padding: 1.6rem 1.8rem;
-  border: 1px solid var(--rule-soft); border-top: 4px solid var(--rule);
-  background: var(--paper-2);
-}
-.flood-note h3 { color: var(--rule); margin-bottom: .6rem; }
-.elev-row { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
-.elev-row span {
-  font-family: var(--serif-d); font-size: .95rem;
-  border: 1px solid var(--rule-soft); padding: .2rem .65rem;
-  background: var(--paper); color: var(--rule);
-}
-
 /* ---------- Scorecard ---------- */
 .sc-wrap { overflow-x: auto; }
 table.scorecard { width: 100%; border-collapse: collapse; min-width: 760px; }

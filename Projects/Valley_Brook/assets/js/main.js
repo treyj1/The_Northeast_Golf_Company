@@ -274,12 +274,19 @@
       var N = window.HOLE13_NARRATIVE;
 
       if (fema) {
-        html += '<div class="prose flood-text" style="margin-top:1.4rem">' +
+        if (N && lead) {
+          lead.innerHTML =
+            '<p class="eyebrow">Hole ' + h.n + '</p>' +
+            '<h2 class="approach-title">FEMA Flood Map</h2>' +
+            '<div class="prose approach-body">' +
             '<p>' + N.intro + '</p><p>' + N.fema + '</p>' +
             '<p>' + N.consequences + '</p><p>' + N.alternatives + '</p></div>';
+        }
       } else {
         if (h.flood && N && lead) {
-          lead.innerHTML = '<h2 class="approach-title">The Proposed Approach</h2>' +
+          lead.innerHTML =
+            '<p class="eyebrow">Hole ' + h.n + '</p>' +
+            '<h2 class="approach-title">The Proposed Approach</h2>' +
             '<div class="prose approach-body">' +
             '<p>' + N.solution + '</p>' +
             '<p>' + N.result + '</p></div>';
