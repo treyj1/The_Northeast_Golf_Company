@@ -166,13 +166,16 @@
 
     var ob = document.createElement("button");
     ob.className = "overall"; ob.textContent = "Overall Plan";
-    ob.addEventListener("click", function () { state.overall = true; state.filter = null; render(); });
+    ob.addEventListener("click", function () {
+      state.overall = true; state.filter = null; histPush(); render();
+    });
     rail.appendChild(ob);
     holes.forEach(function (h, i) {
       var b = document.createElement("button");
       b.textContent = h.n;
       b.addEventListener("click", function () {
-        state.overall = false; state.idx = i; state.fema = !!h.flood; state.filter = null; render();
+        state.overall = false; state.idx = i; state.fema = !!h.flood; state.filter = null;
+        histPush(); render();
       });
       rail.appendChild(b);
     });
@@ -193,6 +196,39 @@
       return h + "</div>";
     }
 
+    /* ---- browser history: keep Back/Forward inside the explorer ---- */
+    function urlFor() {
+      if (state.overall) return location.pathname;
+      return location.pathname + "?hole=" + (state.idx + 1) +
+        (state.fema ? "&fema=1" : "");
+    }
+    function histState() {
+      return { i: state.idx, o: state.overall, f: state.fema };
+    }
+    function histPush() {
+      try { history.pushState(histState(), "", urlFor()); } catch (e) {}
+    }
+    function histReplace() {
+      try { history.replaceState(histState(), "", urlFor()); } catch (e) {}
+    }
+    function applyHistState(s) {
+      if (!s) {
+        var q = +new URLSearchParams(location.search).get("hole");
+        if (q >= 1 && q <= 18) {
+          s = { i: q - 1, o: false,
+                f: location.search.indexOf("fema=1") > -1 && !!holes[q - 1].flood };
+        } else {
+          s = { i: 0, o: true, f: false };
+        }
+      }
+      state.overall = !!s.o;
+      state.idx = (typeof s.i === "number" && s.i >= 0 && s.i < holes.length) ? s.i : 0;
+      state.fema = !!s.f;
+      state.filter = null;
+      render();
+    }
+    window.addEventListener("popstate", function (e) { applyHistState(e.state); });
+
     function render() {
       Array.prototype.forEach.call(rail.children, function (c) { c.classList.remove("active"); });
       rail.children[state.overall ? 0 : state.idx + 1].classList.add("active");
@@ -211,6 +247,7 @@
           state.idx = n - 1;
           state.fema = !!holes[state.idx].flood;
           state.filter = null;
+          histPush();
           render();
           root.scrollIntoView({ behavior: "smooth", block: "start" });
         });
@@ -318,19 +355,24 @@
       var go = e.target.closest("[data-go]");
       if (go) {
         state.overall = false; state.idx = +go.getAttribute("data-go");
-        state.fema = !!holes[state.idx].flood; state.filter = null; render();
+        state.fema = !!holes[state.idx].flood; state.filter = null;
+        histPush(); render();
         root.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
       var nv = e.target.closest("[data-nav]");
       if (nv) {
         state.idx = (state.idx + parseInt(nv.getAttribute("data-nav"), 10) + holes.length) % holes.length;
-        state.fema = !!holes[state.idx].flood; state.filter = null; render();
+        state.fema = !!holes[state.idx].flood; state.filter = null;
+        histPush(); render();
         root.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
       var fm = e.target.closest("[data-fema]");
-      if (fm) { state.fema = fm.getAttribute("data-fema") === "1"; render(); }
+      if (fm) {
+        state.fema = fm.getAttribute("data-fema") === "1";
+        histReplace(); render();
+      }
     });
 
     info.addEventListener("mouseover", function (e) {
@@ -364,6 +406,7 @@
         state.overall = true;
       }
     }
+    histReplace();
     render();
   }
 
