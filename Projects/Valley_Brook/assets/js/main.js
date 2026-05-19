@@ -71,16 +71,16 @@
         fig.classList.remove("ovl-on");
         var svg = '<svg class="ovsvg" viewBox="0 0 ' + VB_W + ' ' + VB_H +
           '" preserveAspectRatio="none" aria-hidden="true"><defs>' +
-          '<filter id="ovblur" x="-20%" y="-20%" width="140%" height="140%">' +
-          '<feGaussianBlur stdDeviation="13"/></filter>' +
+          '<filter id="ovblur" x="-80%" y="-80%" width="260%" height="260%">' +
+          '<feGaussianBlur stdDeviation="34"/></filter>' +
           '<mask id="ovmask" maskUnits="userSpaceOnUse" x="0" y="0" width="' +
           VB_W + '" height="' + VB_H + '">' +
           '<rect width="' + VB_W + '" height="' + VB_H + '" fill="#fff"/>' +
           '<polyline class="ovcut" points="" fill="none" stroke="#000" ' +
-          'stroke-width="115" stroke-linecap="round" stroke-linejoin="round" ' +
+          'stroke-width="92" stroke-linecap="round" stroke-linejoin="round" ' +
           'filter="url(#ovblur)"/></mask></defs>' +
           '<rect class="ovdim" width="' + VB_W + '" height="' + VB_H +
-          '" fill="rgb(255,252,244)" fill-opacity="0.62" mask="url(#ovmask)"/></svg>';
+          '" fill="rgb(255,252,244)" fill-opacity="0.6" mask="url(#ovmask)"/></svg>';
         var btns = "";
         Object.keys(data).forEach(function (n) {
           var L = data[n].label;
