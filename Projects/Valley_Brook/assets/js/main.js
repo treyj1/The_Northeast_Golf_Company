@@ -164,6 +164,46 @@
     };
   }
 
+  /* ---- Flat (non-zoom) image view for holes / FEMA ---- */
+  function makeFlat(fig) {
+    var img = fig.querySelector("img");
+    var mkl = fig.querySelector(".mklayer");
+    var markerHover = null;
+    mkl.addEventListener("mouseover", function (e) {
+      var m = e.target.closest(".mk");
+      if (m && markerHover) markerHover(m.getAttribute("data-k"), true);
+    });
+    mkl.addEventListener("mouseout", function (e) {
+      var m = e.target.closest(".mk");
+      if (m && markerHover) markerHover(m.getAttribute("data-k"), false);
+    });
+    return {
+      setImage: function (src) {
+        img.style.opacity = 0;
+        var pre = new Image();
+        pre.onload = function () { img.src = src; img.style.opacity = 1; };
+        pre.src = src;
+      },
+      setMarkers: function (list) {
+        mkl.innerHTML = "";
+        list.forEach(function (m) {
+          var d = document.createElement("div");
+          d.className = "mk";
+          d.setAttribute("data-k", m.k);
+          d.style.left = (m.x * 100) + "%";
+          d.style.top = (m.y * 100) + "%";
+          mkl.appendChild(d);
+        });
+      },
+      highlight: function (key, on) {
+        mkl.querySelectorAll('.mk[data-k="' + key + '"]').forEach(function (d) {
+          d.classList.toggle("on", on);
+        });
+      },
+      onMarkerHover: function (fn) { markerHover = fn; }
+    };
+  }
+
   /* ---- Course explorer ---- */
   function initExplorer() {
     var root = document.getElementById("explorer");
@@ -173,14 +213,21 @@
     var MARK = window.HOLE_MARKERS || {};
     var state = { idx: 0, overall: false, fema: false, filter: null };
 
-    var viewer = makeViewer(root.querySelector(".viewer"));
+    var vEl = root.querySelector(".viewer");
+    var zEl = vEl.querySelector(".zoomview");
+    var fEl = vEl.querySelector(".flatview");
+    var zoom = makeViewer(zEl);
+    var flat = makeFlat(fEl);
+    var active = flat;
     var rail = root.querySelector(".hole-rail");
     var info = root.querySelector("#hole-info");
 
-    viewer.onMarkerHover(function (k, on) {
+    function onHover(k, on) {
       var li = info.querySelector('li[data-k="' + k + '"]');
       if (li) li.classList.toggle("hl", on);
-    });
+    }
+    zoom.onMarkerHover(onHover);
+    flat.onMarkerHover(onHover);
 
     var ob = document.createElement("button");
     ob.className = "overall"; ob.textContent = "Overall Plan";
@@ -217,8 +264,9 @@
       root.classList.toggle("ov", state.overall);
 
       if (state.overall) {
-        viewer.setImage(img("overall.webp"));
-        viewer.setMarkers([]);
+        zEl.hidden = false; fEl.hidden = true; active = zoom;
+        zoom.setImage(img("overall.webp"));
+        zoom.setMarkers([]);
         var oh = '<div class="hole-head"><h2>Overall Plan</h2></div>' +
           legend(state.filter) + '<div class="ov-list">';
         holes.forEach(function (h, i) {
@@ -243,17 +291,18 @@
 
       var h = holes[state.idx];
       var fema = h.flood && state.fema;
-      viewer.setImage(img(fema ? "hole13_fema.webp" : "hole" + pad(h.n) + ".webp"));
+      zEl.hidden = true; fEl.hidden = false; active = flat;
+      flat.setImage(img(fema ? "hole13_fema.webp" : "hole" + pad(h.n) + ".webp"));
 
       if (fema) {
-        viewer.setMarkers([]);
+        flat.setMarkers([]);
       } else {
         var ms = [];
         var hm = MARK[h.n] || {};
         Object.keys(hm).forEach(function (k) {
           hm[k].forEach(function (p) { ms.push({ k: k, x: p[0], y: p[1] }); });
         });
-        viewer.setMarkers(ms);
+        flat.setMarkers(ms);
       }
 
       var html = '<div class="hole-head"><h2>Hole ' + h.n + '</h2><span class="par">Par ' + h.par + '</span></div>' +
@@ -330,19 +379,19 @@
 
     info.addEventListener("mouseover", function (e) {
       var li = e.target.closest("li[data-k]");
-      if (li) { li.classList.add("hl"); viewer.highlight(li.getAttribute("data-k"), true); }
+      if (li) { li.classList.add("hl"); active.highlight(li.getAttribute("data-k"), true); }
     });
     info.addEventListener("mouseout", function (e) {
       var li = e.target.closest("li[data-k]");
-      if (li) { li.classList.remove("hl"); viewer.highlight(li.getAttribute("data-k"), false); }
+      if (li) { li.classList.remove("hl"); active.highlight(li.getAttribute("data-k"), false); }
     });
 
     var zin = root.querySelector("[data-zin]"),
         zout = root.querySelector("[data-zout]"),
         zre = root.querySelector("[data-zreset]");
-    if (zin) zin.addEventListener("click", function () { viewer.zoom(1.4); });
-    if (zout) zout.addEventListener("click", function () { viewer.zoom(1 / 1.4); });
-    if (zre) zre.addEventListener("click", function () { viewer.reset(); });
+    if (zin) zin.addEventListener("click", function () { zoom.zoom(1.4); });
+    if (zout) zout.addEventListener("click", function () { zoom.zoom(1 / 1.4); });
+    if (zre) zre.addEventListener("click", function () { zoom.reset(); });
 
     var q = new URLSearchParams(location.search).get("hole");
     if (q && +q >= 1 && +q <= 18) state.idx = +q - 1;

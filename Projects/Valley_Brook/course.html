@@ -48,14 +48,20 @@
 
         <div class="explorer">
           <div>
-            <div class="viewer" aria-label="Hole drawing — drag to pan, scroll or double-click to zoom">
-              <span class="viewer-hint">Drag &middot; Scroll &middot; Double-click to zoom</span>
-              <img src="assets/img/holes/overall.webp" alt="Course drawing">
-              <div class="viewer-tools">
-                <button data-zout aria-label="Zoom out">&minus;</button>
-                <button data-zreset aria-label="Reset view">&#9633;</button>
-                <button data-zin aria-label="Zoom in">&plus;</button>
+            <div class="viewer">
+              <div class="zoomview" hidden aria-label="Overall plan — drag to pan, scroll or double-click to zoom">
+                <span class="viewer-hint">Drag &middot; Scroll &middot; Double-click to zoom</span>
+                <img alt="Overall course plan">
+                <div class="viewer-tools">
+                  <button data-zout aria-label="Zoom out">&minus;</button>
+                  <button data-zreset aria-label="Reset view">&#9633;</button>
+                  <button data-zin aria-label="Zoom in">&plus;</button>
+                </div>
               </div>
+              <figure class="flatview" hidden>
+                <img alt="Hole plan">
+                <div class="mklayer"></div>
+              </figure>
             </div>
           </div>
           <div id="hole-info"></div>
