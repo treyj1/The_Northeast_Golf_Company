@@ -71,7 +71,8 @@
         fig.classList.remove("ovl-on");
         var svg = '<svg class="ovsvg" viewBox="0 0 ' + VB_W + ' ' + VB_H +
           '" preserveAspectRatio="none" aria-hidden="true"><defs>' +
-          '<filter id="ovblur" x="-80%" y="-80%" width="260%" height="260%">' +
+          '<filter id="ovblur" filterUnits="userSpaceOnUse" x="-120" y="-120" ' +
+          'width="' + (VB_W + 240) + '" height="' + (VB_H + 240) + '">' +
           '<feGaussianBlur stdDeviation="34"/></filter>' +
           '<mask id="ovmask" maskUnits="userSpaceOnUse" x="0" y="0" width="' +
           VB_W + '" height="' + VB_H + '">' +
@@ -302,8 +303,9 @@
         '<div><div class="y">' + h.yards.forward + '</div><div class="t">Forward</div></div></div>';
 
       var ACT = ' style="background:var(--ink);color:var(--paper)"';
+      var femaToggle = "";
       if (h.flood) {
-        html += '<div class="fema-toggle">' +
+        femaToggle = '<div class="fema-toggle">' +
           '<button class="btn" data-fema="1"' + (fema ? ACT : "") + '>FEMA Flood Map</button>' +
           '<button class="btn" data-fema="0"' + (!fema ? ACT : "") + '>Hole Plan &rarr;</button></div>';
       }
@@ -311,22 +313,22 @@
       var N = window.HOLE13_NARRATIVE;
 
       if (fema) {
-        if (N && lead) {
-          lead.innerHTML =
+        if (h.flood && lead) {
+          lead.innerHTML = femaToggle + (N ?
             '<p class="eyebrow">Hole ' + h.n + '</p>' +
             '<h2 class="approach-title">FEMA Flood Map</h2>' +
             '<div class="prose approach-body">' +
             '<p>' + N.intro + '</p><p>' + N.fema + '</p>' +
-            '<p>' + N.consequences + '</p><p>' + N.alternatives + '</p></div>';
+            '<p>' + N.consequences + '</p><p>' + N.alternatives + '</p></div>' : "");
         }
       } else {
-        if (h.flood && N && lead) {
-          lead.innerHTML =
+        if (h.flood && lead) {
+          lead.innerHTML = femaToggle + (N ?
             '<p class="eyebrow">Hole ' + h.n + '</p>' +
             '<h2 class="approach-title">The Proposed Approach</h2>' +
             '<div class="prose approach-body">' +
             '<p>' + N.solution + '</p>' +
-            '<p>' + N.result + '</p></div>';
+            '<p>' + N.result + '</p></div>' : "");
         }
         html += legend(state.filter);
         html += '<p class="hint-line">Hover a recommendation to find its marker on the plan.</p>';
@@ -368,6 +370,14 @@
         root.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
+      var fm = e.target.closest("[data-fema]");
+      if (fm) {
+        state.fema = fm.getAttribute("data-fema") === "1";
+        histReplace(); render();
+      }
+    });
+
+    if (lead) lead.addEventListener("click", function (e) {
       var fm = e.target.closest("[data-fema]");
       if (fm) {
         state.fema = fm.getAttribute("data-fema") === "1";
