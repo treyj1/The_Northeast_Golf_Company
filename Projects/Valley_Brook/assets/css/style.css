@@ -322,8 +322,12 @@ figcaption {
 /* Hole / FEMA: a plain image the page scrolls past — no pan or zoom */
 .flatview { position: relative; margin: 0; --inv: 1; border: 1px solid var(--rule); background: var(--paper); }
 .flatview > img { display: block; width: 100%; height: auto; transition: opacity .25s; }
-/* Soft spotlight: dim the plan, keep a clear circle around the hovered note */
-.flatview .spot { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; }
+/* Soft spotlight: dim the plan, keep a clear circle around each hovered marker */
+.flatview .spot {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0; transition: opacity .3s ease;
+  background: rgba(255,252,244,.62);
+}
 .flatview.spot-on .spot { opacity: 1; }
 
 .mklayer { position: absolute; inset: 0; pointer-events: none; }
@@ -414,13 +418,20 @@ ol.notes .ndots { display: inline-flex; gap: .28rem; margin-right: .5rem; vertic
 /* Overall plan: stack the master drawing full-width, scope list below */
 #explorer.ov .explorer { grid-template-columns: 1fr; }
 
-/* Overall-plan: all recommendations grouped by hole, compact + multi-column */
+/* Overall-plan recommendations: front nine (left) | back nine (right) */
 .ov-list {
   margin-top: .8rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-  gap: .1rem 2.6rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 2.8rem;
   align-items: start;
+}
+.ov-col { min-width: 0; }
+.ov-coltitle {
+  font-family: var(--serif-d); font-variant: small-caps; letter-spacing: .12em;
+  font-size: .92rem; color: var(--gold-deep);
+  margin: 0 0 .2rem; padding-bottom: .3rem;
+  border-bottom: 1px solid var(--rule);
 }
 .ov-hole { border-bottom: 1px solid var(--rule-soft); padding: 0 0 .45rem; break-inside: avoid; }
 .ov-hole.empty { display: none; }
@@ -456,6 +467,16 @@ ol.notes .ndots { display: inline-flex; gap: .28rem; margin-right: .5rem; vertic
 }
 
 .hole-prevnext { display: flex; justify-content: space-between; margin-top: 1.6rem; }
+
+/* Hole 13 plan: Proposed Approach lead header + body at the top */
+.approach-title {
+  font-family: var(--serif-d); font-size: 1.7rem; color: var(--ink);
+  margin: .4rem 0 .7rem;
+}
+.approach-body {
+  margin: 0 0 1.8rem; padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--rule-soft);
+}
 
 /* ---------- Hole 13 narrative ---------- */
 .flood-note {
@@ -559,6 +580,10 @@ table.scorecard tr:hover td:not(.sum) { background: var(--paper-2); }
   nav.main ul { flex-direction: column; padding: 1rem 1.4rem; gap: .9rem; }
   .nav-toggle { display: block; margin-left: auto; }
   .frame { padding: 20px; outline-offset: 3px; }
+
+  /* Overall scope list: stack front nine then back nine on phones */
+  .ov-list { grid-template-columns: 1fr; gap: 0; }
+  .ov-col + .ov-col { margin-top: 1.4rem; }
 
   /* Program Summary: restack the 2-col table into readable cards */
   .prog, .prog tbody, .prog tr, .prog td { display: block; width: 100%; }

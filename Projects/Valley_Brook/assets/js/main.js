@@ -202,10 +202,17 @@
         marks.forEach(function (d) { d.classList.toggle("on", on); });
         if (!spot) return;
         if (on && marks.length) {
-          var m = marks[0];
-          spot.style.background =
-            "radial-gradient(circle 150px at " + m.style.left + " " + m.style.top + ", " +
-            "rgba(255,252,244,0) 0, rgba(255,252,244,0) 78px, rgba(255,252,244,.6) 150px)";
+          // One clear circle per marker (a key can have several, e.g. Hole 13's
+          // two D labels). mask-composite:intersect keeps the dim only outside
+          // *every* circle, so all markers get a spotlight.
+          var grads = [].map.call(marks, function (m) {
+            return "radial-gradient(circle 150px at " + m.style.left + " " + m.style.top +
+              ", rgba(0,0,0,0) 0, rgba(0,0,0,0) 78px, #000 150px)";
+          }).join(",");
+          spot.style.webkitMaskImage = grads;
+          spot.style.maskImage = grads;
+          spot.style.webkitMaskComposite = "source-in";
+          spot.style.maskComposite = "intersect";
           fig.classList.add("spot-on");
         } else if (!on) {
           fig.classList.remove("spot-on");
@@ -273,30 +280,41 @@
       Array.prototype.forEach.call(rail.children, function (c) { c.classList.remove("active"); });
       rail.children[state.overall ? 0 : state.idx + 1].classList.add("active");
       root.classList.toggle("ov", state.overall);
+      try {
+        sessionStorage.setItem("vbExplorer",
+          JSON.stringify({ i: state.idx, o: state.overall, f: state.fema }));
+      } catch (e) {}
 
       if (state.overall) {
         zEl.hidden = false; fEl.hidden = true; active = zoom;
         zoom.setImage(img("overall.webp"));
         zoom.setMarkers([]);
-        var oh = '<div class="hole-head"><h2>Overall Plan</h2></div>' +
-          legend(state.filter) + '<div class="ov-list">';
-        holes.forEach(function (h, i) {
+        function ovHole(h, i) {
           var vis = h.notes.filter(function (n) {
             return !state.filter || n.c.indexOf(state.filter) !== -1;
           });
-          oh += '<div class="ov-hole' + (vis.length ? "" : " empty") + '">' +
+          var s = '<div class="ov-hole' + (vis.length ? "" : " empty") + '">' +
             '<button class="ov-hd" data-go="' + i + '">' +
             '<span class="h">Hole ' + h.n + '</span>' +
             '<span class="meta">Par ' + h.par + ' &middot; ' + h.yards.back + '/' + h.yards.middle + '/' + h.yards.forward + ' &middot; ' + vis.length + ' of ' + h.notes.length + '</span></button>' +
             '<ol class="notes">';
           h.notes.forEach(function (n) {
             var dim = state.filter && n.c.indexOf(state.filter) === -1;
-            oh += '<li class="' + (dim ? "dim" : "") + '"><span class="key">' + n.k + '</span>' +
+            s += '<li class="' + (dim ? "dim" : "") + '"><span class="key">' + n.k + '</span>' +
               '<div class="txt">' + dots(n.c) + n.t + '</div></li>';
           });
-          oh += '</ol></div>';
+          return s + '</ol></div>';
+        }
+        var left = "", right = "";
+        holes.forEach(function (h, i) {
+          if (i < 9) left += ovHole(h, i); else right += ovHole(h, i);
         });
-        info.innerHTML = oh + '</div>';
+        info.innerHTML = '<div class="hole-head"><h2>Overall Plan</h2></div>' +
+          legend(state.filter) +
+          '<div class="ov-list">' +
+          '<div class="ov-col"><p class="ov-coltitle">Front Nine</p>' + left + '</div>' +
+          '<div class="ov-col"><p class="ov-coltitle">Back Nine</p>' + right + '</div>' +
+          '</div>';
         return;
       }
 
@@ -336,6 +354,12 @@
             '<p>' + N.intro + '</p><p>' + N.fema + '</p>' +
             '<p>' + N.consequences + '</p><p>' + N.alternatives + '</p></div>';
       } else {
+        if (h.flood && N) {
+          html += '<h2 class="approach-title">The Proposed Approach</h2>' +
+            '<div class="prose approach-body">' +
+            '<p>' + N.solution + '</p>' +
+            '<p>' + N.result + '</p></div>';
+        }
         html += legend(state.filter);
         html += '<p class="hint-line">Hover a recommendation to find its marker on the plan.</p>';
         html += '<ol class="notes">';
@@ -348,12 +372,6 @@
         html += '</ol>';
 
         if (h.extra) html += '<div class="hole-extra"><strong>Other notes&nbsp;&mdash;&nbsp;</strong>' + h.extra + '</div>';
-
-        if (h.flood && N) {
-          html += '<div class="flood-note"><h3>The Proposed Approach</h3>' +
-            '<p>' + N.solution + '</p>' +
-            '<p style="margin-bottom:0">' + N.result + '</p></div>';
-        }
       }
 
       html += '<div class="hole-prevnext">' +
@@ -401,8 +419,27 @@
     if (zre) zre.addEventListener("click", function () { zoom.reset(); });
 
     var q = new URLSearchParams(location.search).get("hole");
-    if (q && +q >= 1 && +q <= 18) state.idx = +q - 1;
-    state.fema = !!holes[state.idx].flood;
+    if (q && +q >= 1 && +q <= 18) {
+      // Explicit deep link wins.
+      state.overall = false;
+      state.idx = +q - 1;
+      state.fema = !!holes[state.idx].flood;
+    } else {
+      var nav = (window.performance && performance.getEntriesByType &&
+                 performance.getEntriesByType("navigation")[0]) || {};
+      var saved = null;
+      try { saved = JSON.parse(sessionStorage.getItem("vbExplorer")); } catch (e) {}
+      if ((nav.type === "reload" || nav.type === "back_forward") && saved) {
+        // Reloading / returning: stay where the user was.
+        state.overall = !!saved.o;
+        state.idx = (typeof saved.i === "number" && saved.i >= 0 &&
+                     saved.i < holes.length) ? saved.i : 0;
+        state.fema = !!saved.f;
+      } else {
+        // Fresh navigation here (nav link, etc.): open to the overall plan.
+        state.overall = true;
+      }
+    }
     render();
   }
 
