@@ -333,11 +333,7 @@
 
       if (fema) {
         html += '<div class="prose flood-text" style="margin-top:1.4rem">' +
-            '<p>' + N.intro + '</p><p>' + N.fema + '</p></div>' +
-          '<div class="elev-row" aria-label="Base flood elevations along the corridor">' +
-            N.elevations.map(function (e) { return '<span>BFE ' + e + '</span>'; }).join("") +
-          '</div>' +
-          '<div class="prose flood-text" style="margin-top:1.4rem">' +
+            '<p>' + N.intro + '</p><p>' + N.fema + '</p>' +
             '<p>' + N.consequences + '</p><p>' + N.alternatives + '</p></div>';
       } else {
         html += legend(state.filter);
