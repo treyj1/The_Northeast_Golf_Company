@@ -43,127 +43,6 @@
     });
   }
 
-  /* ---- Pan / zoom viewer with marker overlay ---- */
-  function makeViewer(el) {
-    var img = el.querySelector("img");
-    var stage = document.createElement("div");
-    stage.className = "stage";
-    var mkl = document.createElement("div");
-    mkl.className = "mklayer";
-    el.insertBefore(stage, img);
-    stage.appendChild(img);
-    stage.appendChild(mkl);
-
-    var natW = 1, natH = 1;
-    var baseW = 1, baseH = 1, offX = 0, offY = 0;
-    var scale = 1, tx = 0, ty = 0;
-    var MINF = 1, MAXF = 7;
-    var drag = false, sx = 0, sy = 0, otx = 0, oty = 0;
-    var markerHover = null;
-
-    function layout() {
-      var vw = el.clientWidth, vh = el.clientHeight;
-      var fit = Math.min(vw / natW, vh / natH);
-      baseW = natW * fit; baseH = natH * fit;
-      offX = (vw - baseW) / 2; offY = (vh - baseH) / 2;
-      stage.style.left = offX + "px";
-      stage.style.top = offY + "px";
-      stage.style.width = baseW + "px";
-      stage.style.height = baseH + "px";
-      apply();
-    }
-    function clamp() {
-      var vw = el.clientWidth, vh = el.clientHeight;
-      var sw = baseW * scale, sh = baseH * scale;
-      if (sw <= vw + 0.5) tx = 0;
-      else tx = Math.min(-offX, Math.max(vw - sw - offX, tx));
-      if (sh <= vh + 0.5) ty = 0;
-      else ty = Math.min(-offY, Math.max(vh - sh - offY, ty));
-    }
-    function apply() {
-      clamp();
-      stage.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")";
-      stage.style.setProperty("--inv", 1 / scale);
-    }
-    function zoomAt(cx, cy, factor) {
-      var ns = Math.min(MAXF, Math.max(MINF, scale * factor));
-      if (ns === scale) return;
-      var r = el.getBoundingClientRect();
-      var lx = cx - r.left - offX, ly = cy - r.top - offY;
-      var localX = (lx - tx) / scale, localY = (ly - ty) / scale;
-      scale = ns;
-      tx = lx - localX * scale; ty = ly - localY * scale;
-      apply();
-    }
-
-    el.addEventListener("wheel", function (e) {
-      e.preventDefault();
-      zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.2 : 1 / 1.2);
-    }, { passive: false });
-    el.addEventListener("pointerdown", function (e) {
-      if (e.target.closest(".mk")) return;
-      drag = true; el.classList.add("grabbing");
-      sx = e.clientX; sy = e.clientY; otx = tx; oty = ty;
-      el.setPointerCapture(e.pointerId);
-    });
-    el.addEventListener("pointermove", function (e) {
-      if (!drag) return;
-      tx = otx + (e.clientX - sx); ty = oty + (e.clientY - sy); apply();
-    });
-    function end() { drag = false; el.classList.remove("grabbing"); }
-    el.addEventListener("pointerup", end);
-    el.addEventListener("pointercancel", end);
-    el.addEventListener("dblclick", function (e) {
-      if (scale > 1.01) { scale = 1; tx = 0; ty = 0; apply(); }
-      else zoomAt(e.clientX, e.clientY, 2.6);
-    });
-    window.addEventListener("resize", layout);
-
-    mkl.addEventListener("mouseover", function (e) {
-      var m = e.target.closest(".mk");
-      if (m && markerHover) markerHover(m.getAttribute("data-k"), true);
-    });
-    mkl.addEventListener("mouseout", function (e) {
-      var m = e.target.closest(".mk");
-      if (m && markerHover) markerHover(m.getAttribute("data-k"), false);
-    });
-
-    return {
-      zoom: function (f) {
-        var r = el.getBoundingClientRect();
-        zoomAt(r.left + r.width / 2, r.top + r.height / 2, f);
-      },
-      reset: function () { scale = 1; tx = 0; ty = 0; apply(); },
-      setImage: function (src) {
-        scale = 1; tx = 0; ty = 0;
-        img.style.opacity = 0;
-        var pre = new Image();
-        pre.onload = function () {
-          natW = pre.naturalWidth; natH = pre.naturalHeight;
-          img.src = src; img.style.opacity = 1; layout();
-        };
-        pre.src = src;
-      },
-      setMarkers: function (list) {
-        mkl.innerHTML = "";
-        list.forEach(function (m) {
-          var d = document.createElement("div");
-          d.className = "mk";
-          d.setAttribute("data-k", m.k);
-          d.style.left = (m.x * 100) + "%";
-          d.style.top = (m.y * 100) + "%";
-          mkl.appendChild(d);
-        });
-      },
-      highlight: function (key, on) {
-        mkl.querySelectorAll('.mk[data-k="' + key + '"]').forEach(function (d) {
-          d.classList.toggle("on", on);
-        });
-      },
-      onMarkerHover: function (fn) { markerHover = fn; }
-    };
-  }
-
   /* ---- Flat (non-zoom) image view for holes / FEMA ---- */
   function makeFlat(fig) {
     var img = fig.querySelector("img");
@@ -231,21 +110,14 @@
     var MARK = window.HOLE_MARKERS || {};
     var state = { idx: 0, overall: false, fema: false, filter: null };
 
-    var vEl = root.querySelector(".viewer");
-    var zEl = vEl.querySelector(".zoomview");
-    var fEl = vEl.querySelector(".flatview");
-    var zoom = makeViewer(zEl);
-    var flat = makeFlat(fEl);
-    var active = flat;
+    var flat = makeFlat(root.querySelector(".flatview"));
     var rail = root.querySelector(".hole-rail");
     var info = root.querySelector("#hole-info");
 
-    function onHover(k, on) {
+    flat.onMarkerHover(function (k, on) {
       var li = info.querySelector('li[data-k="' + k + '"]');
       if (li) li.classList.toggle("hl", on);
-    }
-    zoom.onMarkerHover(onHover);
-    flat.onMarkerHover(onHover);
+    });
 
     var ob = document.createElement("button");
     ob.className = "overall"; ob.textContent = "Overall Plan";
@@ -286,9 +158,8 @@
       } catch (e) {}
 
       if (state.overall) {
-        zEl.hidden = false; fEl.hidden = true; active = zoom;
-        zoom.setImage(img("overall.webp"));
-        zoom.setMarkers([]);
+        flat.setImage(img("overall.webp"));
+        flat.setMarkers([]);
         function ovHole(h, i) {
           var vis = h.notes.filter(function (n) {
             return !state.filter || n.c.indexOf(state.filter) !== -1;
@@ -320,7 +191,6 @@
 
       var h = holes[state.idx];
       var fema = h.flood && state.fema;
-      zEl.hidden = true; fEl.hidden = false; active = flat;
       flat.setImage(img(fema ? "hole13_fema.webp" : "hole" + pad(h.n) + ".webp"));
 
       if (fema) {
@@ -404,19 +274,12 @@
 
     info.addEventListener("mouseover", function (e) {
       var li = e.target.closest("li[data-k]");
-      if (li) { li.classList.add("hl"); active.highlight(li.getAttribute("data-k"), true); }
+      if (li) { li.classList.add("hl"); flat.highlight(li.getAttribute("data-k"), true); }
     });
     info.addEventListener("mouseout", function (e) {
       var li = e.target.closest("li[data-k]");
-      if (li) { li.classList.remove("hl"); active.highlight(li.getAttribute("data-k"), false); }
+      if (li) { li.classList.remove("hl"); flat.highlight(li.getAttribute("data-k"), false); }
     });
-
-    var zin = root.querySelector("[data-zin]"),
-        zout = root.querySelector("[data-zout]"),
-        zre = root.querySelector("[data-zreset]");
-    if (zin) zin.addEventListener("click", function () { zoom.zoom(1.4); });
-    if (zout) zout.addEventListener("click", function () { zoom.zoom(1 / 1.4); });
-    if (zre) zre.addEventListener("click", function () { zoom.reset(); });
 
     var q = new URLSearchParams(location.search).get("hole");
     if (q && +q >= 1 && +q <= 18) {
