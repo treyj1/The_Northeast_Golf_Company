@@ -314,6 +314,24 @@ figcaption {
 }
 .flatview.spot-on .spot { opacity: 1; }
 
+/* Overall-plan: numbered hole labels + centerline corridor spotlight */
+.flatview .ovl { position: absolute; inset: 0; pointer-events: none; }
+.flatview .ovsvg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; transition: opacity .3s ease; pointer-events: none;
+}
+.flatview.ovl-on .ovsvg { opacity: 1; }
+.flatview .ovnum {
+  position: absolute; transform: translate(-50%, -50%);
+  min-width: 1.7rem; height: 1.7rem; padding: 0 .35rem;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif-d); font-weight: 700; font-size: .95rem;
+  color: var(--ink); background: rgba(255,252,244,.92);
+  border: 1px solid var(--rule); border-radius: 999px;
+  cursor: pointer; transition: background .15s, color .15s; pointer-events: auto;
+}
+.flatview .ovnum:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
 .mklayer { position: absolute; inset: 0; pointer-events: none; }
 .mk {
   position: absolute; width: 30px; height: 30px;

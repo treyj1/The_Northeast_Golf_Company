@@ -48,7 +48,9 @@
     var img = fig.querySelector("img");
     var mkl = fig.querySelector(".mklayer");
     var spot = fig.querySelector(".spot");
+    var ovl = fig.querySelector(".ovl");
     var markerHover = null;
+    var VB_W = 1000, VB_H = 934; // overall.webp aspect 2600:2428 -> 1000:934
     mkl.addEventListener("mouseover", function (e) {
       var m = e.target.closest(".mk");
       if (m && markerHover) markerHover(m.getAttribute("data-k"), true);
@@ -64,9 +66,51 @@
         pre.onload = function () { img.src = src; img.style.opacity = 1; };
         pre.src = src;
       },
+      setOverall: function (data, onPick) {
+        if (!ovl || !data) return;
+        fig.classList.remove("ovl-on");
+        var svg = '<svg class="ovsvg" viewBox="0 0 ' + VB_W + ' ' + VB_H +
+          '" preserveAspectRatio="none" aria-hidden="true"><defs>' +
+          '<filter id="ovblur" x="-20%" y="-20%" width="140%" height="140%">' +
+          '<feGaussianBlur stdDeviation="13"/></filter>' +
+          '<mask id="ovmask" maskUnits="userSpaceOnUse" x="0" y="0" width="' +
+          VB_W + '" height="' + VB_H + '">' +
+          '<rect width="' + VB_W + '" height="' + VB_H + '" fill="#fff"/>' +
+          '<polyline class="ovcut" points="" fill="none" stroke="#000" ' +
+          'stroke-width="115" stroke-linecap="round" stroke-linejoin="round" ' +
+          'filter="url(#ovblur)"/></mask></defs>' +
+          '<rect class="ovdim" width="' + VB_W + '" height="' + VB_H +
+          '" fill="rgb(255,252,244)" fill-opacity="0.62" mask="url(#ovmask)"/></svg>';
+        var btns = "";
+        Object.keys(data).forEach(function (n) {
+          var L = data[n].label;
+          btns += '<button class="ovnum" data-h="' + n + '" style="left:' +
+            (L[0] * 100) + "%;top:" + (L[1] * 100) + '%">' + n + "</button>";
+        });
+        ovl.innerHTML = svg + btns;
+        var cut = ovl.querySelector(".ovcut");
+        ovl.onmouseover = function (e) {
+          var b = e.target.closest(".ovnum");
+          if (!b) return;
+          var pts = data[b.getAttribute("data-h")].line.map(function (p) {
+            return (p[0] * VB_W).toFixed(1) + "," + (p[1] * VB_H).toFixed(1);
+          }).join(" ");
+          cut.setAttribute("points", pts);
+          fig.classList.add("ovl-on");
+        };
+        ovl.onmouseout = function (e) {
+          if (e.target.closest(".ovnum")) fig.classList.remove("ovl-on");
+        };
+        ovl.onclick = function (e) {
+          var b = e.target.closest(".ovnum");
+          if (b && onPick) onPick(+b.getAttribute("data-h"));
+        };
+      },
       setMarkers: function (list) {
         mkl.innerHTML = "";
+        if (ovl) { ovl.innerHTML = ""; ovl.onmouseover = ovl.onmouseout = ovl.onclick = null; }
         fig.classList.remove("spot-on");
+        fig.classList.remove("ovl-on");
         list.forEach(function (m) {
           var d = document.createElement("div");
           d.className = "mk";
@@ -160,6 +204,14 @@
       if (state.overall) {
         flat.setImage(img("overall.webp"));
         flat.setMarkers([]);
+        flat.setOverall(window.OVERALL_HOLES, function (n) {
+          state.overall = false;
+          state.idx = n - 1;
+          state.fema = !!holes[state.idx].flood;
+          state.filter = null;
+          render();
+          root.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
         function ovHole(h, i) {
           var vis = h.notes.filter(function (n) {
             return !state.filter || n.c.indexOf(state.filter) !== -1;
