@@ -157,6 +157,7 @@
     var flat = makeFlat(root.querySelector(".flatview"));
     var rail = root.querySelector(".hole-rail");
     var info = root.querySelector("#hole-info");
+    var lead = root.querySelector("#hole-lead");
 
     flat.onMarkerHover(function (k, on) {
       var li = info.querySelector('li[data-k="' + k + '"]');
@@ -196,6 +197,7 @@
       Array.prototype.forEach.call(rail.children, function (c) { c.classList.remove("active"); });
       rail.children[state.overall ? 0 : state.idx + 1].classList.add("active");
       root.classList.toggle("ov", state.overall);
+      if (lead) lead.innerHTML = "";
       try {
         sessionStorage.setItem("vbExplorer",
           JSON.stringify({ i: state.idx, o: state.overall, f: state.fema }));
@@ -276,8 +278,8 @@
             '<p>' + N.intro + '</p><p>' + N.fema + '</p>' +
             '<p>' + N.consequences + '</p><p>' + N.alternatives + '</p></div>';
       } else {
-        if (h.flood && N) {
-          html += '<h2 class="approach-title">The Proposed Approach</h2>' +
+        if (h.flood && N && lead) {
+          lead.innerHTML = '<h2 class="approach-title">The Proposed Approach</h2>' +
             '<div class="prose approach-body">' +
             '<p>' + N.solution + '</p>' +
             '<p>' + N.result + '</p></div>';

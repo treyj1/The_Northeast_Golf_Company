@@ -454,13 +454,15 @@ ol.notes .ndots { display: inline-flex; gap: .28rem; margin-right: .5rem; vertic
 
 .hole-prevnext { display: flex; justify-content: space-between; margin-top: 1.6rem; }
 
-/* Hole 13 plan: Proposed Approach lead header + body at the top */
+/* Hole 13 plan: Proposed Approach as a full-width lead above the
+   image + notes row (#hole-lead sits between the rail and the grid) */
+#hole-lead:empty { display: none; }
 .approach-title {
   font-family: var(--serif-d); font-size: 1.7rem; color: var(--ink);
-  margin: .4rem 0 .7rem;
+  margin: .2rem 0 .7rem;
 }
 .approach-body {
-  margin: 0 0 1.8rem; padding-bottom: 1.4rem;
+  margin: 0 0 1.9rem; padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--rule-soft);
 }
 
