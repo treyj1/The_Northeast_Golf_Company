@@ -168,6 +168,7 @@
   function makeFlat(fig) {
     var img = fig.querySelector("img");
     var mkl = fig.querySelector(".mklayer");
+    var spot = fig.querySelector(".spot");
     var markerHover = null;
     mkl.addEventListener("mouseover", function (e) {
       var m = e.target.closest(".mk");
@@ -186,6 +187,7 @@
       },
       setMarkers: function (list) {
         mkl.innerHTML = "";
+        fig.classList.remove("spot-on");
         list.forEach(function (m) {
           var d = document.createElement("div");
           d.className = "mk";
@@ -196,9 +198,18 @@
         });
       },
       highlight: function (key, on) {
-        mkl.querySelectorAll('.mk[data-k="' + key + '"]').forEach(function (d) {
-          d.classList.toggle("on", on);
-        });
+        var marks = mkl.querySelectorAll('.mk[data-k="' + key + '"]');
+        marks.forEach(function (d) { d.classList.toggle("on", on); });
+        if (!spot) return;
+        if (on && marks.length) {
+          var m = marks[0];
+          spot.style.background =
+            "radial-gradient(circle 150px at " + m.style.left + " " + m.style.top + ", " +
+            "rgba(255,252,244,0) 0, rgba(255,252,244,0) 78px, rgba(255,252,244,.6) 150px)";
+          fig.classList.add("spot-on");
+        } else if (!on) {
+          fig.classList.remove("spot-on");
+        }
       },
       onMarkerHover: function (fn) { markerHover = fn; }
     };

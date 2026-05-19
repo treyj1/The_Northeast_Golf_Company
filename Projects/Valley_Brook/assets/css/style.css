@@ -322,6 +322,9 @@ figcaption {
 /* Hole / FEMA: a plain image the page scrolls past — no pan or zoom */
 .flatview { position: relative; margin: 0; --inv: 1; border: 1px solid var(--rule); background: var(--paper); }
 .flatview > img { display: block; width: 100%; height: auto; transition: opacity .25s; }
+/* Soft spotlight: dim the plan, keep a clear circle around the hovered note */
+.flatview .spot { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; }
+.flatview.spot-on .spot { opacity: 1; }
 
 .mklayer { position: absolute; inset: 0; pointer-events: none; }
 .mk {
