@@ -325,6 +325,81 @@
         }
         .save-status.saved { color: #4a8a4a; }
 
+        /* Featured immediate-actions card (full width, slightly more presence) */
+        .card.featured {
+            margin-bottom: 28px;
+            padding: 22px 26px 18px;
+        }
+        .card.featured h2 {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        .card.featured h2 .count { color: var(--muted-2); }
+
+        /* Date status colors */
+        .item-date.overdue { color: var(--danger); }
+        .item-date.today { color: var(--text); font-weight: 600; }
+
+        /* Pending reword (item checked off, awaiting next Parse) */
+        .item-list li.pending .item-text { font-style: italic; color: var(--muted); }
+        .pending-tag {
+            display: none;
+            font-size: 0.62rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 6px;
+            margin-right: 6px;
+            white-space: nowrap;
+        }
+        .item-list li.pending .pending-tag { display: inline-block; }
+
+        /* Recently Completed — collapsible, de-emphasized */
+        .completed-section {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 14px 22px;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        .completed-section .completed-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+        .completed-section .completed-head h2 {
+            font-weight: 400;
+            font-size: 0.92rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .completed-section .completed-head h2 .count {
+            font-size: 0.72rem;
+            color: var(--muted-2);
+            font-weight: 300;
+        }
+        .completed-section .chev {
+            color: var(--muted-2);
+            font-size: 0.8rem;
+            transition: transform .15s;
+            display: inline-block;
+            width: 10px;
+        }
+        .completed-section.open .chev { transform: rotate(90deg); }
+        .completed-section .completed-body { display: none; margin-top: 14px; }
+        .completed-section.open .completed-body { display: block; }
+        .completed-section .item-list li .item-text { color: var(--done); }
+        .completed-section .item-list li .item-date { color: var(--muted-2); }
+
         /* Brain Dump */
         .brain-dump {
             border: 1px solid var(--border);
@@ -576,17 +651,17 @@
         <div class="brain-dump-review" id="brain-dump-review" style="display:none"></div>
     </section>
 
-    <div class="grid">
-        <section class="card" data-list="immediate">
-            <h2>Immediate Actions <span class="count"></span></h2>
-            <ul class="item-list"></ul>
-            <div class="add-row">
-                <input type="text" placeholder="Add an immediate action…">
-                <input type="date">
-                <button>Add</button>
-            </div>
-        </section>
+    <section class="card featured" data-list="immediate">
+        <h2>Immediate Actions <span class="count"></span></h2>
+        <ul class="item-list"></ul>
+        <div class="add-row">
+            <input type="text" placeholder="Add an immediate action…">
+            <input type="date">
+            <button>Add</button>
+        </div>
+    </section>
 
+    <div class="grid">
         <section class="card" data-list="todos">
             <h2>To-Dos <span class="count"></span></h2>
             <ul class="item-list"></ul>
@@ -607,16 +682,6 @@
             </div>
         </section>
 
-        <section class="card" data-list="visits-upcoming">
-            <h2>Upcoming Visits <span class="count"></span></h2>
-            <ul class="item-list"></ul>
-            <div class="add-row">
-                <input type="text" placeholder="Site visit…">
-                <input type="date">
-                <button>Add</button>
-            </div>
-        </section>
-
         <section class="card" data-list="visits-toplan">
             <h2>Visits to Plan <span class="count"></span></h2>
             <ul class="item-list"></ul>
@@ -627,11 +692,11 @@
             </div>
         </section>
 
-        <section class="card" data-list="completed">
-            <h2>Recently Completed <span class="count"></span></h2>
+        <section class="card" data-list="visits-upcoming">
+            <h2>Upcoming Visits <span class="count"></span></h2>
             <ul class="item-list"></ul>
             <div class="add-row">
-                <input type="text" placeholder="Mark something complete…">
+                <input type="text" placeholder="Site visit…">
                 <input type="date">
                 <button>Add</button>
             </div>
@@ -646,6 +711,20 @@
             <button id="add-project">Add</button>
         </div>
     </div>
+
+    <section class="card completed-section" data-list="completed" id="completed-section">
+        <div class="completed-head" id="completed-head">
+            <h2><span class="chev">▶</span> Recently Completed <span class="count"></span></h2>
+        </div>
+        <div class="completed-body">
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Mark something complete…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </div>
+    </section>
 
     <div class="modal-backdrop" id="settings-modal">
         <div class="modal">
@@ -731,25 +810,68 @@
             renderProjects();
         }
 
+        function todayISO() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function dateStatus(d) {
+            if (!d) return "";
+            const t = todayISO();
+            if (d < t) return "overdue";
+            if (d === t) return "today";
+            return "";
+        }
+
+        function sortItems(items) {
+            // Active first (sorted by date asc, undated last), then done.
+            return [...items].sort((a, b) => {
+                const aDone = !!a.done && !a._pendingReword ? 1 : 0;
+                const bDone = !!b.done && !b._pendingReword ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone;
+                const ad = a.date || "";
+                const bd = b.date || "";
+                if (!ad && bd) return 1;
+                if (ad && !bd) return -1;
+                if (ad < bd) return -1;
+                if (ad > bd) return 1;
+                return 0;
+            });
+        }
+
         function renderLists() {
-            document.querySelectorAll("section.card").forEach(section => {
+            document.querySelectorAll("section[data-list]").forEach(section => {
                 const key = section.dataset.list;
                 const items = state[key] || [];
                 const ul = section.querySelector(".item-list");
                 ul.innerHTML = "";
-                items.forEach(item => ul.appendChild(renderItem(key, item)));
-                section.querySelector("h2 .count").textContent = items.length ? items.length : "";
+                sortItems(items).forEach(item => ul.appendChild(renderItem(key, item)));
+                const countEl = section.querySelector("h2 .count");
+                if (countEl) countEl.textContent = items.length ? items.length : "";
             });
         }
 
         function renderItem(listKey, item) {
             const li = document.createElement("li");
             if (item.done) li.classList.add("done");
+            if (item._pendingReword) li.classList.add("pending");
 
             const cb = document.createElement("input");
             cb.type = "checkbox";
             cb.checked = !!item.done;
-            cb.addEventListener("change", () => { item.done = cb.checked; save(); render(); });
+            cb.addEventListener("change", () => {
+                if (listKey === "completed") {
+                    item.done = cb.checked;
+                } else {
+                    if (cb.checked) {
+                        item.done = true;
+                        item._pendingReword = true;
+                    } else {
+                        item.done = false;
+                        item._pendingReword = false;
+                    }
+                }
+                save(); render();
+            });
 
             const text = document.createElement("input");
             text.type = "text";
@@ -757,11 +879,24 @@
             text.value = item.text || "";
             text.addEventListener("input", () => { item.text = text.value; save(); });
 
+            const tag = document.createElement("span");
+            tag.className = "pending-tag";
+            tag.textContent = "→ Completed";
+            tag.title = "Will be reworded and moved to Recently Completed on next Parse";
+
             const date = document.createElement("input");
             date.type = "date";
             date.className = "item-date";
+            const ds = dateStatus(item.date);
+            if (ds) date.classList.add(ds);
             date.value = item.date || "";
-            date.addEventListener("change", () => { item.date = date.value; save(); });
+            date.addEventListener("change", () => {
+                item.date = date.value;
+                date.classList.remove("overdue", "today");
+                const ns = dateStatus(item.date);
+                if (ns) date.classList.add(ns);
+                save();
+            });
 
             const del = document.createElement("button");
             del.className = "item-del";
@@ -772,7 +907,7 @@
                 save(); render();
             });
 
-            li.append(cb, text, date, del);
+            li.append(cb, text, tag, date, del);
             return li;
         }
 
@@ -908,8 +1043,14 @@
             return li;
         }
 
+        // Completed section collapse toggle
+        const completedSection = document.getElementById("completed-section");
+        document.getElementById("completed-head").addEventListener("click", () => {
+            completedSection.classList.toggle("open");
+        });
+
         // List card add buttons
-        document.querySelectorAll("section.card").forEach(section => {
+        document.querySelectorAll("section[data-list]").forEach(section => {
             const key = section.dataset.list;
             const textIn = section.querySelector(".add-row input[type=text]");
             const dateIn = section.querySelector(".add-row input[type=date]");
@@ -1074,11 +1215,25 @@
 
         bdParseBtn.addEventListener("click", runBrainDump);
 
+        function gatherPendingRewords() {
+            const out = [];
+            Object.keys(LIST_LABELS).forEach(key => {
+                if (key === "completed") return;
+                (state[key] || []).forEach(it => {
+                    if (it._pendingReword) {
+                        out.push({ id: it.id, list: key, text: it.text, date: it.date || "" });
+                    }
+                });
+            });
+            return out;
+        }
+
         async function runBrainDump() {
             clearError();
             const text = bdInput.value.trim();
-            if (!text) {
-                setStatus("Nothing to parse.");
+            const pendingRewords = gatherPendingRewords();
+            if (!text && !pendingRewords.length) {
+                setStatus("Nothing to parse and nothing checked off.");
                 return;
             }
             const key = getApiKey();
@@ -1090,29 +1245,36 @@
 
             bdParseBtn.disabled = true;
             bdClearBtn.disabled = true;
-            setStatus("Parsing…");
+            setStatus(pendingRewords.length && !text
+                ? "Rewording checked items…"
+                : "Parsing…");
             bdReview.style.display = "none";
             bdReview.innerHTML = "";
             pendingProposal = null;
 
-            const today = new Date().toISOString().slice(0, 10);
+            const today = todayISO();
             const projectNames = (state.projects || []).map(p => p.name);
 
             const systemPrompt = [
-                "You extract structured action items from a person's free-form notes about their golf-course consulting work.",
+                "You help a golf-course consultant organize their work. You do two things in one response:",
+                "(1) Extract structured action items from any <brain_dump> text the user provides.",
+                "(2) Reword any <items_to_reword> as concise past-tense entries suitable for a \"Recently Completed\" log.",
+                "",
                 "Today's date is " + today + ". Resolve all relative dates (\"tomorrow\", \"next Tuesday\", \"in two weeks\") to absolute ISO dates (YYYY-MM-DD). If no date is implied, use null.",
                 "",
-                "Sort each item into exactly one of these destinations:",
+                "For brain-dump extraction, sort each item into exactly one of these destinations:",
                 "- immediate: urgent things needing action in the next day or so",
                 "- todos: general tasks without a strict deadline or urgency",
                 "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations (who/what)",
                 "- visits-upcoming: site visits that already have a date or are firmly planned",
                 "- visits-toplan: site visits that need to be scheduled (no date yet, but intent is clear)",
                 "- completed: things the person says they already did or finished",
-                "- projects: items that clearly belong to a specific project (matched to one of the existing project names below). Use this when an item is project-specific work or context. notes_to_append is optional context to add to that project's notes (use \"\" if none). tasks is an array of action items for that project.",
+                "- projects: items that clearly belong to a specific project (matched to one of the existing project names below). notes_to_append is optional context to add to that project's notes (use \"\" if none). tasks is an array of action items for that project.",
                 "",
                 "Existing project names (match case-insensitively; do NOT invent new project names — if a mentioned project doesn't match these, put its items under todos or the most appropriate list instead):",
                 projectNames.length ? projectNames.map(n => "- " + n).join("\n") : "(none yet)",
+                "",
+                "For rewording: for each entry in <items_to_reword>, produce a short past-tense version. Keep names, projects, and key details. Don't add new information. Examples: \"Call Bass Rocks contact\" → \"Called Bass Rocks contact\"; \"Email John re scope\" → \"Emailed John about scope\"; \"Site visit at Mendham\" → \"Visited Mendham site\". Preserve the original date in the response (don't infer a new date).",
                 "",
                 "Output ONLY a single JSON object with this exact shape, no prose, no markdown fences:",
                 "{",
@@ -1122,11 +1284,21 @@
                 "  \"visits-upcoming\": [...],",
                 "  \"visits-toplan\": [...],",
                 "  \"completed\": [...],",
-                "  \"projects\": [{\"name\": \"<exact existing project name>\", \"notes_to_append\": \"...\", \"tasks\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\"}]}]",
+                "  \"projects\": [{\"name\": \"<exact existing project name>\", \"notes_to_append\": \"...\", \"tasks\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\"}]}],",
+                "  \"reworded_completions\": [{\"id\": \"<id from items_to_reword>\", \"reworded\": \"<past-tense text>\", \"date\": \"YYYY-MM-DD or null\"}]",
                 "}",
                 "",
-                "Keep item text concise (typically under 12 words). Don't duplicate items. If a list has nothing, return [] for it. Omit nothing — every key must be present."
+                "Keep item text concise (typically under 12 words). Don't duplicate items. If a list has nothing, return [] for it. Omit nothing — every key must be present. If <items_to_reword> is empty or absent, return [] for reworded_completions."
             ].join("\n");
+
+            const userParts = [];
+            if (text) {
+                userParts.push("<brain_dump>\n" + text + "\n</brain_dump>");
+            } else {
+                userParts.push("<brain_dump></brain_dump>");
+            }
+            userParts.push("<items_to_reword>\n" + JSON.stringify(pendingRewords, null, 2) + "\n</items_to_reword>");
+            const userMessage = userParts.join("\n\n");
 
             let resp, raw;
             try {
@@ -1143,7 +1315,7 @@
                         max_tokens: 2048,
                         system: systemPrompt,
                         messages: [
-                            { role: "user", content: text }
+                            { role: "user", content: userMessage }
                         ]
                     })
                 });
@@ -1223,10 +1395,10 @@
                 "visits-upcoming": [],
                 "visits-toplan": [],
                 completed: [],
-                projects: []
+                projects: [],
+                reworded_completions: []
             };
-            Object.keys(norm).forEach(k => {
-                if (k === "projects") return;
+            Object.keys(LIST_LABELS).forEach(k => {
                 const arr = Array.isArray(p[k]) ? p[k] : [];
                 norm[k] = arr
                     .map(it => ({
@@ -1253,7 +1425,28 @@
                         .filter(t => t.text)
                 };
             }).filter(pp => pp.name && pp.matchedProjectId && (pp.notes_to_append || pp.tasks.length));
+
+            const rwArr = Array.isArray(p.reworded_completions) ? p.reworded_completions : [];
+            norm.reworded_completions = rwArr
+                .map(rc => {
+                    const id = (rc && typeof rc.id === "string") ? rc.id : "";
+                    const reworded = (rc && typeof rc.reworded === "string") ? rc.reworded.trim() : "";
+                    const date = (rc && typeof rc.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(rc.date)) ? rc.date : "";
+                    const found = findPendingById(id);
+                    return found ? { id, reworded, date, originalText: found.item.text, originalList: found.list } : null;
+                })
+                .filter(rc => rc && rc.reworded);
             return norm;
+        }
+
+        function findPendingById(id) {
+            if (!id) return null;
+            const lists = ["immediate", "todos", "meetings", "visits-upcoming", "visits-toplan"];
+            for (const list of lists) {
+                const item = (state[list] || []).find(it => it.id === id);
+                if (item) return { item, list };
+            }
+            return null;
         }
 
         function renderReview(prop) {
@@ -1289,6 +1482,44 @@
                 empty.textContent = "The model didn't extract any actionable items from that text.";
                 bdReview.appendChild(empty);
                 return;
+            }
+
+            // Reworded completions group (shown first — most actionable confirmation)
+            const completions = prop.reworded_completions || [];
+            if (completions.length) {
+                const group = document.createElement("div");
+                group.className = "review-group";
+                const h4 = document.createElement("h4");
+                h4.textContent = "Move to Recently Completed (reworded)";
+                group.appendChild(h4);
+                const ul = document.createElement("ul");
+                completions.forEach(rc => {
+                    if (rc._checked === undefined) rc._checked = true;
+                    const li = document.createElement("li");
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.checked = rc._checked;
+                    cb.addEventListener("change", () => { rc._checked = cb.checked; });
+
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "review-item-text";
+                    const before = document.createElement("span");
+                    before.textContent = rc.originalText;
+                    before.style.textDecoration = "line-through";
+                    before.style.color = "var(--muted-2)";
+                    before.style.marginRight = "8px";
+                    const after = document.createElement("span");
+                    after.textContent = rc.reworded;
+                    textSpan.append(before, after);
+
+                    const dateSpan = document.createElement("span");
+                    dateSpan.className = "review-item-date";
+                    dateSpan.textContent = rc.date || "";
+                    li.append(cb, textSpan, dateSpan);
+                    ul.appendChild(li);
+                });
+                group.appendChild(ul);
+                bdReview.appendChild(group);
             }
 
             Object.keys(LIST_LABELS).forEach(key => {
@@ -1375,13 +1606,32 @@
                 if (pp.notes_to_append) n += 1;
                 n += pp.tasks.length;
             });
+            n += (p.reworded_completions || []).length;
             return n;
         }
 
         function applyProposal() {
             if (!pendingProposal) return;
             let added = 0;
+            let moved = 0;
 
+            // 1. Apply reworded completions first: remove from origin lists, add to completed.
+            (pendingProposal.reworded_completions || []).forEach(rc => {
+                if (!rc._checked) return;
+                const found = findPendingById(rc.id);
+                if (!found) return;
+                state[found.list] = (state[found.list] || []).filter(x => x.id !== rc.id);
+                state.completed = state.completed || [];
+                state.completed.unshift({
+                    id: makeId(),
+                    text: rc.reworded,
+                    date: rc.date || found.item.date || "",
+                    done: true
+                });
+                moved++;
+            });
+
+            // 2. New items from brain dump.
             Object.keys(LIST_LABELS).forEach(key => {
                 (pendingProposal[key] || []).forEach(it => {
                     if (!it._checked) return;
@@ -1396,6 +1646,7 @@
                 });
             });
 
+            // 3. Project additions.
             (pendingProposal.projects || []).forEach(pp => {
                 const proj = (state.projects || []).find(x => x.id === pp.matchedProjectId);
                 if (!proj) return;
@@ -1421,7 +1672,11 @@
             bdReview.style.display = "none";
             bdReview.innerHTML = "";
             bdInput.value = "";
-            setStatus(added ? ("Added " + added + " item" + (added === 1 ? "" : "s") + ".") : "Nothing checked.");
+
+            const parts = [];
+            if (added) parts.push("Added " + added + " item" + (added === 1 ? "" : "s"));
+            if (moved) parts.push("moved " + moved + " to completed");
+            setStatus(parts.length ? parts.join(", ") + "." : "Nothing checked.");
             save();
             render();
         }
