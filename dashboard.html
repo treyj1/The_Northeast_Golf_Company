@@ -393,6 +393,19 @@
         }
         .item-list li.pending .pending-tag { display: inline-block; }
 
+        .project-chip, .source-chip {
+            font-size: 0.68rem;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 6px;
+            margin-right: 6px;
+            white-space: nowrap;
+            font-style: normal;
+        }
+        .source-chip { color: var(--muted-2); }
+
         /* Recently Completed — collapsible, de-emphasized */
         .completed-section {
             border: 1px solid var(--border);
@@ -957,7 +970,9 @@
             });
         }
 
-        function renderItem(listKey, item) {
+        function renderItem(listKey, item, opts) {
+            opts = opts || {};
+            const inProjectView = !!opts.inProjectView;
             const li = document.createElement("li");
             if (item.done) li.classList.add("done");
             if (item._pendingReword) li.classList.add("pending");
@@ -985,6 +1000,22 @@
             text.className = "item-text";
             text.value = item.text || "";
             text.addEventListener("input", () => { item.text = text.value; save(); });
+
+            let chip = null;
+            if (inProjectView) {
+                chip = document.createElement("span");
+                chip.className = "source-chip";
+                chip.textContent = LIST_LABELS[listKey] || listKey;
+                chip.title = "From the " + (LIST_LABELS[listKey] || listKey) + " list";
+            } else if (item.projectId) {
+                const proj = (state.projects || []).find(p => p.id === item.projectId);
+                if (proj) {
+                    chip = document.createElement("span");
+                    chip.className = "project-chip";
+                    chip.textContent = proj.name;
+                    chip.title = "Linked to project: " + proj.name;
+                }
+            }
 
             const tag = document.createElement("span");
             tag.className = "pending-tag";
@@ -1014,7 +1045,10 @@
                 save(); render();
             });
 
-            li.append(cb, text, tag, date, del);
+            const children = [cb, text];
+            if (chip) children.push(chip);
+            children.push(tag, date, del);
+            li.append.apply(li, children);
             return li;
         }
 
@@ -1028,8 +1062,22 @@
             document.getElementById("proj-count").textContent = (state.projects || []).length || "";
         }
 
+        function projectLinkedItems(projectId) {
+            const out = [];
+            Object.keys(LIST_LABELS).forEach(listKey => {
+                (state[listKey] || []).forEach(it => {
+                    if (it.projectId === projectId) out.push({ item: it, listKey });
+                });
+            });
+            return out;
+        }
+
         function projectOutstandingCount(p) {
-            return (p.tasks || []).filter(t => !t.done && !t._pendingReword).length;
+            let n = (p.tasks || []).filter(t => !t.done && !t._pendingReword).length;
+            projectLinkedItems(p.id).forEach(({ item }) => {
+                if (!item.done && !item._pendingReword) n++;
+            });
+            return n;
         }
 
         function renderProject(p) {
@@ -1098,14 +1146,39 @@
 
             const ul = document.createElement("ul");
             ul.className = "item-list";
-            (p.tasks || []).forEach(t => ul.appendChild(renderProjectTask(p, t)));
+
+            // Combined list: any legacy p.tasks plus items from global lists tagged with this project.
+            const combined = [];
+            (p.tasks || []).forEach(t => combined.push({ kind: "legacy", item: t }));
+            projectLinkedItems(p.id).forEach(({ item, listKey }) => combined.push({ kind: "linked", item, listKey }));
+
+            combined.sort((a, b) => {
+                const aDone = !!a.item.done && !a.item._pendingReword ? 1 : 0;
+                const bDone = !!b.item.done && !b.item._pendingReword ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone;
+                const ad = a.item.date || "";
+                const bd = b.item.date || "";
+                if (!ad && bd) return 1;
+                if (ad && !bd) return -1;
+                if (ad < bd) return -1;
+                if (ad > bd) return 1;
+                return 0;
+            });
+
+            combined.forEach(entry => {
+                if (entry.kind === "legacy") {
+                    ul.appendChild(renderProjectTask(p, entry.item));
+                } else {
+                    ul.appendChild(renderItem(entry.listKey, entry.item, { inProjectView: true }));
+                }
+            });
             sub.appendChild(ul);
 
             const addRow = document.createElement("div");
             addRow.className = "add-row";
             const addInput = document.createElement("input");
             addInput.type = "text";
-            addInput.placeholder = "Add a task to this project…";
+            addInput.placeholder = "Add a to-do to this project…";
             const addDate = document.createElement("input");
             addDate.type = "date";
             const addBtn = document.createElement("button");
@@ -1113,8 +1186,8 @@
             const doAdd = () => {
                 const v = addInput.value.trim();
                 if (!v) return;
-                p.tasks = p.tasks || [];
-                p.tasks.push({ id: makeId(), text: v, date: addDate.value || "", done: false });
+                state.todos = state.todos || [];
+                state.todos.push({ id: makeId(), text: v, date: addDate.value || "", done: false, projectId: p.id });
                 addInput.value = ""; addDate.value = "";
                 save(); render();
             };
@@ -1380,33 +1453,34 @@
                 "",
                 "Today's date is " + today + ". Resolve all relative dates (\"tomorrow\", \"next Tuesday\", \"in two weeks\") to absolute ISO dates (YYYY-MM-DD). If no date is implied, use null.",
                 "",
-                "Strong preference: if an item is clearly tied to a specific project (golf course, club, or named site), put it under that project's tasks in the projects array — NOT in the generic global lists. The generic lists are for items with no project association.",
+                "Every actionable item goes into exactly ONE global list based on what kind of work it is:",
+                "- immediate: urgent things needing action in the next day or so",
+                "- todos: general tasks without a strict deadline or urgency",
+                "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations (who/what)",
+                "- visits-upcoming: site visits that already have a date or are firmly planned",
+                "- visits-toplan: site visits that need to be scheduled (no date yet, but intent is clear)",
+                "- completed: things the person says they already did or finished",
                 "",
-                "For brain-dump extraction, sort each item into exactly one of these destinations:",
-                "- immediate: urgent, non-project-specific things needing action in the next day or so",
-                "- todos: general tasks not tied to a specific project",
-                "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations not tied to one project (if a meeting IS about a specific project, put it under that project's tasks instead, prefixed e.g. \"Meeting: ...\")",
-                "- visits-upcoming: site visits that aren't tied to one of the named projects (rare — most visits go under projects)",
-                "- visits-toplan: visits to be scheduled not tied to one of the named projects (rare)",
-                "- completed: things the person says they already did or finished, that aren't tied to a specific project",
-                "- projects: any item tied to a specific project. Match the project case-insensitively to the existing names below when possible. If the user clearly mentions a project that doesn't match an existing one, you may propose a new project entry — the user will confirm before it's created. notes_to_append is optional context to add to that project's notes (use \"\" if none). tasks is an array of action items for that project.",
+                "If an item is associated with a specific project (golf course, club, or named site), ALSO set the item's \"project\" field to that project's name. The item will then appear in BOTH the global list AND the project's view. Items not tied to a project should set \"project\" to null.",
+                "",
+                "The \"projects\" array in your output is ONLY for adding notes/context to a project (NOT for tasks — tasks go in the global lists with a \"project\" field). Use \"projects\" entries when the brain dump contains scope/status/context about a project that should be appended to that project's notes.",
                 "",
                 "Existing project names (use these exact spellings when matching):",
                 projectNames.length ? projectNames.map(n => "- " + n).join("\n") : "(none yet)",
                 "",
-                "When matching: be generous — \"Bass Rocks GC\", \"bass rocks\", \"Bass Rocks Country Club\" all match \"Bass Rocks\". Use the existing name verbatim in your response. Only propose a brand-new project entry when the mention is clearly distinct from every existing name.",
+                "When matching: be generous — \"Bass Rocks GC\", \"bass rocks\", \"Bass Rocks Country Club\" all match \"Bass Rocks\". Use the existing name verbatim. If a mentioned project doesn't match any existing name, you may propose a new project name — the user will confirm before it's created.",
                 "",
                 "For rewording: for each entry in <items_to_reword>, produce a short past-tense version. Keep names, projects, and key details. Don't add new information. Examples: \"Call Bass Rocks contact\" → \"Called Bass Rocks contact\"; \"Email John re scope\" → \"Emailed John about scope\"; \"Site visit at Mendham\" → \"Visited Mendham site\". Preserve the original date in the response (don't infer a new date).",
                 "",
                 "Output ONLY a single JSON object with this exact shape, no prose, no markdown fences:",
                 "{",
-                "  \"immediate\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\"}],",
+                "  \"immediate\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\", \"project\": \"<project name or null>\"}],",
                 "  \"todos\": [...],",
                 "  \"meetings\": [...],",
                 "  \"visits-upcoming\": [...],",
                 "  \"visits-toplan\": [...],",
                 "  \"completed\": [...],",
-                "  \"projects\": [{\"name\": \"<exact existing project name>\", \"notes_to_append\": \"...\", \"tasks\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\"}]}],",
+                "  \"projects\": [{\"name\": \"<project name>\", \"notes_to_append\": \"...\"}],",
                 "  \"reworded_completions\": [{\"id\": \"<id from items_to_reword>\", \"reworded\": \"<past-tense text>\", \"date\": \"YYYY-MM-DD or null\"}]",
                 "}",
                 "",
@@ -1492,10 +1566,9 @@
             }
 
             pendingProposal = normalizeProposal(proposal);
-            const needs = (pendingProposal.projects || []).filter(p => p.needsDecision);
-            if (needs.length) {
+            if (pendingProposal._unmatchedProjects.length) {
                 setStatus("New project mentions need confirmation.");
-                openNewProjectModal(needs);
+                openNewProjectModal(pendingProposal._unmatchedProjects);
             } else {
                 setStatus("Parsed. Review below.");
                 renderReview(pendingProposal);
@@ -1586,26 +1659,23 @@
         });
         document.getElementById("newproj-continue").addEventListener("click", () => {
             if (!pendingProposal) { closeNewProjectModal(); return; }
-            // Validate: any "map" without a target?
-            const bad = (pendingProposal.projects || []).filter(p => p.needsDecision && p.decision === "map" && !p.mapTargetId);
+            const bad = (pendingProposal._unmatchedProjects || []).filter(p => p.decision === "map" && !p.mapTargetId);
             if (bad.length) {
                 alert("Please choose an existing project for each 'Map to existing' selection.");
                 return;
             }
-            // Apply decisions to the proposal
-            pendingProposal.projects = (pendingProposal.projects || [])
-                .filter(p => !(p.needsDecision && p.decision === "skip"))
-                .map(p => {
-                    if (p.needsDecision) {
-                        if (p.decision === "map") {
-                            p.matchedProjectId = p.mapTargetId;
-                            p.needsDecision = false;
-                        } else if (p.decision === "create") {
-                            // Leave needsDecision true; applyProposal will create then map.
-                        }
-                    }
-                    return p;
-                });
+            // Write each decision back into the projectMatchByName map so resolveProjectId picks it up.
+            (pendingProposal._unmatchedProjects || []).forEach(up => {
+                const key = up.name.toLowerCase();
+                if (up.decision === "map") {
+                    const target = (state.projects || []).find(x => x.id === up.mapTargetId);
+                    pendingProposal._projectMatchByName.set(key, { matched: true, id: up.mapTargetId, displayName: target ? target.name : up.name });
+                } else if (up.decision === "create") {
+                    pendingProposal._projectMatchByName.set(key, { matched: false, willCreate: true, displayName: up.name });
+                } else {
+                    pendingProposal._projectMatchByName.set(key, { matched: false, skip: true, displayName: up.name });
+                }
+            });
             closeNewProjectModal();
             setStatus("Parsed. Review below.");
             renderReview(pendingProposal);
@@ -1636,37 +1706,47 @@
                 "visits-toplan": [],
                 completed: [],
                 projects: [],
-                reworded_completions: []
+                reworded_completions: [],
+                _projectMatchByName: new Map(),
+                _unmatchedProjects: []
             };
+
+            function recordProjectName(rawName) {
+                if (!rawName || typeof rawName !== "string") return null;
+                const name = rawName.trim();
+                if (!name) return null;
+                if (norm._projectMatchByName.has(name.toLowerCase())) return name;
+                const match = (state.projects || []).find(x => x.name.toLowerCase() === name.toLowerCase());
+                if (match) {
+                    norm._projectMatchByName.set(name.toLowerCase(), { matched: true, id: match.id, displayName: match.name });
+                    return match.name;
+                } else {
+                    norm._projectMatchByName.set(name.toLowerCase(), { matched: false, displayName: name });
+                    norm._unmatchedProjects.push({ name, decision: "create", mapTargetId: null });
+                    return name;
+                }
+            }
+
             Object.keys(LIST_LABELS).forEach(k => {
                 const arr = Array.isArray(p[k]) ? p[k] : [];
                 norm[k] = arr
-                    .map(it => ({
-                        text: (it && typeof it.text === "string") ? it.text.trim() : "",
-                        date: (it && typeof it.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(it.date)) ? it.date : ""
-                    }))
+                    .map(it => {
+                        const text = (it && typeof it.text === "string") ? it.text.trim() : "";
+                        const date = (it && typeof it.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(it.date)) ? it.date : "";
+                        const projectRaw = (it && typeof it.project === "string") ? it.project : "";
+                        const project = recordProjectName(projectRaw);
+                        return { text, date, project };
+                    })
                     .filter(it => it.text);
             });
+
             const projArr = Array.isArray(p.projects) ? p.projects : [];
             norm.projects = projArr.map(pp => {
                 const name = (pp && typeof pp.name === "string") ? pp.name.trim() : "";
-                const match = (state.projects || []).find(x => x.name.toLowerCase() === name.toLowerCase());
+                const resolved = recordProjectName(name);
                 const notes = (pp && typeof pp.notes_to_append === "string") ? pp.notes_to_append.trim() : "";
-                const tasks = Array.isArray(pp && pp.tasks) ? pp.tasks : [];
-                return {
-                    name,
-                    matchedProjectId: match ? match.id : null,
-                    needsDecision: !match,
-                    decision: match ? "matched" : null,  // null until user resolves; then "create" | "map" | "skip"
-                    notes_to_append: notes,
-                    tasks: tasks
-                        .map(t => ({
-                            text: (t && typeof t.text === "string") ? t.text.trim() : "",
-                            date: (t && typeof t.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.date)) ? t.date : ""
-                        }))
-                        .filter(t => t.text)
-                };
-            }).filter(pp => pp.name && (pp.notes_to_append || pp.tasks.length));
+                return { name: resolved || name, notes_to_append: notes };
+            }).filter(pp => pp.name && pp.notes_to_append);
 
             const rwArr = Array.isArray(p.reworded_completions) ? p.reworded_completions : [];
             norm.reworded_completions = rwArr
@@ -1679,6 +1759,13 @@
                 })
                 .filter(rc => rc && rc.reworded);
             return norm;
+        }
+
+        function resolveProjectId(prop, projectName) {
+            if (!projectName) return null;
+            const info = prop._projectMatchByName.get(projectName.toLowerCase());
+            if (info && info.matched) return info.id;
+            return null;
         }
 
         function findPendingById(id) {
@@ -1783,6 +1870,16 @@
                     const textSpan = document.createElement("span");
                     textSpan.className = "review-item-text";
                     textSpan.textContent = it.text;
+                    if (it.project) {
+                        const info = prop._projectMatchByName.get(it.project.toLowerCase());
+                        if (info && !info.skip) {
+                            const chip = document.createElement("span");
+                            chip.className = "review-item-meta";
+                            const isNew = info.willCreate;
+                            chip.textContent = (info.displayName || it.project) + (isNew ? " (new)" : "");
+                            textSpan.appendChild(chip);
+                        }
+                    }
                     const dateSpan = document.createElement("span");
                     dateSpan.className = "review-item-date";
                     dateSpan.textContent = it.date || "";
@@ -1794,48 +1891,31 @@
             });
 
             (prop.projects || []).forEach(pp => {
-                if (!pp.notes_to_append && !pp.tasks.length) return;
+                if (!pp.notes_to_append) return;
+                const info = prop._projectMatchByName.get(pp.name.toLowerCase());
+                if (info && info.skip) return;
+                const isNew = info && info.willCreate;
                 const group = document.createElement("div");
                 group.className = "review-group";
                 const h4 = document.createElement("h4");
-                const isNew = pp.needsDecision && pp.decision === "create";
-                h4.textContent = "Project — " + pp.name + (isNew ? " (new)" : "");
+                h4.textContent = "Project notes — " + (info ? info.displayName : pp.name) + (isNew ? " (new)" : "");
                 group.appendChild(h4);
                 const ul = document.createElement("ul");
 
-                if (pp.notes_to_append) {
-                    if (pp._notesChecked === undefined) pp._notesChecked = true;
-                    const li = document.createElement("li");
-                    const cb = document.createElement("input");
-                    cb.type = "checkbox";
-                    cb.checked = pp._notesChecked;
-                    cb.addEventListener("change", () => { pp._notesChecked = cb.checked; });
-                    const textSpan = document.createElement("span");
-                    textSpan.className = "review-item-text";
-                    textSpan.textContent = pp.notes_to_append;
-                    const meta = document.createElement("span");
-                    meta.className = "review-item-meta";
-                    meta.textContent = "append to notes";
-                    li.append(cb, textSpan, meta);
-                    ul.appendChild(li);
-                }
-
-                pp.tasks.forEach(t => {
-                    if (t._checked === undefined) t._checked = true;
-                    const li = document.createElement("li");
-                    const cb = document.createElement("input");
-                    cb.type = "checkbox";
-                    cb.checked = t._checked;
-                    cb.addEventListener("change", () => { t._checked = cb.checked; });
-                    const textSpan = document.createElement("span");
-                    textSpan.className = "review-item-text";
-                    textSpan.textContent = t.text;
-                    const dateSpan = document.createElement("span");
-                    dateSpan.className = "review-item-date";
-                    dateSpan.textContent = t.date || "";
-                    li.append(cb, textSpan, dateSpan);
-                    ul.appendChild(li);
-                });
+                if (pp._notesChecked === undefined) pp._notesChecked = true;
+                const li = document.createElement("li");
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.checked = pp._notesChecked;
+                cb.addEventListener("change", () => { pp._notesChecked = cb.checked; });
+                const textSpan = document.createElement("span");
+                textSpan.className = "review-item-text";
+                textSpan.textContent = pp.notes_to_append;
+                const meta = document.createElement("span");
+                meta.className = "review-item-meta";
+                meta.textContent = "append to notes";
+                li.append(cb, textSpan, meta);
+                ul.appendChild(li);
 
                 group.appendChild(ul);
                 bdReview.appendChild(group);
@@ -1845,10 +1925,7 @@
         function totalProposalCount(p) {
             let n = 0;
             Object.keys(LIST_LABELS).forEach(k => { n += (p[k] || []).length; });
-            (p.projects || []).forEach(pp => {
-                if (pp.notes_to_append) n += 1;
-                n += pp.tasks.length;
-            });
+            n += (p.projects || []).filter(pp => pp.notes_to_append).length;
             n += (p.reworded_completions || []).length;
             return n;
         }
@@ -1858,71 +1935,70 @@
             let added = 0;
             let moved = 0;
 
-            // 1. Apply reworded completions first: remove from origin lists, add to completed.
+            // 1. Create any new projects the user chose. Update map so resolveProjectId can find them.
+            (pendingProposal._unmatchedProjects || []).forEach(up => {
+                if (up.decision !== "create") return;
+                const newProj = {
+                    id: makeId(),
+                    name: up.name,
+                    status: "active",
+                    notes: "",
+                    open: true,
+                    tasks: []
+                };
+                state.projects = state.projects || [];
+                state.projects.push(newProj);
+                pendingProposal._projectMatchByName.set(up.name.toLowerCase(), { matched: true, id: newProj.id, displayName: newProj.name });
+                added++;
+            });
+
+            // 2. Apply reworded completions: remove from origin lists, add to completed.
             (pendingProposal.reworded_completions || []).forEach(rc => {
                 if (!rc._checked) return;
                 const found = findPendingById(rc.id);
                 if (!found) return;
+                const sourceProjectId = found.item.projectId || null;
                 state[found.list] = (state[found.list] || []).filter(x => x.id !== rc.id);
                 state.completed = state.completed || [];
-                state.completed.unshift({
+                const newRec = {
                     id: makeId(),
                     text: rc.reworded,
                     date: rc.date || found.item.date || "",
                     done: true
-                });
+                };
+                if (sourceProjectId) newRec.projectId = sourceProjectId;
+                state.completed.unshift(newRec);
                 moved++;
             });
 
-            // 2. New items from brain dump.
+            // 3. New items from brain dump — each goes into its global list, with projectId set if applicable.
             Object.keys(LIST_LABELS).forEach(key => {
                 (pendingProposal[key] || []).forEach(it => {
                     if (!it._checked) return;
-                    state[key] = state[key] || [];
-                    state[key].push({
+                    const newItem = {
                         id: makeId(),
                         text: it.text,
                         date: it.date || "",
                         done: key === "completed"
-                    });
+                    };
+                    const pid = resolveProjectId(pendingProposal, it.project);
+                    if (pid) newItem.projectId = pid;
+                    state[key] = state[key] || [];
+                    state[key].push(newItem);
                     added++;
                 });
             });
 
-            // 3. Project additions (create any new ones first).
+            // 4. Project notes (notes_to_append only — tasks were already routed via global lists).
             (pendingProposal.projects || []).forEach(pp => {
-                if (pp.needsDecision && pp.decision === "create" && !pp.matchedProjectId) {
-                    const newProj = {
-                        id: makeId(),
-                        name: pp.name,
-                        status: "active",
-                        notes: "",
-                        open: true,
-                        tasks: []
-                    };
-                    state.projects = state.projects || [];
-                    state.projects.push(newProj);
-                    pp.matchedProjectId = newProj.id;
-                    added++;
-                }
-                const proj = (state.projects || []).find(x => x.id === pp.matchedProjectId);
+                if (!pp.notes_to_append || pp._notesChecked === false) return;
+                const pid = resolveProjectId(pendingProposal, pp.name);
+                if (!pid) return;
+                const proj = (state.projects || []).find(x => x.id === pid);
                 if (!proj) return;
-                if (pp.notes_to_append && pp._notesChecked !== false) {
-                    const sep = proj.notes && !proj.notes.endsWith("\n") ? "\n" : "";
-                    proj.notes = (proj.notes || "") + sep + pp.notes_to_append;
-                    added++;
-                }
-                pp.tasks.forEach(t => {
-                    if (!t._checked) return;
-                    proj.tasks = proj.tasks || [];
-                    proj.tasks.push({
-                        id: makeId(),
-                        text: t.text,
-                        date: t.date || "",
-                        done: false
-                    });
-                    added++;
-                });
+                const sep = proj.notes && !proj.notes.endsWith("\n") ? "\n" : "";
+                proj.notes = (proj.notes || "") + sep + pp.notes_to_append;
+                added++;
             });
 
             pendingProposal = null;
