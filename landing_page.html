@@ -114,6 +114,10 @@
         [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
         [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
+        /* Invert NGC logo PNG in dark mode (black → white) */
+        .ngc-logo { transition: filter 0.4s ease; }
+        [data-theme="dark"] .ngc-logo { filter: invert(1) brightness(1.1); }
+
         .fixed-nav-container {
             position: fixed;
             bottom: 50px; 
@@ -988,9 +992,19 @@
         (function() {
             try {
                 var saved = localStorage.getItem('ngc-theme');
-                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+                var prefersDark = mq && mq.matches;
                 var theme = saved || (prefersDark ? 'dark' : 'light');
                 if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+                if (mq && !saved) {
+                    var apply = function(e) {
+                        if (localStorage.getItem('ngc-theme')) return;
+                        if (e.matches) document.documentElement.setAttribute('data-theme', 'dark');
+                        else document.documentElement.removeAttribute('data-theme');
+                    };
+                    if (mq.addEventListener) mq.addEventListener('change', apply);
+                    else if (mq.addListener) mq.addListener(apply);
+                }
             } catch (e) {}
         })();
     </script>
@@ -1010,7 +1024,7 @@
     <div class="fixed-nav-container">
         <nav>
             <ul class="nav-links">
-                <li class="nav-logo-item"><img src="index/NGC_Logo.png" alt="NGC Logo" onclick="scrollToStage(0, true)" style="cursor: pointer;"></li>
+                <li class="nav-logo-item"><img src="index/NGC_Logo.png" alt="NGC Logo" class="ngc-logo" onclick="scrollToStage(0, true)" style="cursor: pointer;"></li>
                 <li><a onclick="scrollToStage(0, true)">Start</a></li>
                 <li><a onclick="scrollToStage(1, true)">What We Do</a></li>
                 <li><a onclick="scrollToStage(6, true)">Team</a></li>
@@ -1032,7 +1046,7 @@
             <section id="start">
                 <div class="start-inner">
                     <div class="start-brand-mark">
-                        <img src="index/NGC_Logo.png" alt="NGC Logo" class="start-logo">
+                        <img src="index/NGC_Logo.png" alt="NGC Logo" class="start-logo ngc-logo">
                         <p class="start-company-name">The Northeast Golf Company</p>
                     </div>
                     <p class="start-scroll-hint">Scroll to continue</p>
@@ -1317,7 +1331,7 @@
 
             <section id="closing-card">
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;">
-                    <img src="index/NGC_Logo.png" alt="NGC Logo" style="height: 120px; width: auto; opacity: 0.9;">
+                    <img src="index/NGC_Logo.png" alt="NGC Logo" class="ngc-logo" style="height: 120px; width: auto; opacity: 0.9;">
                     <div class="nav-address" style="display: block; font-size: 0.8rem; letter-spacing: 0.05rem; text-align: center;">The Northeast Golf Company<br>Saunderstown, Rhode Island</div>
                 </div>
             </section>
