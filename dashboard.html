@@ -18,7 +18,27 @@
             --accent: #1a1a1a;
             --done: #b8b8b8;
             --danger: #b94a4a;
+            --highlight: #f4f0e6;
+            color-scheme: light;
         }
+        body.dark {
+            --bg: #15171a;
+            --panel: #1d1f23;
+            --border: #2e3035;
+            --text: #e5e5e5;
+            --muted: #909090;
+            --muted-2: #5e6066;
+            --accent: #e5e5e5;
+            --done: #555;
+            --danger: #cf6b6b;
+            --highlight: #2a2820;
+            color-scheme: dark;
+        }
+        body.dark .save-status.saved { color: #6abc6a; }
+        body.dark .status-active .status-dot { background: #6aaa6a; }
+        body.dark .status-planning .status-dot { background: #d0a04a; }
+        body.dark .status-onhold .status-dot { background: #888; }
+        body.dark .status-complete .status-dot { background: #6a8aa8; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             background: var(--bg);
@@ -26,6 +46,7 @@
             font-family: 'Newsreader', serif;
             font-weight: 400;
             -webkit-font-smoothing: antialiased;
+            transition: background-color .2s, color .2s;
         }
         body { padding: 40px 32px 80px; max-width: 1200px; margin: 0 auto; }
 
@@ -258,6 +279,22 @@
         .status-onhold .status-dot { background: #999; }
         .status-complete .status-dot { background: #4a6a8a; }
 
+        .project.has-outstanding .project-name { color: var(--text); font-weight: 500; }
+        .project .outstanding-badge {
+            display: none;
+            font-size: 0.7rem;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 7px;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .project.has-outstanding .outstanding-badge {
+            display: inline-block;
+            color: var(--text);
+        }
+
         .project-body {
             display: none;
             margin-top: 14px;
@@ -455,6 +492,14 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        .brain-dump-actions button.recording {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        .brain-dump-actions button.recording::before {
+            content: "● ";
+            color: var(--danger);
+        }
         .brain-dump-status {
             font-size: 0.8rem;
             color: var(--muted);
@@ -625,6 +670,53 @@
             text-decoration: underline;
             letter-spacing: 0.03em;
         }
+
+        /* New-project confirmation modal */
+        .modal.wide { max-width: 580px; }
+        .new-project-list { margin-top: 8px; }
+        .new-project-row-modal {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .new-project-row-modal .np-name {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .new-project-row-modal .np-context {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .new-project-row-modal .np-choices {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .new-project-row-modal .np-choices label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--muted);
+            cursor: pointer;
+            margin: 0;
+            letter-spacing: 0;
+        }
+        .new-project-row-modal .np-choices input[type=radio] { accent-color: var(--accent); cursor: pointer; }
+        .new-project-row-modal select {
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 3px 6px;
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -632,6 +724,7 @@
         <h1>NGC Dashboard</h1>
         <div class="meta">
             <span class="save-status" id="save-status">&nbsp;</span>
+            <button id="theme-btn" title="Toggle dark mode">☾</button>
             <button id="export-btn" title="Download a JSON backup">Export</button>
             <button id="import-btn" title="Restore from a JSON backup">Import</button>
             <button id="settings-btn" title="Settings">⚙</button>
@@ -644,6 +737,7 @@
         <textarea id="brain-dump-input" placeholder="Paste a paragraph about what you did or need to do…"></textarea>
         <div class="brain-dump-actions">
             <button id="brain-dump-parse">Parse</button>
+            <button id="brain-dump-dictate" title="Dictate using your device's microphone">Dictate</button>
             <button id="brain-dump-clear">Clear</button>
             <span class="brain-dump-status" id="brain-dump-status"></span>
         </div>
@@ -726,6 +820,18 @@
         </div>
     </section>
 
+    <div class="modal-backdrop" id="newproj-modal">
+        <div class="modal wide">
+            <h2>New Project Detected</h2>
+            <p class="hint" style="margin-top:-6px;margin-bottom:14px;">The parser found project mentions that don't match your existing projects. Pick what to do for each.</p>
+            <div class="new-project-list" id="newproj-list"></div>
+            <div class="modal-actions">
+                <button id="newproj-cancel">Cancel parse</button>
+                <button id="newproj-continue">Continue to review</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-backdrop" id="settings-modal">
         <div class="modal">
             <h2>Settings</h2>
@@ -746,6 +852,7 @@
     <script>
         const STORAGE_KEY = "ngc-dashboard-v1";
         const API_KEY_STORAGE = "ngc-dashboard-anthropic-key";
+        const THEME_STORAGE = "ngc-dashboard-theme";
 
         const SEED_PROJECTS = [
             "Bass Rocks",
@@ -921,10 +1028,16 @@
             document.getElementById("proj-count").textContent = (state.projects || []).length || "";
         }
 
+        function projectOutstandingCount(p) {
+            return (p.tasks || []).filter(t => !t.done && !t._pendingReword).length;
+        }
+
         function renderProject(p) {
             const wrap = document.createElement("div");
             wrap.className = "project status-" + (p.status || "active");
             if (p.open) wrap.classList.add("open");
+            const outstanding = projectOutstandingCount(p);
+            if (outstanding > 0) wrap.classList.add("has-outstanding");
 
             const head = document.createElement("div");
             head.className = "project-head";
@@ -938,6 +1051,11 @@
             name.value = p.name || "";
             name.addEventListener("input", () => { p.name = name.value; save(); });
             name.addEventListener("click", e => e.stopPropagation());
+
+            const badge = document.createElement("span");
+            badge.className = "outstanding-badge";
+            badge.textContent = outstanding + " open";
+            badge.title = outstanding + " outstanding task" + (outstanding === 1 ? "" : "s");
 
             const status = document.createElement("button");
             status.className = "project-status";
@@ -960,7 +1078,7 @@
                 save(); render();
             });
 
-            head.append(chev, name, status, del);
+            head.append(chev, name, badge, status, del);
             head.addEventListener("click", () => { p.open = !p.open; save(); render(); });
 
             const body = document.createElement("div");
@@ -1262,17 +1380,21 @@
                 "",
                 "Today's date is " + today + ". Resolve all relative dates (\"tomorrow\", \"next Tuesday\", \"in two weeks\") to absolute ISO dates (YYYY-MM-DD). If no date is implied, use null.",
                 "",
-                "For brain-dump extraction, sort each item into exactly one of these destinations:",
-                "- immediate: urgent things needing action in the next day or so",
-                "- todos: general tasks without a strict deadline or urgency",
-                "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations (who/what)",
-                "- visits-upcoming: site visits that already have a date or are firmly planned",
-                "- visits-toplan: site visits that need to be scheduled (no date yet, but intent is clear)",
-                "- completed: things the person says they already did or finished",
-                "- projects: items that clearly belong to a specific project (matched to one of the existing project names below). notes_to_append is optional context to add to that project's notes (use \"\" if none). tasks is an array of action items for that project.",
+                "Strong preference: if an item is clearly tied to a specific project (golf course, club, or named site), put it under that project's tasks in the projects array — NOT in the generic global lists. The generic lists are for items with no project association.",
                 "",
-                "Existing project names (match case-insensitively; do NOT invent new project names — if a mentioned project doesn't match these, put its items under todos or the most appropriate list instead):",
+                "For brain-dump extraction, sort each item into exactly one of these destinations:",
+                "- immediate: urgent, non-project-specific things needing action in the next day or so",
+                "- todos: general tasks not tied to a specific project",
+                "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations not tied to one project (if a meeting IS about a specific project, put it under that project's tasks instead, prefixed e.g. \"Meeting: ...\")",
+                "- visits-upcoming: site visits that aren't tied to one of the named projects (rare — most visits go under projects)",
+                "- visits-toplan: visits to be scheduled not tied to one of the named projects (rare)",
+                "- completed: things the person says they already did or finished, that aren't tied to a specific project",
+                "- projects: any item tied to a specific project. Match the project case-insensitively to the existing names below when possible. If the user clearly mentions a project that doesn't match an existing one, you may propose a new project entry — the user will confirm before it's created. notes_to_append is optional context to add to that project's notes (use \"\" if none). tasks is an array of action items for that project.",
+                "",
+                "Existing project names (use these exact spellings when matching):",
                 projectNames.length ? projectNames.map(n => "- " + n).join("\n") : "(none yet)",
+                "",
+                "When matching: be generous — \"Bass Rocks GC\", \"bass rocks\", \"Bass Rocks Country Club\" all match \"Bass Rocks\". Use the existing name verbatim in your response. Only propose a brand-new project entry when the mention is clearly distinct from every existing name.",
                 "",
                 "For rewording: for each entry in <items_to_reword>, produce a short past-tense version. Keep names, projects, and key details. Don't add new information. Examples: \"Call Bass Rocks contact\" → \"Called Bass Rocks contact\"; \"Email John re scope\" → \"Emailed John about scope\"; \"Site visit at Mendham\" → \"Visited Mendham site\". Preserve the original date in the response (don't infer a new date).",
                 "",
@@ -1370,9 +1492,127 @@
             }
 
             pendingProposal = normalizeProposal(proposal);
+            const needs = (pendingProposal.projects || []).filter(p => p.needsDecision);
+            if (needs.length) {
+                setStatus("New project mentions need confirmation.");
+                openNewProjectModal(needs);
+            } else {
+                setStatus("Parsed. Review below.");
+                renderReview(pendingProposal);
+            }
+        }
+
+        // ---------- New-project confirmation modal ----------
+        const newProjModal = document.getElementById("newproj-modal");
+        const newProjList = document.getElementById("newproj-list");
+
+        function openNewProjectModal(unmatched) {
+            newProjList.innerHTML = "";
+            const existing = (state.projects || []).map(p => p.name);
+            unmatched.forEach((pp, idx) => {
+                pp.decision = pp.decision || "create";  // default
+                const row = document.createElement("div");
+                row.className = "new-project-row-modal";
+                const nm = document.createElement("div");
+                nm.className = "np-name";
+                nm.textContent = "“" + pp.name + "”";
+                row.appendChild(nm);
+
+                const ctx = document.createElement("div");
+                ctx.className = "np-context";
+                const taskCount = pp.tasks.length;
+                const noteBits = pp.notes_to_append ? " and notes" : "";
+                ctx.textContent = taskCount + " task" + (taskCount === 1 ? "" : "s") + noteBits + " were extracted for this name.";
+                row.appendChild(ctx);
+
+                const choices = document.createElement("div");
+                choices.className = "np-choices";
+
+                const radioName = "np-" + idx;
+
+                const lblCreate = document.createElement("label");
+                const rCreate = document.createElement("input");
+                rCreate.type = "radio"; rCreate.name = radioName; rCreate.value = "create";
+                if (pp.decision === "create") rCreate.checked = true;
+                rCreate.addEventListener("change", () => { pp.decision = "create"; pp.mapTargetId = null; });
+                lblCreate.append(rCreate, document.createTextNode("Create new project"));
+
+                const lblMap = document.createElement("label");
+                const rMap = document.createElement("input");
+                rMap.type = "radio"; rMap.name = radioName; rMap.value = "map";
+                if (pp.decision === "map") rMap.checked = true;
+                const sel = document.createElement("select");
+                sel.disabled = !rMap.checked;
+                const placeholder = document.createElement("option");
+                placeholder.value = ""; placeholder.textContent = "— choose —";
+                sel.appendChild(placeholder);
+                (state.projects || []).forEach(ep => {
+                    const opt = document.createElement("option");
+                    opt.value = ep.id;
+                    opt.textContent = ep.name;
+                    if (pp.mapTargetId === ep.id) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+                rMap.addEventListener("change", () => {
+                    pp.decision = "map";
+                    sel.disabled = false;
+                });
+                sel.addEventListener("change", () => { pp.mapTargetId = sel.value || null; });
+                lblMap.append(rMap, document.createTextNode("Map to existing"), sel);
+
+                const lblSkip = document.createElement("label");
+                const rSkip = document.createElement("input");
+                rSkip.type = "radio"; rSkip.name = radioName; rSkip.value = "skip";
+                if (pp.decision === "skip") rSkip.checked = true;
+                rSkip.addEventListener("change", () => { pp.decision = "skip"; pp.mapTargetId = null; sel.disabled = true; });
+                lblSkip.append(rSkip, document.createTextNode("Skip"));
+
+                // When create/skip selected, disable the select; on map, enable
+                rCreate.addEventListener("change", () => { sel.disabled = true; });
+
+                choices.append(lblCreate, lblMap, lblSkip);
+                row.appendChild(choices);
+                newProjList.appendChild(row);
+            });
+            newProjModal.classList.add("open");
+        }
+
+        function closeNewProjectModal() { newProjModal.classList.remove("open"); }
+
+        document.getElementById("newproj-cancel").addEventListener("click", () => {
+            closeNewProjectModal();
+            pendingProposal = null;
+            setStatus("Parse cancelled.");
+        });
+        document.getElementById("newproj-continue").addEventListener("click", () => {
+            if (!pendingProposal) { closeNewProjectModal(); return; }
+            // Validate: any "map" without a target?
+            const bad = (pendingProposal.projects || []).filter(p => p.needsDecision && p.decision === "map" && !p.mapTargetId);
+            if (bad.length) {
+                alert("Please choose an existing project for each 'Map to existing' selection.");
+                return;
+            }
+            // Apply decisions to the proposal
+            pendingProposal.projects = (pendingProposal.projects || [])
+                .filter(p => !(p.needsDecision && p.decision === "skip"))
+                .map(p => {
+                    if (p.needsDecision) {
+                        if (p.decision === "map") {
+                            p.matchedProjectId = p.mapTargetId;
+                            p.needsDecision = false;
+                        } else if (p.decision === "create") {
+                            // Leave needsDecision true; applyProposal will create then map.
+                        }
+                    }
+                    return p;
+                });
+            closeNewProjectModal();
             setStatus("Parsed. Review below.");
             renderReview(pendingProposal);
-        }
+        });
+        newProjModal.addEventListener("click", e => {
+            if (e.target === newProjModal) closeNewProjectModal();
+        });
 
         function extractJson(s) {
             const trimmed = s.trim();
@@ -1416,6 +1656,8 @@
                 return {
                     name,
                     matchedProjectId: match ? match.id : null,
+                    needsDecision: !match,
+                    decision: match ? "matched" : null,  // null until user resolves; then "create" | "map" | "skip"
                     notes_to_append: notes,
                     tasks: tasks
                         .map(t => ({
@@ -1424,7 +1666,7 @@
                         }))
                         .filter(t => t.text)
                 };
-            }).filter(pp => pp.name && pp.matchedProjectId && (pp.notes_to_append || pp.tasks.length));
+            }).filter(pp => pp.name && (pp.notes_to_append || pp.tasks.length));
 
             const rwArr = Array.isArray(p.reworded_completions) ? p.reworded_completions : [];
             norm.reworded_completions = rwArr
@@ -1556,7 +1798,8 @@
                 const group = document.createElement("div");
                 group.className = "review-group";
                 const h4 = document.createElement("h4");
-                h4.textContent = "Project — " + pp.name;
+                const isNew = pp.needsDecision && pp.decision === "create";
+                h4.textContent = "Project — " + pp.name + (isNew ? " (new)" : "");
                 group.appendChild(h4);
                 const ul = document.createElement("ul");
 
@@ -1646,8 +1889,22 @@
                 });
             });
 
-            // 3. Project additions.
+            // 3. Project additions (create any new ones first).
             (pendingProposal.projects || []).forEach(pp => {
+                if (pp.needsDecision && pp.decision === "create" && !pp.matchedProjectId) {
+                    const newProj = {
+                        id: makeId(),
+                        name: pp.name,
+                        status: "active",
+                        notes: "",
+                        open: true,
+                        tasks: []
+                    };
+                    state.projects = state.projects || [];
+                    state.projects.push(newProj);
+                    pp.matchedProjectId = newProj.id;
+                    added++;
+                }
                 const proj = (state.projects || []).find(x => x.id === pp.matchedProjectId);
                 if (!proj) return;
                 if (pp.notes_to_append && pp._notesChecked !== false) {
@@ -1679,6 +1936,85 @@
             setStatus(parts.length ? parts.join(", ") + "." : "Nothing checked.");
             save();
             render();
+        }
+
+        // ---------- Theme (dark mode) ----------
+        const themeBtn = document.getElementById("theme-btn");
+        function applyTheme(t) {
+            if (t === "dark") {
+                document.body.classList.add("dark");
+                themeBtn.textContent = "☀";
+                themeBtn.title = "Switch to light mode";
+            } else {
+                document.body.classList.remove("dark");
+                themeBtn.textContent = "☾";
+                themeBtn.title = "Switch to dark mode";
+            }
+        }
+        applyTheme(localStorage.getItem(THEME_STORAGE) || "light");
+        themeBtn.addEventListener("click", () => {
+            const next = document.body.classList.contains("dark") ? "light" : "dark";
+            localStorage.setItem(THEME_STORAGE, next);
+            applyTheme(next);
+        });
+
+        // ---------- Dictation (Web Speech API) ----------
+        const dictateBtn = document.getElementById("brain-dump-dictate");
+        const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let dictating = false;
+
+        if (!SpeechRecognitionImpl) {
+            dictateBtn.disabled = true;
+            dictateBtn.title = "Your browser doesn't support speech recognition. Try Chrome or Edge.";
+        } else {
+            dictateBtn.addEventListener("click", () => {
+                if (dictating) {
+                    if (recognition) recognition.stop();
+                    return;
+                }
+                recognition = new SpeechRecognitionImpl();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = "en-US";
+
+                let baseText = bdInput.value;
+                if (baseText && !/[\s\n]$/.test(baseText)) baseText += " ";
+                let finalText = "";
+
+                recognition.onresult = (e) => {
+                    let interim = "";
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const transcript = e.results[i][0].transcript;
+                        if (e.results[i].isFinal) finalText += transcript;
+                        else interim += transcript;
+                    }
+                    bdInput.value = baseText + finalText + interim;
+                };
+                recognition.onend = () => {
+                    dictating = false;
+                    dictateBtn.classList.remove("recording");
+                    dictateBtn.textContent = "Dictate";
+                };
+                recognition.onerror = (e) => {
+                    dictating = false;
+                    dictateBtn.classList.remove("recording");
+                    dictateBtn.textContent = "Dictate";
+                    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+                        showError("Microphone permission denied. Allow microphone access for this page in your browser settings.");
+                    } else if (e.error && e.error !== "aborted" && e.error !== "no-speech") {
+                        showError("Speech recognition error: " + e.error);
+                    }
+                };
+                try {
+                    recognition.start();
+                    dictating = true;
+                    dictateBtn.classList.add("recording");
+                    dictateBtn.textContent = "Stop";
+                } catch (err) {
+                    showError("Could not start dictation: " + (err && err.message ? err.message : String(err)));
+                }
+            });
         }
 
         render();
