@@ -18,7 +18,27 @@
             --accent: #1a1a1a;
             --done: #b8b8b8;
             --danger: #b94a4a;
+            --highlight: #f4f0e6;
+            color-scheme: light;
         }
+        body.dark {
+            --bg: #15171a;
+            --panel: #1d1f23;
+            --border: #2e3035;
+            --text: #e5e5e5;
+            --muted: #909090;
+            --muted-2: #5e6066;
+            --accent: #e5e5e5;
+            --done: #555;
+            --danger: #cf6b6b;
+            --highlight: #2a2820;
+            color-scheme: dark;
+        }
+        body.dark .save-status.saved { color: #6abc6a; }
+        body.dark .status-active .status-dot { background: #6aaa6a; }
+        body.dark .status-planning .status-dot { background: #d0a04a; }
+        body.dark .status-onhold .status-dot { background: #888; }
+        body.dark .status-complete .status-dot { background: #6a8aa8; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             background: var(--bg);
@@ -26,6 +46,7 @@
             font-family: 'Newsreader', serif;
             font-weight: 400;
             -webkit-font-smoothing: antialiased;
+            transition: background-color .2s, color .2s;
         }
         body { padding: 40px 32px 80px; max-width: 1200px; margin: 0 auto; }
 
@@ -258,6 +279,22 @@
         .status-onhold .status-dot { background: #999; }
         .status-complete .status-dot { background: #4a6a8a; }
 
+        .project.has-outstanding .project-name { color: var(--text); font-weight: 500; }
+        .project .outstanding-badge {
+            display: none;
+            font-size: 0.7rem;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 7px;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .project.has-outstanding .outstanding-badge {
+            display: inline-block;
+            color: var(--text);
+        }
+
         .project-body {
             display: none;
             margin-top: 14px;
@@ -324,6 +361,362 @@
             min-width: 50px;
         }
         .save-status.saved { color: #4a8a4a; }
+
+        /* Featured immediate-actions card (full width, slightly more presence) */
+        .card.featured {
+            margin-bottom: 28px;
+            padding: 22px 26px 18px;
+        }
+        .card.featured h2 {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        .card.featured h2 .count { color: var(--muted-2); }
+
+        /* Date status colors */
+        .item-date.overdue { color: var(--danger); }
+        .item-date.today { color: var(--text); font-weight: 600; }
+
+        /* Pending reword (item checked off, awaiting next Parse) */
+        .item-list li.pending .item-text { font-style: italic; color: var(--muted); }
+        .pending-tag {
+            display: none;
+            font-size: 0.62rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 6px;
+            margin-right: 6px;
+            white-space: nowrap;
+        }
+        .item-list li.pending .pending-tag { display: inline-block; }
+
+        /* Recently Completed — collapsible, de-emphasized */
+        .completed-section {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 14px 22px;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        .completed-section .completed-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+        .completed-section .completed-head h2 {
+            font-weight: 400;
+            font-size: 0.92rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .completed-section .completed-head h2 .count {
+            font-size: 0.72rem;
+            color: var(--muted-2);
+            font-weight: 300;
+        }
+        .completed-section .chev {
+            color: var(--muted-2);
+            font-size: 0.8rem;
+            transition: transform .15s;
+            display: inline-block;
+            width: 10px;
+        }
+        .completed-section.open .chev { transform: rotate(90deg); }
+        .completed-section .completed-body { display: none; margin-top: 14px; }
+        .completed-section.open .completed-body { display: block; }
+        .completed-section .item-list li .item-text { color: var(--done); }
+        .completed-section .item-list li .item-date { color: var(--muted-2); }
+
+        /* Brain Dump */
+        .brain-dump {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 20px 22px 18px;
+            margin-bottom: 36px;
+        }
+        .brain-dump h2 {
+            font-weight: 400;
+            font-size: 1.05rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+        .brain-dump textarea {
+            width: 100%;
+            min-height: 110px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            padding: 10px 12px;
+            resize: vertical;
+            color: var(--text);
+            outline: none;
+        }
+        .brain-dump textarea:focus { border-color: var(--text); }
+        .brain-dump textarea::placeholder { color: var(--muted-2); font-style: italic; }
+        .brain-dump-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .brain-dump-actions button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        .brain-dump-actions button:hover:not(:disabled) {
+            color: var(--text);
+            border-color: var(--text);
+        }
+        .brain-dump-actions button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .brain-dump-actions button.recording {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        .brain-dump-actions button.recording::before {
+            content: "● ";
+            color: var(--danger);
+        }
+        .brain-dump-status {
+            font-size: 0.8rem;
+            color: var(--muted);
+            letter-spacing: 0.03em;
+        }
+        .brain-dump-error {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: 'Newsreader', serif;
+            font-size: 0.82rem;
+            color: var(--danger);
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 240px;
+            overflow: auto;
+        }
+
+        .brain-dump-review {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .brain-dump-review .review-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .brain-dump-review .review-head h3 {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 400;
+        }
+        .brain-dump-review .review-head .review-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .review-group { margin-bottom: 14px; }
+        .review-group:last-child { margin-bottom: 0; }
+        .review-group h4 {
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+            font-weight: 400;
+            margin-bottom: 6px;
+        }
+        .review-group ul { list-style: none; }
+        .review-group li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+        .review-group li input[type=checkbox] {
+            margin-top: 5px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .review-item-text { flex: 1; line-height: 1.4; }
+        .review-item-date {
+            font-size: 0.78rem;
+            color: var(--muted);
+            min-width: 100px;
+            text-align: right;
+        }
+        .review-item-meta {
+            font-size: 0.72rem;
+            color: var(--muted-2);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
+        /* Settings modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.25);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 12vh;
+            z-index: 100;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 26px 28px 22px;
+            width: 100%;
+            max-width: 440px;
+            font-family: 'Newsreader', serif;
+        }
+        .modal h2 {
+            font-weight: 400;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        .modal label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .modal input[type=password],
+        .modal input[type=text] {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 8px 10px;
+            color: var(--text);
+            outline: none;
+        }
+        .modal input[type=password]:focus,
+        .modal input[type=text]:focus { border-color: var(--text); }
+        .modal .hint {
+            font-size: 0.78rem;
+            color: var(--muted-2);
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        .modal .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .modal .modal-actions button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        .modal .modal-actions button:hover { color: var(--text); border-color: var(--text); }
+        .modal .saved-key {
+            font-family: 'Newsreader', serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal .saved-key .clear-link {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: underline;
+            letter-spacing: 0.03em;
+        }
+
+        /* New-project confirmation modal */
+        .modal.wide { max-width: 580px; }
+        .new-project-list { margin-top: 8px; }
+        .new-project-row-modal {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .new-project-row-modal .np-name {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .new-project-row-modal .np-context {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .new-project-row-modal .np-choices {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .new-project-row-modal .np-choices label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--muted);
+            cursor: pointer;
+            margin: 0;
+            letter-spacing: 0;
+        }
+        .new-project-row-modal .np-choices input[type=radio] { accent-color: var(--accent); cursor: pointer; }
+        .new-project-row-modal select {
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 3px 6px;
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -331,23 +724,38 @@
         <h1>NGC Dashboard</h1>
         <div class="meta">
             <span class="save-status" id="save-status">&nbsp;</span>
+            <button id="theme-btn" title="Toggle dark mode">☾</button>
             <button id="export-btn" title="Download a JSON backup">Export</button>
             <button id="import-btn" title="Restore from a JSON backup">Import</button>
+            <button id="settings-btn" title="Settings">⚙</button>
             <input type="file" id="import-file" accept="application/json" style="display:none">
         </div>
     </header>
 
-    <div class="grid">
-        <section class="card" data-list="immediate">
-            <h2>Immediate Actions <span class="count"></span></h2>
-            <ul class="item-list"></ul>
-            <div class="add-row">
-                <input type="text" placeholder="Add an immediate action…">
-                <input type="date">
-                <button>Add</button>
-            </div>
-        </section>
+    <section class="brain-dump" id="brain-dump">
+        <h2>Brain Dump</h2>
+        <textarea id="brain-dump-input" placeholder="Paste a paragraph about what you did or need to do…"></textarea>
+        <div class="brain-dump-actions">
+            <button id="brain-dump-parse">Parse</button>
+            <button id="brain-dump-dictate" title="Dictate using your device's microphone">Dictate</button>
+            <button id="brain-dump-clear">Clear</button>
+            <span class="brain-dump-status" id="brain-dump-status"></span>
+        </div>
+        <div class="brain-dump-error" id="brain-dump-error" style="display:none"></div>
+        <div class="brain-dump-review" id="brain-dump-review" style="display:none"></div>
+    </section>
 
+    <section class="card featured" data-list="immediate">
+        <h2>Immediate Actions <span class="count"></span></h2>
+        <ul class="item-list"></ul>
+        <div class="add-row">
+            <input type="text" placeholder="Add an immediate action…">
+            <input type="date">
+            <button>Add</button>
+        </div>
+    </section>
+
+    <div class="grid">
         <section class="card" data-list="todos">
             <h2>To-Dos <span class="count"></span></h2>
             <ul class="item-list"></ul>
@@ -368,16 +776,6 @@
             </div>
         </section>
 
-        <section class="card" data-list="visits-upcoming">
-            <h2>Upcoming Visits <span class="count"></span></h2>
-            <ul class="item-list"></ul>
-            <div class="add-row">
-                <input type="text" placeholder="Site visit…">
-                <input type="date">
-                <button>Add</button>
-            </div>
-        </section>
-
         <section class="card" data-list="visits-toplan">
             <h2>Visits to Plan <span class="count"></span></h2>
             <ul class="item-list"></ul>
@@ -388,11 +786,11 @@
             </div>
         </section>
 
-        <section class="card" data-list="completed">
-            <h2>Recently Completed <span class="count"></span></h2>
+        <section class="card" data-list="visits-upcoming">
+            <h2>Upcoming Visits <span class="count"></span></h2>
             <ul class="item-list"></ul>
             <div class="add-row">
-                <input type="text" placeholder="Mark something complete…">
+                <input type="text" placeholder="Site visit…">
                 <input type="date">
                 <button>Add</button>
             </div>
@@ -408,8 +806,53 @@
         </div>
     </div>
 
+    <section class="card completed-section" data-list="completed" id="completed-section">
+        <div class="completed-head" id="completed-head">
+            <h2><span class="chev">▶</span> Recently Completed <span class="count"></span></h2>
+        </div>
+        <div class="completed-body">
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Mark something complete…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" id="newproj-modal">
+        <div class="modal wide">
+            <h2>New Project Detected</h2>
+            <p class="hint" style="margin-top:-6px;margin-bottom:14px;">The parser found project mentions that don't match your existing projects. Pick what to do for each.</p>
+            <div class="new-project-list" id="newproj-list"></div>
+            <div class="modal-actions">
+                <button id="newproj-cancel">Cancel parse</button>
+                <button id="newproj-continue">Continue to review</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="settings-modal">
+        <div class="modal">
+            <h2>Settings</h2>
+            <label for="api-key-input">Anthropic API Key</label>
+            <input type="password" id="api-key-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+            <div class="saved-key" id="saved-key-row" style="display:none">
+                <span id="saved-key-mask"></span>
+                <button class="clear-link" id="clear-key">Clear</button>
+            </div>
+            <p class="hint">Stored locally in this browser only. Used to send Brain Dump text to Claude for parsing. The key is never written to the dashboard file or export JSON.</p>
+            <div class="modal-actions">
+                <button id="settings-cancel">Close</button>
+                <button id="settings-save">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const STORAGE_KEY = "ngc-dashboard-v1";
+        const API_KEY_STORAGE = "ngc-dashboard-anthropic-key";
+        const THEME_STORAGE = "ngc-dashboard-theme";
 
         const SEED_PROJECTS = [
             "Bass Rocks",
@@ -474,25 +917,68 @@
             renderProjects();
         }
 
+        function todayISO() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function dateStatus(d) {
+            if (!d) return "";
+            const t = todayISO();
+            if (d < t) return "overdue";
+            if (d === t) return "today";
+            return "";
+        }
+
+        function sortItems(items) {
+            // Active first (sorted by date asc, undated last), then done.
+            return [...items].sort((a, b) => {
+                const aDone = !!a.done && !a._pendingReword ? 1 : 0;
+                const bDone = !!b.done && !b._pendingReword ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone;
+                const ad = a.date || "";
+                const bd = b.date || "";
+                if (!ad && bd) return 1;
+                if (ad && !bd) return -1;
+                if (ad < bd) return -1;
+                if (ad > bd) return 1;
+                return 0;
+            });
+        }
+
         function renderLists() {
-            document.querySelectorAll("section.card").forEach(section => {
+            document.querySelectorAll("section[data-list]").forEach(section => {
                 const key = section.dataset.list;
                 const items = state[key] || [];
                 const ul = section.querySelector(".item-list");
                 ul.innerHTML = "";
-                items.forEach(item => ul.appendChild(renderItem(key, item)));
-                section.querySelector("h2 .count").textContent = items.length ? items.length : "";
+                sortItems(items).forEach(item => ul.appendChild(renderItem(key, item)));
+                const countEl = section.querySelector("h2 .count");
+                if (countEl) countEl.textContent = items.length ? items.length : "";
             });
         }
 
         function renderItem(listKey, item) {
             const li = document.createElement("li");
             if (item.done) li.classList.add("done");
+            if (item._pendingReword) li.classList.add("pending");
 
             const cb = document.createElement("input");
             cb.type = "checkbox";
             cb.checked = !!item.done;
-            cb.addEventListener("change", () => { item.done = cb.checked; save(); render(); });
+            cb.addEventListener("change", () => {
+                if (listKey === "completed") {
+                    item.done = cb.checked;
+                } else {
+                    if (cb.checked) {
+                        item.done = true;
+                        item._pendingReword = true;
+                    } else {
+                        item.done = false;
+                        item._pendingReword = false;
+                    }
+                }
+                save(); render();
+            });
 
             const text = document.createElement("input");
             text.type = "text";
@@ -500,11 +986,24 @@
             text.value = item.text || "";
             text.addEventListener("input", () => { item.text = text.value; save(); });
 
+            const tag = document.createElement("span");
+            tag.className = "pending-tag";
+            tag.textContent = "→ Completed";
+            tag.title = "Will be reworded and moved to Recently Completed on next Parse";
+
             const date = document.createElement("input");
             date.type = "date";
             date.className = "item-date";
+            const ds = dateStatus(item.date);
+            if (ds) date.classList.add(ds);
             date.value = item.date || "";
-            date.addEventListener("change", () => { item.date = date.value; save(); });
+            date.addEventListener("change", () => {
+                item.date = date.value;
+                date.classList.remove("overdue", "today");
+                const ns = dateStatus(item.date);
+                if (ns) date.classList.add(ns);
+                save();
+            });
 
             const del = document.createElement("button");
             del.className = "item-del";
@@ -515,7 +1014,7 @@
                 save(); render();
             });
 
-            li.append(cb, text, date, del);
+            li.append(cb, text, tag, date, del);
             return li;
         }
 
@@ -529,10 +1028,16 @@
             document.getElementById("proj-count").textContent = (state.projects || []).length || "";
         }
 
+        function projectOutstandingCount(p) {
+            return (p.tasks || []).filter(t => !t.done && !t._pendingReword).length;
+        }
+
         function renderProject(p) {
             const wrap = document.createElement("div");
             wrap.className = "project status-" + (p.status || "active");
             if (p.open) wrap.classList.add("open");
+            const outstanding = projectOutstandingCount(p);
+            if (outstanding > 0) wrap.classList.add("has-outstanding");
 
             const head = document.createElement("div");
             head.className = "project-head";
@@ -546,6 +1051,11 @@
             name.value = p.name || "";
             name.addEventListener("input", () => { p.name = name.value; save(); });
             name.addEventListener("click", e => e.stopPropagation());
+
+            const badge = document.createElement("span");
+            badge.className = "outstanding-badge";
+            badge.textContent = outstanding + " open";
+            badge.title = outstanding + " outstanding task" + (outstanding === 1 ? "" : "s");
 
             const status = document.createElement("button");
             status.className = "project-status";
@@ -568,7 +1078,7 @@
                 save(); render();
             });
 
-            head.append(chev, name, status, del);
+            head.append(chev, name, badge, status, del);
             head.addEventListener("click", () => { p.open = !p.open; save(); render(); });
 
             const body = document.createElement("div");
@@ -651,8 +1161,14 @@
             return li;
         }
 
+        // Completed section collapse toggle
+        const completedSection = document.getElementById("completed-section");
+        document.getElementById("completed-head").addEventListener("click", () => {
+            completedSection.classList.toggle("open");
+        });
+
         // List card add buttons
-        document.querySelectorAll("section.card").forEach(section => {
+        document.querySelectorAll("section[data-list]").forEach(section => {
             const key = section.dataset.list;
             const textIn = section.querySelector(".add-row input[type=text]");
             const dateIn = section.querySelector(".add-row input[type=date]");
@@ -715,6 +1231,791 @@
             reader.readAsText(file);
             e.target.value = "";
         });
+
+        // ---------- Settings modal (Anthropic API key) ----------
+        const settingsModal = document.getElementById("settings-modal");
+        const apiKeyInput = document.getElementById("api-key-input");
+        const savedKeyRow = document.getElementById("saved-key-row");
+        const savedKeyMask = document.getElementById("saved-key-mask");
+
+        function getApiKey() {
+            return localStorage.getItem(API_KEY_STORAGE) || "";
+        }
+        function maskKey(k) {
+            if (!k) return "";
+            if (k.length <= 12) return "•".repeat(k.length);
+            return k.slice(0, 7) + "…" + k.slice(-4);
+        }
+        function refreshSavedKeyView() {
+            const k = getApiKey();
+            if (k) {
+                savedKeyRow.style.display = "flex";
+                savedKeyMask.textContent = "Saved: " + maskKey(k);
+                apiKeyInput.placeholder = "Enter new key to replace…";
+            } else {
+                savedKeyRow.style.display = "none";
+                apiKeyInput.placeholder = "sk-ant-…";
+            }
+        }
+        function openSettings() {
+            apiKeyInput.value = "";
+            refreshSavedKeyView();
+            settingsModal.classList.add("open");
+            setTimeout(() => apiKeyInput.focus(), 50);
+        }
+        function closeSettings() {
+            settingsModal.classList.remove("open");
+        }
+        document.getElementById("settings-btn").addEventListener("click", openSettings);
+        document.getElementById("settings-cancel").addEventListener("click", closeSettings);
+        settingsModal.addEventListener("click", e => {
+            if (e.target === settingsModal) closeSettings();
+        });
+        document.getElementById("settings-save").addEventListener("click", () => {
+            const v = apiKeyInput.value.trim();
+            if (v) {
+                localStorage.setItem(API_KEY_STORAGE, v);
+            }
+            apiKeyInput.value = "";
+            refreshSavedKeyView();
+            closeSettings();
+        });
+        document.getElementById("clear-key").addEventListener("click", () => {
+            localStorage.removeItem(API_KEY_STORAGE);
+            refreshSavedKeyView();
+        });
+
+        // ---------- Brain Dump ----------
+        const bdInput = document.getElementById("brain-dump-input");
+        const bdParseBtn = document.getElementById("brain-dump-parse");
+        const bdClearBtn = document.getElementById("brain-dump-clear");
+        const bdStatus = document.getElementById("brain-dump-status");
+        const bdError = document.getElementById("brain-dump-error");
+        const bdReview = document.getElementById("brain-dump-review");
+
+        const LIST_LABELS = {
+            immediate: "Immediate Actions",
+            todos: "To-Dos",
+            meetings: "Meetings",
+            "visits-upcoming": "Upcoming Visits",
+            "visits-toplan": "Visits to Plan",
+            completed: "Recently Completed"
+        };
+        const LIST_KEYS_IN_RESPONSE = {
+            immediate: "immediate",
+            todos: "todos",
+            meetings: "meetings",
+            "visits-upcoming": "visits-upcoming",
+            "visits-toplan": "visits-toplan",
+            completed: "completed"
+        };
+
+        let pendingProposal = null;
+
+        function showError(msg) {
+            bdError.style.display = "block";
+            bdError.textContent = msg;
+        }
+        function clearError() {
+            bdError.style.display = "none";
+            bdError.textContent = "";
+        }
+        function setStatus(msg) { bdStatus.textContent = msg || ""; }
+
+        document.getElementById("brain-dump-clear").addEventListener("click", () => {
+            bdInput.value = "";
+            clearError();
+            bdReview.style.display = "none";
+            bdReview.innerHTML = "";
+            pendingProposal = null;
+            setStatus("");
+        });
+
+        bdParseBtn.addEventListener("click", runBrainDump);
+
+        function gatherPendingRewords() {
+            const out = [];
+            Object.keys(LIST_LABELS).forEach(key => {
+                if (key === "completed") return;
+                (state[key] || []).forEach(it => {
+                    if (it._pendingReword) {
+                        out.push({ id: it.id, list: key, text: it.text, date: it.date || "" });
+                    }
+                });
+            });
+            return out;
+        }
+
+        async function runBrainDump() {
+            clearError();
+            const text = bdInput.value.trim();
+            const pendingRewords = gatherPendingRewords();
+            if (!text && !pendingRewords.length) {
+                setStatus("Nothing to parse and nothing checked off.");
+                return;
+            }
+            const key = getApiKey();
+            if (!key) {
+                setStatus("API key needed.");
+                showError("No Anthropic API key saved. Open settings (⚙) to add one.");
+                return;
+            }
+
+            bdParseBtn.disabled = true;
+            bdClearBtn.disabled = true;
+            setStatus(pendingRewords.length && !text
+                ? "Rewording checked items…"
+                : "Parsing…");
+            bdReview.style.display = "none";
+            bdReview.innerHTML = "";
+            pendingProposal = null;
+
+            const today = todayISO();
+            const projectNames = (state.projects || []).map(p => p.name);
+
+            const systemPrompt = [
+                "You help a golf-course consultant organize their work. You do two things in one response:",
+                "(1) Extract structured action items from any <brain_dump> text the user provides.",
+                "(2) Reword any <items_to_reword> as concise past-tense entries suitable for a \"Recently Completed\" log.",
+                "",
+                "Today's date is " + today + ". Resolve all relative dates (\"tomorrow\", \"next Tuesday\", \"in two weeks\") to absolute ISO dates (YYYY-MM-DD). If no date is implied, use null.",
+                "",
+                "Strong preference: if an item is clearly tied to a specific project (golf course, club, or named site), put it under that project's tasks in the projects array — NOT in the generic global lists. The generic lists are for items with no project association.",
+                "",
+                "For brain-dump extraction, sort each item into exactly one of these destinations:",
+                "- immediate: urgent, non-project-specific things needing action in the next day or so",
+                "- todos: general tasks not tied to a specific project",
+                "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations not tied to one project (if a meeting IS about a specific project, put it under that project's tasks instead, prefixed e.g. \"Meeting: ...\")",
+                "- visits-upcoming: site visits that aren't tied to one of the named projects (rare — most visits go under projects)",
+                "- visits-toplan: visits to be scheduled not tied to one of the named projects (rare)",
+                "- completed: things the person says they already did or finished, that aren't tied to a specific project",
+                "- projects: any item tied to a specific project. Match the project case-insensitively to the existing names below when possible. If the user clearly mentions a project that doesn't match an existing one, you may propose a new project entry — the user will confirm before it's created. notes_to_append is optional context to add to that project's notes (use \"\" if none). tasks is an array of action items for that project.",
+                "",
+                "Existing project names (use these exact spellings when matching):",
+                projectNames.length ? projectNames.map(n => "- " + n).join("\n") : "(none yet)",
+                "",
+                "When matching: be generous — \"Bass Rocks GC\", \"bass rocks\", \"Bass Rocks Country Club\" all match \"Bass Rocks\". Use the existing name verbatim in your response. Only propose a brand-new project entry when the mention is clearly distinct from every existing name.",
+                "",
+                "For rewording: for each entry in <items_to_reword>, produce a short past-tense version. Keep names, projects, and key details. Don't add new information. Examples: \"Call Bass Rocks contact\" → \"Called Bass Rocks contact\"; \"Email John re scope\" → \"Emailed John about scope\"; \"Site visit at Mendham\" → \"Visited Mendham site\". Preserve the original date in the response (don't infer a new date).",
+                "",
+                "Output ONLY a single JSON object with this exact shape, no prose, no markdown fences:",
+                "{",
+                "  \"immediate\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\"}],",
+                "  \"todos\": [...],",
+                "  \"meetings\": [...],",
+                "  \"visits-upcoming\": [...],",
+                "  \"visits-toplan\": [...],",
+                "  \"completed\": [...],",
+                "  \"projects\": [{\"name\": \"<exact existing project name>\", \"notes_to_append\": \"...\", \"tasks\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\"}]}],",
+                "  \"reworded_completions\": [{\"id\": \"<id from items_to_reword>\", \"reworded\": \"<past-tense text>\", \"date\": \"YYYY-MM-DD or null\"}]",
+                "}",
+                "",
+                "Keep item text concise (typically under 12 words). Don't duplicate items. If a list has nothing, return [] for it. Omit nothing — every key must be present. If <items_to_reword> is empty or absent, return [] for reworded_completions."
+            ].join("\n");
+
+            const userParts = [];
+            if (text) {
+                userParts.push("<brain_dump>\n" + text + "\n</brain_dump>");
+            } else {
+                userParts.push("<brain_dump></brain_dump>");
+            }
+            userParts.push("<items_to_reword>\n" + JSON.stringify(pendingRewords, null, 2) + "\n</items_to_reword>");
+            const userMessage = userParts.join("\n\n");
+
+            let resp, raw;
+            try {
+                resp = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": key,
+                        "anthropic-version": "2023-06-01",
+                        "anthropic-dangerous-direct-browser-access": "true"
+                    },
+                    body: JSON.stringify({
+                        model: "claude-haiku-4-5",
+                        max_tokens: 2048,
+                        system: systemPrompt,
+                        messages: [
+                            { role: "user", content: userMessage }
+                        ]
+                    })
+                });
+                raw = await resp.text();
+            } catch (e) {
+                bdParseBtn.disabled = false;
+                bdClearBtn.disabled = false;
+                setStatus("Network error.");
+                showError("Network error contacting Anthropic API:\n\n" + (e && e.message ? e.message : String(e)));
+                return;
+            }
+
+            bdParseBtn.disabled = false;
+            bdClearBtn.disabled = false;
+
+            if (!resp.ok) {
+                setStatus("API error " + resp.status + ".");
+                showError("API returned HTTP " + resp.status + ":\n\n" + raw);
+                return;
+            }
+
+            let data;
+            try {
+                data = JSON.parse(raw);
+            } catch (e) {
+                setStatus("Couldn't parse API response.");
+                showError("Failed to parse API response as JSON:\n\n" + raw);
+                return;
+            }
+
+            const contentParts = (data && data.content) || [];
+            const textOut = contentParts
+                .filter(p => p.type === "text" && typeof p.text === "string")
+                .map(p => p.text)
+                .join("\n")
+                .trim();
+
+            if (!textOut) {
+                setStatus("Empty response.");
+                showError("Anthropic returned no text content. Raw response:\n\n" + raw);
+                return;
+            }
+
+            const jsonStr = extractJson(textOut);
+            let proposal;
+            try {
+                proposal = JSON.parse(jsonStr);
+            } catch (e) {
+                setStatus("Unparseable JSON from model.");
+                showError("Could not parse the model's output as JSON.\n\nRaw model output:\n" + textOut);
+                return;
+            }
+
+            pendingProposal = normalizeProposal(proposal);
+            const needs = (pendingProposal.projects || []).filter(p => p.needsDecision);
+            if (needs.length) {
+                setStatus("New project mentions need confirmation.");
+                openNewProjectModal(needs);
+            } else {
+                setStatus("Parsed. Review below.");
+                renderReview(pendingProposal);
+            }
+        }
+
+        // ---------- New-project confirmation modal ----------
+        const newProjModal = document.getElementById("newproj-modal");
+        const newProjList = document.getElementById("newproj-list");
+
+        function openNewProjectModal(unmatched) {
+            newProjList.innerHTML = "";
+            const existing = (state.projects || []).map(p => p.name);
+            unmatched.forEach((pp, idx) => {
+                pp.decision = pp.decision || "create";  // default
+                const row = document.createElement("div");
+                row.className = "new-project-row-modal";
+                const nm = document.createElement("div");
+                nm.className = "np-name";
+                nm.textContent = "“" + pp.name + "”";
+                row.appendChild(nm);
+
+                const ctx = document.createElement("div");
+                ctx.className = "np-context";
+                const taskCount = pp.tasks.length;
+                const noteBits = pp.notes_to_append ? " and notes" : "";
+                ctx.textContent = taskCount + " task" + (taskCount === 1 ? "" : "s") + noteBits + " were extracted for this name.";
+                row.appendChild(ctx);
+
+                const choices = document.createElement("div");
+                choices.className = "np-choices";
+
+                const radioName = "np-" + idx;
+
+                const lblCreate = document.createElement("label");
+                const rCreate = document.createElement("input");
+                rCreate.type = "radio"; rCreate.name = radioName; rCreate.value = "create";
+                if (pp.decision === "create") rCreate.checked = true;
+                rCreate.addEventListener("change", () => { pp.decision = "create"; pp.mapTargetId = null; });
+                lblCreate.append(rCreate, document.createTextNode("Create new project"));
+
+                const lblMap = document.createElement("label");
+                const rMap = document.createElement("input");
+                rMap.type = "radio"; rMap.name = radioName; rMap.value = "map";
+                if (pp.decision === "map") rMap.checked = true;
+                const sel = document.createElement("select");
+                sel.disabled = !rMap.checked;
+                const placeholder = document.createElement("option");
+                placeholder.value = ""; placeholder.textContent = "— choose —";
+                sel.appendChild(placeholder);
+                (state.projects || []).forEach(ep => {
+                    const opt = document.createElement("option");
+                    opt.value = ep.id;
+                    opt.textContent = ep.name;
+                    if (pp.mapTargetId === ep.id) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+                rMap.addEventListener("change", () => {
+                    pp.decision = "map";
+                    sel.disabled = false;
+                });
+                sel.addEventListener("change", () => { pp.mapTargetId = sel.value || null; });
+                lblMap.append(rMap, document.createTextNode("Map to existing"), sel);
+
+                const lblSkip = document.createElement("label");
+                const rSkip = document.createElement("input");
+                rSkip.type = "radio"; rSkip.name = radioName; rSkip.value = "skip";
+                if (pp.decision === "skip") rSkip.checked = true;
+                rSkip.addEventListener("change", () => { pp.decision = "skip"; pp.mapTargetId = null; sel.disabled = true; });
+                lblSkip.append(rSkip, document.createTextNode("Skip"));
+
+                // When create/skip selected, disable the select; on map, enable
+                rCreate.addEventListener("change", () => { sel.disabled = true; });
+
+                choices.append(lblCreate, lblMap, lblSkip);
+                row.appendChild(choices);
+                newProjList.appendChild(row);
+            });
+            newProjModal.classList.add("open");
+        }
+
+        function closeNewProjectModal() { newProjModal.classList.remove("open"); }
+
+        document.getElementById("newproj-cancel").addEventListener("click", () => {
+            closeNewProjectModal();
+            pendingProposal = null;
+            setStatus("Parse cancelled.");
+        });
+        document.getElementById("newproj-continue").addEventListener("click", () => {
+            if (!pendingProposal) { closeNewProjectModal(); return; }
+            // Validate: any "map" without a target?
+            const bad = (pendingProposal.projects || []).filter(p => p.needsDecision && p.decision === "map" && !p.mapTargetId);
+            if (bad.length) {
+                alert("Please choose an existing project for each 'Map to existing' selection.");
+                return;
+            }
+            // Apply decisions to the proposal
+            pendingProposal.projects = (pendingProposal.projects || [])
+                .filter(p => !(p.needsDecision && p.decision === "skip"))
+                .map(p => {
+                    if (p.needsDecision) {
+                        if (p.decision === "map") {
+                            p.matchedProjectId = p.mapTargetId;
+                            p.needsDecision = false;
+                        } else if (p.decision === "create") {
+                            // Leave needsDecision true; applyProposal will create then map.
+                        }
+                    }
+                    return p;
+                });
+            closeNewProjectModal();
+            setStatus("Parsed. Review below.");
+            renderReview(pendingProposal);
+        });
+        newProjModal.addEventListener("click", e => {
+            if (e.target === newProjModal) closeNewProjectModal();
+        });
+
+        function extractJson(s) {
+            const trimmed = s.trim();
+            if (trimmed.startsWith("{")) return trimmed;
+            const fence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/);
+            if (fence) return fence[1].trim();
+            const first = trimmed.indexOf("{");
+            const last = trimmed.lastIndexOf("}");
+            if (first !== -1 && last !== -1 && last > first) {
+                return trimmed.slice(first, last + 1);
+            }
+            return trimmed;
+        }
+
+        function normalizeProposal(p) {
+            const norm = {
+                immediate: [],
+                todos: [],
+                meetings: [],
+                "visits-upcoming": [],
+                "visits-toplan": [],
+                completed: [],
+                projects: [],
+                reworded_completions: []
+            };
+            Object.keys(LIST_LABELS).forEach(k => {
+                const arr = Array.isArray(p[k]) ? p[k] : [];
+                norm[k] = arr
+                    .map(it => ({
+                        text: (it && typeof it.text === "string") ? it.text.trim() : "",
+                        date: (it && typeof it.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(it.date)) ? it.date : ""
+                    }))
+                    .filter(it => it.text);
+            });
+            const projArr = Array.isArray(p.projects) ? p.projects : [];
+            norm.projects = projArr.map(pp => {
+                const name = (pp && typeof pp.name === "string") ? pp.name.trim() : "";
+                const match = (state.projects || []).find(x => x.name.toLowerCase() === name.toLowerCase());
+                const notes = (pp && typeof pp.notes_to_append === "string") ? pp.notes_to_append.trim() : "";
+                const tasks = Array.isArray(pp && pp.tasks) ? pp.tasks : [];
+                return {
+                    name,
+                    matchedProjectId: match ? match.id : null,
+                    needsDecision: !match,
+                    decision: match ? "matched" : null,  // null until user resolves; then "create" | "map" | "skip"
+                    notes_to_append: notes,
+                    tasks: tasks
+                        .map(t => ({
+                            text: (t && typeof t.text === "string") ? t.text.trim() : "",
+                            date: (t && typeof t.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.date)) ? t.date : ""
+                        }))
+                        .filter(t => t.text)
+                };
+            }).filter(pp => pp.name && (pp.notes_to_append || pp.tasks.length));
+
+            const rwArr = Array.isArray(p.reworded_completions) ? p.reworded_completions : [];
+            norm.reworded_completions = rwArr
+                .map(rc => {
+                    const id = (rc && typeof rc.id === "string") ? rc.id : "";
+                    const reworded = (rc && typeof rc.reworded === "string") ? rc.reworded.trim() : "";
+                    const date = (rc && typeof rc.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(rc.date)) ? rc.date : "";
+                    const found = findPendingById(id);
+                    return found ? { id, reworded, date, originalText: found.item.text, originalList: found.list } : null;
+                })
+                .filter(rc => rc && rc.reworded);
+            return norm;
+        }
+
+        function findPendingById(id) {
+            if (!id) return null;
+            const lists = ["immediate", "todos", "meetings", "visits-upcoming", "visits-toplan"];
+            for (const list of lists) {
+                const item = (state[list] || []).find(it => it.id === id);
+                if (item) return { item, list };
+            }
+            return null;
+        }
+
+        function renderReview(prop) {
+            bdReview.innerHTML = "";
+            bdReview.style.display = "block";
+
+            const total = totalProposalCount(prop);
+            const head = document.createElement("div");
+            head.className = "review-head";
+            const h3 = document.createElement("h3");
+            h3.textContent = "Proposed additions (" + total + ")";
+            const actions = document.createElement("div");
+            actions.className = "review-actions";
+            const applyBtn = document.createElement("button");
+            applyBtn.textContent = "Apply";
+            applyBtn.addEventListener("click", applyProposal);
+            const cancelBtn = document.createElement("button");
+            cancelBtn.textContent = "Cancel";
+            cancelBtn.addEventListener("click", () => {
+                pendingProposal = null;
+                bdReview.style.display = "none";
+                bdReview.innerHTML = "";
+                setStatus("");
+            });
+            actions.append(cancelBtn, applyBtn);
+            head.append(h3, actions);
+            bdReview.appendChild(head);
+
+            if (total === 0) {
+                const empty = document.createElement("p");
+                empty.style.color = "var(--muted)";
+                empty.style.fontSize = "0.9rem";
+                empty.textContent = "The model didn't extract any actionable items from that text.";
+                bdReview.appendChild(empty);
+                return;
+            }
+
+            // Reworded completions group (shown first — most actionable confirmation)
+            const completions = prop.reworded_completions || [];
+            if (completions.length) {
+                const group = document.createElement("div");
+                group.className = "review-group";
+                const h4 = document.createElement("h4");
+                h4.textContent = "Move to Recently Completed (reworded)";
+                group.appendChild(h4);
+                const ul = document.createElement("ul");
+                completions.forEach(rc => {
+                    if (rc._checked === undefined) rc._checked = true;
+                    const li = document.createElement("li");
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.checked = rc._checked;
+                    cb.addEventListener("change", () => { rc._checked = cb.checked; });
+
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "review-item-text";
+                    const before = document.createElement("span");
+                    before.textContent = rc.originalText;
+                    before.style.textDecoration = "line-through";
+                    before.style.color = "var(--muted-2)";
+                    before.style.marginRight = "8px";
+                    const after = document.createElement("span");
+                    after.textContent = rc.reworded;
+                    textSpan.append(before, after);
+
+                    const dateSpan = document.createElement("span");
+                    dateSpan.className = "review-item-date";
+                    dateSpan.textContent = rc.date || "";
+                    li.append(cb, textSpan, dateSpan);
+                    ul.appendChild(li);
+                });
+                group.appendChild(ul);
+                bdReview.appendChild(group);
+            }
+
+            Object.keys(LIST_LABELS).forEach(key => {
+                const items = prop[key] || [];
+                if (!items.length) return;
+                const group = document.createElement("div");
+                group.className = "review-group";
+                const h4 = document.createElement("h4");
+                h4.textContent = LIST_LABELS[key];
+                group.appendChild(h4);
+                const ul = document.createElement("ul");
+                items.forEach(it => {
+                    if (it._checked === undefined) it._checked = true;
+                    const li = document.createElement("li");
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.checked = it._checked;
+                    cb.addEventListener("change", () => { it._checked = cb.checked; });
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "review-item-text";
+                    textSpan.textContent = it.text;
+                    const dateSpan = document.createElement("span");
+                    dateSpan.className = "review-item-date";
+                    dateSpan.textContent = it.date || "";
+                    li.append(cb, textSpan, dateSpan);
+                    ul.appendChild(li);
+                });
+                group.appendChild(ul);
+                bdReview.appendChild(group);
+            });
+
+            (prop.projects || []).forEach(pp => {
+                if (!pp.notes_to_append && !pp.tasks.length) return;
+                const group = document.createElement("div");
+                group.className = "review-group";
+                const h4 = document.createElement("h4");
+                const isNew = pp.needsDecision && pp.decision === "create";
+                h4.textContent = "Project — " + pp.name + (isNew ? " (new)" : "");
+                group.appendChild(h4);
+                const ul = document.createElement("ul");
+
+                if (pp.notes_to_append) {
+                    if (pp._notesChecked === undefined) pp._notesChecked = true;
+                    const li = document.createElement("li");
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.checked = pp._notesChecked;
+                    cb.addEventListener("change", () => { pp._notesChecked = cb.checked; });
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "review-item-text";
+                    textSpan.textContent = pp.notes_to_append;
+                    const meta = document.createElement("span");
+                    meta.className = "review-item-meta";
+                    meta.textContent = "append to notes";
+                    li.append(cb, textSpan, meta);
+                    ul.appendChild(li);
+                }
+
+                pp.tasks.forEach(t => {
+                    if (t._checked === undefined) t._checked = true;
+                    const li = document.createElement("li");
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.checked = t._checked;
+                    cb.addEventListener("change", () => { t._checked = cb.checked; });
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "review-item-text";
+                    textSpan.textContent = t.text;
+                    const dateSpan = document.createElement("span");
+                    dateSpan.className = "review-item-date";
+                    dateSpan.textContent = t.date || "";
+                    li.append(cb, textSpan, dateSpan);
+                    ul.appendChild(li);
+                });
+
+                group.appendChild(ul);
+                bdReview.appendChild(group);
+            });
+        }
+
+        function totalProposalCount(p) {
+            let n = 0;
+            Object.keys(LIST_LABELS).forEach(k => { n += (p[k] || []).length; });
+            (p.projects || []).forEach(pp => {
+                if (pp.notes_to_append) n += 1;
+                n += pp.tasks.length;
+            });
+            n += (p.reworded_completions || []).length;
+            return n;
+        }
+
+        function applyProposal() {
+            if (!pendingProposal) return;
+            let added = 0;
+            let moved = 0;
+
+            // 1. Apply reworded completions first: remove from origin lists, add to completed.
+            (pendingProposal.reworded_completions || []).forEach(rc => {
+                if (!rc._checked) return;
+                const found = findPendingById(rc.id);
+                if (!found) return;
+                state[found.list] = (state[found.list] || []).filter(x => x.id !== rc.id);
+                state.completed = state.completed || [];
+                state.completed.unshift({
+                    id: makeId(),
+                    text: rc.reworded,
+                    date: rc.date || found.item.date || "",
+                    done: true
+                });
+                moved++;
+            });
+
+            // 2. New items from brain dump.
+            Object.keys(LIST_LABELS).forEach(key => {
+                (pendingProposal[key] || []).forEach(it => {
+                    if (!it._checked) return;
+                    state[key] = state[key] || [];
+                    state[key].push({
+                        id: makeId(),
+                        text: it.text,
+                        date: it.date || "",
+                        done: key === "completed"
+                    });
+                    added++;
+                });
+            });
+
+            // 3. Project additions (create any new ones first).
+            (pendingProposal.projects || []).forEach(pp => {
+                if (pp.needsDecision && pp.decision === "create" && !pp.matchedProjectId) {
+                    const newProj = {
+                        id: makeId(),
+                        name: pp.name,
+                        status: "active",
+                        notes: "",
+                        open: true,
+                        tasks: []
+                    };
+                    state.projects = state.projects || [];
+                    state.projects.push(newProj);
+                    pp.matchedProjectId = newProj.id;
+                    added++;
+                }
+                const proj = (state.projects || []).find(x => x.id === pp.matchedProjectId);
+                if (!proj) return;
+                if (pp.notes_to_append && pp._notesChecked !== false) {
+                    const sep = proj.notes && !proj.notes.endsWith("\n") ? "\n" : "";
+                    proj.notes = (proj.notes || "") + sep + pp.notes_to_append;
+                    added++;
+                }
+                pp.tasks.forEach(t => {
+                    if (!t._checked) return;
+                    proj.tasks = proj.tasks || [];
+                    proj.tasks.push({
+                        id: makeId(),
+                        text: t.text,
+                        date: t.date || "",
+                        done: false
+                    });
+                    added++;
+                });
+            });
+
+            pendingProposal = null;
+            bdReview.style.display = "none";
+            bdReview.innerHTML = "";
+            bdInput.value = "";
+
+            const parts = [];
+            if (added) parts.push("Added " + added + " item" + (added === 1 ? "" : "s"));
+            if (moved) parts.push("moved " + moved + " to completed");
+            setStatus(parts.length ? parts.join(", ") + "." : "Nothing checked.");
+            save();
+            render();
+        }
+
+        // ---------- Theme (dark mode) ----------
+        const themeBtn = document.getElementById("theme-btn");
+        function applyTheme(t) {
+            if (t === "dark") {
+                document.body.classList.add("dark");
+                themeBtn.textContent = "☀";
+                themeBtn.title = "Switch to light mode";
+            } else {
+                document.body.classList.remove("dark");
+                themeBtn.textContent = "☾";
+                themeBtn.title = "Switch to dark mode";
+            }
+        }
+        applyTheme(localStorage.getItem(THEME_STORAGE) || "light");
+        themeBtn.addEventListener("click", () => {
+            const next = document.body.classList.contains("dark") ? "light" : "dark";
+            localStorage.setItem(THEME_STORAGE, next);
+            applyTheme(next);
+        });
+
+        // ---------- Dictation (Web Speech API) ----------
+        const dictateBtn = document.getElementById("brain-dump-dictate");
+        const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let dictating = false;
+
+        if (!SpeechRecognitionImpl) {
+            dictateBtn.disabled = true;
+            dictateBtn.title = "Your browser doesn't support speech recognition. Try Chrome or Edge.";
+        } else {
+            dictateBtn.addEventListener("click", () => {
+                if (dictating) {
+                    if (recognition) recognition.stop();
+                    return;
+                }
+                recognition = new SpeechRecognitionImpl();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = "en-US";
+
+                let baseText = bdInput.value;
+                if (baseText && !/[\s\n]$/.test(baseText)) baseText += " ";
+                let finalText = "";
+
+                recognition.onresult = (e) => {
+                    let interim = "";
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const transcript = e.results[i][0].transcript;
+                        if (e.results[i].isFinal) finalText += transcript;
+                        else interim += transcript;
+                    }
+                    bdInput.value = baseText + finalText + interim;
+                };
+                recognition.onend = () => {
+                    dictating = false;
+                    dictateBtn.classList.remove("recording");
+                    dictateBtn.textContent = "Dictate";
+                };
+                recognition.onerror = (e) => {
+                    dictating = false;
+                    dictateBtn.classList.remove("recording");
+                    dictateBtn.textContent = "Dictate";
+                    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+                        showError("Microphone permission denied. Allow microphone access for this page in your browser settings.");
+                    } else if (e.error && e.error !== "aborted" && e.error !== "no-speech") {
+                        showError("Speech recognition error: " + e.error);
+                    }
+                };
+                try {
+                    recognition.start();
+                    dictating = true;
+                    dictateBtn.classList.add("recording");
+                    dictateBtn.textContent = "Stop";
+                } catch (err) {
+                    showError("Could not start dictation: " + (err && err.message ? err.message : String(err)));
+                }
+            });
+        }
 
         render();
     </script>
