@@ -21,7 +21,7 @@
             --highlight: #f4f0e6;
             color-scheme: light;
         }
-        body.dark {
+        :root.dark {
             --bg: #15171a;
             --panel: #1d1f23;
             --border: #2e3035;
@@ -34,11 +34,11 @@
             --highlight: #2a2820;
             color-scheme: dark;
         }
-        body.dark .save-status.saved { color: #6abc6a; }
-        body.dark .status-active .status-dot { background: #6aaa6a; }
-        body.dark .status-planning .status-dot { background: #d0a04a; }
-        body.dark .status-onhold .status-dot { background: #888; }
-        body.dark .status-complete .status-dot { background: #6a8aa8; }
+        :root.dark .save-status.saved { color: #6abc6a; }
+        :root.dark .status-active .status-dot { background: #6aaa6a; }
+        :root.dark .status-planning .status-dot { background: #d0a04a; }
+        :root.dark .status-onhold .status-dot { background: #888; }
+        :root.dark .status-complete .status-dot { background: #6a8aa8; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             background: var(--bg);
@@ -2018,18 +2018,18 @@
         const themeBtn = document.getElementById("theme-btn");
         function applyTheme(t) {
             if (t === "dark") {
-                document.body.classList.add("dark");
+                document.documentElement.classList.add("dark");
                 themeBtn.textContent = "☀";
                 themeBtn.title = "Switch to light mode";
             } else {
-                document.body.classList.remove("dark");
+                document.documentElement.classList.remove("dark");
                 themeBtn.textContent = "☾";
                 themeBtn.title = "Switch to dark mode";
             }
         }
         applyTheme(localStorage.getItem(THEME_STORAGE) || "light");
         themeBtn.addEventListener("click", () => {
-            const next = document.body.classList.contains("dark") ? "light" : "dark";
+            const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
             localStorage.setItem(THEME_STORAGE, next);
             applyTheme(next);
         });
