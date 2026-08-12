@@ -686,12 +686,41 @@
         }
 
         /* CUSTOM STYLES FOR REDESIGNED SECTIONS */
-        
-        /* 
-           RESPONSIVE OVERHAUL
-           Triggers at 1300px to handle "half-screen" desktop windows
+
+        /*
+           INTERMEDIATE RESPONSIVE
+           Tighten nav and proportions for narrower desktop/laptop windows
         */
-        @media (max-width: 1300px) {
+        @media (max-width: 1200px) and (min-width: 901px) {
+            .nav-links { gap: 25px; }
+            .nav-links a { font-size: 0.8rem; letter-spacing: 0.15rem; }
+            .nav-address { font-size: 0.7rem; }
+
+            .what-we-do-container, .project-text {
+                width: 42vw;
+            }
+
+            .what-we-do-image, .gallery-image, .peeking-img, .design-image-right {
+                max-width: 42vw;
+                max-height: 60vh;
+            }
+
+            .team-wrapper {
+                padding: 0 6%;
+                gap: 4vw;
+            }
+
+            .portrait {
+                max-width: 300px;
+                max-height: 55vh;
+            }
+        }
+
+        /*
+           RESPONSIVE OVERHAUL
+           Switches to vertical scroll layout at 900px
+        */
+        @media (max-width: 900px) {
             
             /* Design services section mobile */
             .services-layout {
@@ -1383,7 +1412,7 @@
 
         window.addEventListener('scroll', () => {
             // Mobile Check: Disable scroll-jacking if screen is narrow
-            if (window.innerWidth <= 1300) return;
+            if (window.innerWidth <= 900) return;
 
             const scrollHeight = document.body.scrollHeight - window.innerHeight;
             const scrollPercent = window.pageYOffset / scrollHeight;
@@ -1437,7 +1466,7 @@
 
         function scrollToStage(index, useFade = false) {
             // Mobile Check: Normal scroll to element
-            if (window.innerWidth <= 1300) {
+            if (window.innerWidth <= 900) {
                 const sections = document.querySelectorAll('.horizontal-track > section');
                 const viewport = document.getElementById('main-viewport');
                 if (sections[index] && viewport) {

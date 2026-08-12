@@ -391,8 +391,26 @@
 
         .hamburger-btn { display: none; }
 
+        /* INTERMEDIATE RESPONSIVE */
+        @media (max-width: 1200px) and (min-width: 901px) {
+            .info-panel {
+                width: 35%;
+                padding-left: 5vw;
+            }
+            .scroll-container {
+                width: 65%;
+            }
+            .gallery-item {
+                width: 38vw;
+            }
+            h1 { font-size: 3rem; }
+            .nav-links { gap: 25px; }
+            .nav-links a { font-size: 0.8rem; letter-spacing: 0.15rem; }
+            .nav-address { font-size: 0.7rem; }
+        }
+
         /* RESPONSIVE */
-        @media (max-width: 1300px) {
+        @media (max-width: 900px) {
             /* Layout Conversion */
             .project-wrapper {
                 flex-direction: column;
@@ -806,7 +824,7 @@
 
         const observerOptions = {
             root: scrollContainer,
-            rootMargin: window.innerWidth > 1300 ? '0px -25% 0px -25%' : '-25% 0px -25% 0px',
+            rootMargin: window.innerWidth > 900 ? '0px -25% 0px -25%' : '-25% 0px -25% 0px',
             threshold: 0.2
         };
 
