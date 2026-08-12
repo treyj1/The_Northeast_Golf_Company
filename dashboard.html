@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGC Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --panel: #fafafa;
+            --border: #e5e5e5;
+            --text: #1a1a1a;
+            --muted: #777777;
+            --muted-2: #aaaaaa;
+            --accent: #1a1a1a;
+            --done: #b8b8b8;
+            --danger: #b94a4a;
+            --highlight: #f4f0e6;
+            color-scheme: light;
+        }
+        :root.dark {
+            --bg: #15171a;
+            --panel: #1d1f23;
+            --border: #2e3035;
+            --text: #e5e5e5;
+            --muted: #909090;
+            --muted-2: #5e6066;
+            --accent: #e5e5e5;
+            --done: #555;
+            --danger: #cf6b6b;
+            --highlight: #2a2820;
+            color-scheme: dark;
+        }
+        :root.dark .save-status.saved { color: #6abc6a; }
+        :root.dark .status-active .status-dot { background: #6aaa6a; }
+        :root.dark .status-planning .status-dot { background: #d0a04a; }
+        :root.dark .status-onhold .status-dot { background: #888; }
+        :root.dark .status-complete .status-dot { background: #6a8aa8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Newsreader', serif;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color .2s, color .2s;
+        }
+        body { padding: 40px 32px 80px; max-width: 1200px; margin: 0 auto; }
+
+        header.page-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        header.page-header h1 {
+            font-weight: 300;
+            font-size: 1.9rem;
+            letter-spacing: 0.04em;
+        }
+        header.page-header .meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+        header.page-header .meta button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        header.page-header .meta button:hover { color: var(--text); border-color: var(--text); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-bottom: 36px;
+        }
+        @media (max-width: 760px) {
+            .grid { grid-template-columns: 1fr; gap: 20px; }
+            body { padding: 24px 16px 60px; }
+        }
+
+        section.card {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 20px 22px 18px;
+        }
+        section.card h2 {
+            font-weight: 400;
+            font-size: 1.05rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        section.card h2 .count {
+            font-size: 0.75rem;
+            color: var(--muted-2);
+            font-weight: 300;
+        }
+
+        .item-list { list-style: none; }
+        .item-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed transparent;
+        }
+        .item-list li:not(:last-child) { border-bottom-color: #ececec; }
+        .item-list li.done .item-text { color: var(--done); text-decoration: line-through; }
+        .item-list input[type=checkbox] {
+            margin-top: 6px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .item-text {
+            flex: 1;
+            font-size: 0.98rem;
+            line-height: 1.45;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            color: inherit;
+            outline: none;
+            padding: 2px 0;
+        }
+        .item-text:focus { border-bottom: 1px solid var(--border); }
+        .item-date {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-family: inherit;
+            border: none;
+            background: transparent;
+            padding: 4px 2px;
+            outline: none;
+            min-width: 110px;
+        }
+        .item-date:focus { color: var(--text); }
+        .item-del {
+            background: none;
+            border: none;
+            color: var(--muted-2);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 2px 6px;
+            line-height: 1;
+        }
+        .item-del:hover { color: var(--danger); }
+
+        .add-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .add-row input[type=text] {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text);
+            outline: none;
+            padding: 4px 0;
+        }
+        .add-row input[type=text]::placeholder { color: var(--muted-2); font-style: italic; }
+        .add-row input[type=date] {
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            color: var(--muted);
+            font-size: 0.82rem;
+            outline: none;
+        }
+        .add-row button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        .add-row button:hover { color: var(--text); border-color: var(--text); }
+
+        /* Projects */
+        .projects-wrap {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 20px 22px;
+        }
+        .projects-wrap > h2 {
+            font-weight: 400;
+            font-size: 1.05rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .project {
+            border-top: 1px solid var(--border);
+            padding: 14px 0;
+        }
+        .project-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .project-head .chev {
+            color: var(--muted-2);
+            font-size: 0.9rem;
+            width: 12px;
+            display: inline-block;
+            transition: transform .15s;
+        }
+        .project.open .chev { transform: rotate(90deg); }
+        .project-name {
+            font-size: 1.05rem;
+            font-weight: 400;
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+        }
+        .project-status {
+            font-family: inherit;
+            font-size: 0.78rem;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 3px 8px;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--muted-2);
+        }
+        .status-active .status-dot { background: #4a8a4a; }
+        .status-planning .status-dot { background: #c89b3c; }
+        .status-onhold .status-dot { background: #999; }
+        .status-complete .status-dot { background: #4a6a8a; }
+
+        .project.has-outstanding .project-name { color: var(--text); font-weight: 500; }
+        .project .outstanding-badge {
+            display: none;
+            font-size: 0.7rem;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 7px;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .project.has-outstanding .outstanding-badge {
+            display: inline-block;
+            color: var(--text);
+        }
+
+        #update-projects-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        #update-projects-btn:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
+        #update-projects-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .audit-review {
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+        .audit-review .audit-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .audit-review .audit-head h3 {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 400;
+        }
+        .audit-review .audit-actions { display: flex; gap: 10px; }
+        .audit-review .audit-actions button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.82rem;
+            padding: 4px 12px;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+        }
+        .audit-review .audit-actions button:hover { color: var(--text); border-color: var(--text); }
+        .audit-review ul { list-style: none; }
+        .audit-review li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        .audit-review li:last-child { border-bottom: none; }
+        .audit-review li input[type=checkbox] { margin-top: 5px; accent-color: var(--accent); cursor: pointer; }
+        .audit-review .audit-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .audit-review .audit-diff {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+        .audit-review .audit-diff .arrow { color: var(--muted-2); margin: 0 4px; }
+        .audit-review .audit-diff .new { color: var(--text); }
+        .audit-review .audit-status {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .project-body {
+            display: none;
+            margin-top: 14px;
+            padding-left: 26px;
+        }
+        .project.open .project-body { display: block; }
+        .project-notes {
+            width: 100%;
+            min-height: 60px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 8px 10px;
+            resize: vertical;
+            color: var(--text);
+            outline: none;
+            margin-bottom: 12px;
+        }
+        .project-notes:focus { border-color: var(--text); }
+        .project-sub h3 {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+            margin: 10px 0 6px;
+        }
+
+        .new-project-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+            margin-top: 4px;
+        }
+        .new-project-row input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text);
+            outline: none;
+            padding: 4px 0;
+        }
+        .new-project-row input::placeholder { color: var(--muted-2); font-style: italic; }
+        .new-project-row button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+        }
+        .new-project-row button:hover { color: var(--text); border-color: var(--text); }
+
+        .save-status {
+            font-size: 0.72rem;
+            color: var(--muted-2);
+            letter-spacing: 0.05em;
+            min-width: 50px;
+        }
+        .save-status.saved { color: #4a8a4a; }
+
+        /* Featured immediate-actions card (full width, slightly more presence) */
+        .card.featured {
+            margin-bottom: 28px;
+            padding: 22px 26px 18px;
+        }
+        .card.featured h2 {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        .card.featured h2 .count { color: var(--muted-2); }
+
+        /* Date status colors */
+        .item-date.overdue { color: var(--danger); }
+        .item-date.today { color: var(--text); font-weight: 600; }
+
+        /* Pending reword (item checked off, awaiting next Parse) */
+        .item-list li.pending .item-text { font-style: italic; color: var(--muted); }
+        .pending-tag {
+            display: none;
+            font-size: 0.62rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 6px;
+            margin-right: 6px;
+            white-space: nowrap;
+        }
+        .item-list li.pending .pending-tag { display: inline-block; }
+
+        .project-chip, .source-chip {
+            font-size: 0.68rem;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 1px 6px;
+            margin-right: 6px;
+            white-space: nowrap;
+            font-style: normal;
+        }
+        .source-chip { color: var(--muted-2); }
+
+        /* Recently Completed — collapsible, de-emphasized */
+        .completed-section {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 14px 22px;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        .completed-section .completed-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+        .completed-section .completed-head h2 {
+            font-weight: 400;
+            font-size: 0.92rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .completed-section .completed-head h2 .count {
+            font-size: 0.72rem;
+            color: var(--muted-2);
+            font-weight: 300;
+        }
+        .completed-section .chev {
+            color: var(--muted-2);
+            font-size: 0.8rem;
+            transition: transform .15s;
+            display: inline-block;
+            width: 10px;
+        }
+        .completed-section.open .chev { transform: rotate(90deg); }
+        .completed-section .completed-body { display: none; margin-top: 14px; }
+        .completed-section.open .completed-body { display: block; }
+        .completed-section .item-list li .item-text { color: var(--done); }
+        .completed-section .item-list li .item-date { color: var(--muted-2); }
+
+        /* Brain Dump */
+        .brain-dump {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 20px 22px 18px;
+            margin-bottom: 36px;
+        }
+        .brain-dump h2 {
+            font-weight: 400;
+            font-size: 1.05rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+        .brain-dump textarea {
+            width: 100%;
+            min-height: 110px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            padding: 10px 12px;
+            resize: vertical;
+            color: var(--text);
+            outline: none;
+        }
+        .brain-dump textarea:focus { border-color: var(--text); }
+        .brain-dump textarea::placeholder { color: var(--muted-2); font-style: italic; }
+        .brain-dump-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .brain-dump-actions button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        .brain-dump-actions button:hover:not(:disabled) {
+            color: var(--text);
+            border-color: var(--text);
+        }
+        .brain-dump-actions button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .brain-dump-actions button.recording {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        .brain-dump-actions button.recording::before {
+            content: "● ";
+            color: var(--danger);
+        }
+        .brain-dump-status {
+            font-size: 0.8rem;
+            color: var(--muted);
+            letter-spacing: 0.03em;
+        }
+        .brain-dump-error {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: 'Newsreader', serif;
+            font-size: 0.82rem;
+            color: var(--danger);
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 240px;
+            overflow: auto;
+        }
+
+        .brain-dump-review {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .brain-dump-review .review-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .brain-dump-review .review-head h3 {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 400;
+        }
+        .brain-dump-review .review-head .review-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .review-group { margin-bottom: 14px; }
+        .review-group:last-child { margin-bottom: 0; }
+        .review-group h4 {
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+            font-weight: 400;
+            margin-bottom: 6px;
+        }
+        .review-group ul { list-style: none; }
+        .review-group li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+        .review-group li input[type=checkbox] {
+            margin-top: 5px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .review-item-text { flex: 1; line-height: 1.4; }
+        .review-item-date {
+            font-size: 0.78rem;
+            color: var(--muted);
+            min-width: 100px;
+            text-align: right;
+        }
+        .review-item-meta {
+            font-size: 0.72rem;
+            color: var(--muted-2);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
+        /* Settings modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.25);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 12vh;
+            z-index: 100;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 26px 28px 22px;
+            width: 100%;
+            max-width: 440px;
+            font-family: 'Newsreader', serif;
+        }
+        .modal h2 {
+            font-weight: 400;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        .modal label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .modal input[type=password],
+        .modal input[type=text] {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 8px 10px;
+            color: var(--text);
+            outline: none;
+        }
+        .modal input[type=password]:focus,
+        .modal input[type=text]:focus { border-color: var(--text); }
+        .modal .hint {
+            font-size: 0.78rem;
+            color: var(--muted-2);
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        .modal .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .modal .modal-actions button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color .2s, border-color .2s;
+        }
+        .modal .modal-actions button:hover { color: var(--text); border-color: var(--text); }
+        .modal .saved-key {
+            font-family: 'Newsreader', serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal .saved-key .clear-link {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: underline;
+            letter-spacing: 0.03em;
+        }
+
+        /* New-project confirmation modal */
+        .modal.wide { max-width: 580px; }
+        .new-project-list { margin-top: 8px; }
+        .new-project-row-modal {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .new-project-row-modal .np-name {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .new-project-row-modal .np-context {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .new-project-row-modal .np-choices {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .new-project-row-modal .np-choices label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--muted);
+            cursor: pointer;
+            margin: 0;
+            letter-spacing: 0;
+        }
+        .new-project-row-modal .np-choices input[type=radio] { accent-color: var(--accent); cursor: pointer; }
+        .new-project-row-modal select {
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 3px 6px;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>NGC Dashboard</h1>
+        <div class="meta">
+            <span class="save-status" id="save-status">&nbsp;</span>
+            <button id="theme-btn" title="Toggle dark mode">☾</button>
+            <button id="export-btn" title="Download a JSON backup">Export</button>
+            <button id="import-btn" title="Restore from a JSON backup">Import</button>
+            <button id="settings-btn" title="Settings">⚙</button>
+            <input type="file" id="import-file" accept="application/json" style="display:none">
+        </div>
+    </header>
+
+    <section class="brain-dump" id="brain-dump">
+        <h2>Brain Dump</h2>
+        <textarea id="brain-dump-input" placeholder="Paste a paragraph about what you did or need to do…"></textarea>
+        <div class="brain-dump-actions">
+            <button id="brain-dump-parse">Parse</button>
+            <button id="brain-dump-dictate" title="Dictate using your device's microphone">Dictate</button>
+            <button id="brain-dump-clear">Clear</button>
+            <span class="brain-dump-status" id="brain-dump-status"></span>
+        </div>
+        <div class="brain-dump-error" id="brain-dump-error" style="display:none"></div>
+        <div class="brain-dump-review" id="brain-dump-review" style="display:none"></div>
+    </section>
+
+    <section class="card featured" data-list="immediate">
+        <h2>Immediate Actions <span class="count"></span></h2>
+        <ul class="item-list"></ul>
+        <div class="add-row">
+            <input type="text" placeholder="Add an immediate action…">
+            <input type="date">
+            <button>Add</button>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card" data-list="todos">
+            <h2>To-Dos <span class="count"></span></h2>
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Add a to-do…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </section>
+
+        <section class="card" data-list="meetings">
+            <h2>Meetings <span class="count"></span></h2>
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Meeting (who / topic)…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </section>
+
+        <section class="card" data-list="visits-toplan">
+            <h2>Visits to Plan <span class="count"></span></h2>
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Visit needing scheduling…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </section>
+
+        <section class="card" data-list="visits-upcoming">
+            <h2>Upcoming Visits <span class="count"></span></h2>
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Site visit…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="projects-wrap">
+        <h2>
+            <span>Projects <span class="count" id="proj-count"></span></span>
+            <button id="update-projects-btn" title="Use AI to audit which project each open item belongs to">Update Projects</button>
+        </h2>
+        <div class="audit-review" id="audit-review" style="display:none"></div>
+        <div id="projects-list"></div>
+        <div class="new-project-row">
+            <input type="text" id="new-project" placeholder="Add a project…">
+            <button id="add-project">Add</button>
+        </div>
+    </div>
+
+    <section class="card completed-section" data-list="completed" id="completed-section">
+        <div class="completed-head" id="completed-head">
+            <h2><span class="chev">▶</span> Recently Completed <span class="count"></span></h2>
+        </div>
+        <div class="completed-body">
+            <ul class="item-list"></ul>
+            <div class="add-row">
+                <input type="text" placeholder="Mark something complete…">
+                <input type="date">
+                <button>Add</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-backdrop" id="newproj-modal">
+        <div class="modal wide">
+            <h2>New Project Detected</h2>
+            <p class="hint" style="margin-top:-6px;margin-bottom:14px;">The parser found project mentions that don't match your existing projects. Pick what to do for each.</p>
+            <div class="new-project-list" id="newproj-list"></div>
+            <div class="modal-actions">
+                <button id="newproj-cancel">Cancel parse</button>
+                <button id="newproj-continue">Continue to review</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="settings-modal">
+        <div class="modal">
+            <h2>Settings</h2>
+            <label for="api-key-input">Anthropic API Key</label>
+            <input type="password" id="api-key-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+            <div class="saved-key" id="saved-key-row" style="display:none">
+                <span id="saved-key-mask"></span>
+                <button class="clear-link" id="clear-key">Clear</button>
+            </div>
+            <p class="hint">Stored locally in this browser only. Used to send Brain Dump text to Claude for parsing. The key is never written to the dashboard file or export JSON.</p>
+            <div class="modal-actions">
+                <button id="settings-cancel">Close</button>
+                <button id="settings-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "ngc-dashboard-v1";
+        const API_KEY_STORAGE = "ngc-dashboard-anthropic-key";
+        const THEME_STORAGE = "ngc-dashboard-theme";
+
+        const SEED_PROJECTS = [
+            "Bass Rocks",
+            "Bergen County",
+            "Fairmount Country Club",
+            "Fall River",
+            "Haverhill",
+            "Madison Golf Club",
+            "Mendham",
+            "Met Links",
+            "Soldier Hill",
+            "Valley Brook"
+        ].map(name => ({
+            id: makeId(), name, status: "active", notes: "", open: false, tasks: []
+        }));
+
+        const DEFAULT_STATE = {
+            immediate: [],
+            todos: [],
+            meetings: [],
+            "visits-upcoming": [],
+            "visits-toplan": [],
+            completed: [],
+            projects: SEED_PROJECTS
+        };
+
+        let state = load();
+        migrateDoneToCompleted();
+
+        function migrateDoneToCompleted() {
+            const activeLists = ["immediate", "todos", "meetings", "visits-upcoming", "visits-toplan"];
+            let moved = 0;
+            activeLists.forEach(listKey => {
+                const items = state[listKey] || [];
+                const stay = [];
+                const move = [];
+                items.forEach(it => {
+                    if (it.done) move.push(it);
+                    else stay.push(it);
+                });
+                if (!move.length) return;
+                state[listKey] = stay;
+                state.completed = state.completed || [];
+                move.forEach(it => {
+                    delete it._pendingReword;
+                    state.completed.unshift(it);
+                    moved++;
+                });
+            });
+            if (moved) {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+            }
+        }
+
+        function makeId() {
+            return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+        }
+
+        function load() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+                const parsed = JSON.parse(raw);
+                return Object.assign({}, DEFAULT_STATE, parsed);
+            } catch {
+                return JSON.parse(JSON.stringify(DEFAULT_STATE));
+            }
+        }
+
+        let saveTimer = null;
+        function save() {
+            const el = document.getElementById("save-status");
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                    el.textContent = "saved";
+                    el.className = "save-status saved";
+                    setTimeout(() => { el.textContent = ""; el.className = "save-status"; }, 1000);
+                } catch (e) {
+                    el.textContent = "save failed";
+                }
+            }, 250);
+        }
+
+        function render() {
+            renderLists();
+            renderProjects();
+        }
+
+        function todayISO() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function dateStatus(d) {
+            if (!d) return "";
+            const t = todayISO();
+            if (d < t) return "overdue";
+            if (d === t) return "today";
+            return "";
+        }
+
+        function sortItems(items) {
+            // Active first (sorted by date asc, undated last), then done.
+            return [...items].sort((a, b) => {
+                const aDone = !!a.done ? 1 : 0;
+                const bDone = !!b.done ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone;
+                const ad = a.date || "";
+                const bd = b.date || "";
+                if (!ad && bd) return 1;
+                if (ad && !bd) return -1;
+                if (ad < bd) return -1;
+                if (ad > bd) return 1;
+                return 0;
+            });
+        }
+
+        function renderLists() {
+            document.querySelectorAll("section[data-list]").forEach(section => {
+                const key = section.dataset.list;
+                const items = state[key] || [];
+                const ul = section.querySelector(".item-list");
+                ul.innerHTML = "";
+                sortItems(items).forEach(item => ul.appendChild(renderItem(key, item)));
+                const countEl = section.querySelector("h2 .count");
+                if (countEl) countEl.textContent = items.length ? items.length : "";
+            });
+        }
+
+        function renderItem(listKey, item, opts) {
+            opts = opts || {};
+            const inProjectView = !!opts.inProjectView;
+            const li = document.createElement("li");
+            if (item.done) li.classList.add("done");
+
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = !!item.done;
+            cb.addEventListener("change", () => {
+                item.done = cb.checked;
+                save(); render();
+            });
+
+            const text = document.createElement("input");
+            text.type = "text";
+            text.className = "item-text";
+            text.value = item.text || "";
+            text.addEventListener("input", () => { item.text = text.value; save(); });
+
+            let chip = null;
+            if (inProjectView) {
+                chip = document.createElement("span");
+                chip.className = "source-chip";
+                chip.textContent = LIST_LABELS[listKey] || listKey;
+                chip.title = "From the " + (LIST_LABELS[listKey] || listKey) + " list";
+            } else if (item.projectId) {
+                const proj = (state.projects || []).find(p => p.id === item.projectId);
+                if (proj) {
+                    chip = document.createElement("span");
+                    chip.className = "project-chip";
+                    chip.textContent = proj.name;
+                    chip.title = "Linked to project: " + proj.name;
+                }
+            }
+
+            const date = document.createElement("input");
+            date.type = "date";
+            date.className = "item-date";
+            const ds = dateStatus(item.date);
+            if (ds) date.classList.add(ds);
+            date.value = item.date || "";
+            date.addEventListener("change", () => {
+                item.date = date.value;
+                date.classList.remove("overdue", "today");
+                const ns = dateStatus(item.date);
+                if (ns) date.classList.add(ns);
+                save();
+            });
+
+            const del = document.createElement("button");
+            del.className = "item-del";
+            del.textContent = "×";
+            del.title = "Delete";
+            del.addEventListener("click", () => {
+                state[listKey] = state[listKey].filter(i => i.id !== item.id);
+                save(); render();
+            });
+
+            const children = [cb, text];
+            if (chip) children.push(chip);
+            children.push(date, del);
+            li.append.apply(li, children);
+            return li;
+        }
+
+        const STATUS_CYCLE = ["active", "planning", "onhold", "complete"];
+        const STATUS_LABEL = { active: "Active", planning: "Planning", onhold: "On hold", complete: "Complete" };
+
+        function renderProjects() {
+            const wrap = document.getElementById("projects-list");
+            wrap.innerHTML = "";
+            (state.projects || []).forEach(p => wrap.appendChild(renderProject(p)));
+            document.getElementById("proj-count").textContent = (state.projects || []).length || "";
+        }
+
+        function projectLinkedItems(projectId) {
+            const out = [];
+            Object.keys(LIST_LABELS).forEach(listKey => {
+                (state[listKey] || []).forEach(it => {
+                    if (it.projectId === projectId) out.push({ item: it, listKey });
+                });
+            });
+            return out;
+        }
+
+        function projectOutstandingCount(p) {
+            let n = (p.tasks || []).filter(t => !t.done).length;
+            projectLinkedItems(p.id).forEach(({ item }) => {
+                if (!item.done) n++;
+            });
+            return n;
+        }
+
+        function renderProject(p) {
+            const wrap = document.createElement("div");
+            wrap.className = "project status-" + (p.status || "active");
+            if (p.open) wrap.classList.add("open");
+            const outstanding = projectOutstandingCount(p);
+            if (outstanding > 0) wrap.classList.add("has-outstanding");
+
+            const head = document.createElement("div");
+            head.className = "project-head";
+
+            const chev = document.createElement("span");
+            chev.className = "chev";
+            chev.textContent = "▶";
+
+            const name = document.createElement("input");
+            name.className = "project-name";
+            name.value = p.name || "";
+            name.addEventListener("input", () => { p.name = name.value; save(); });
+            name.addEventListener("click", e => e.stopPropagation());
+
+            const badge = document.createElement("span");
+            badge.className = "outstanding-badge";
+            badge.textContent = outstanding + " open";
+            badge.title = outstanding + " outstanding task" + (outstanding === 1 ? "" : "s");
+
+            const status = document.createElement("button");
+            status.className = "project-status";
+            status.innerHTML = '<span class="status-dot"></span><span>' + (STATUS_LABEL[p.status] || "Active") + '</span>';
+            status.addEventListener("click", e => {
+                e.stopPropagation();
+                const i = STATUS_CYCLE.indexOf(p.status);
+                p.status = STATUS_CYCLE[(i + 1) % STATUS_CYCLE.length];
+                save(); render();
+            });
+
+            const del = document.createElement("button");
+            del.className = "item-del";
+            del.textContent = "×";
+            del.title = "Delete project";
+            del.addEventListener("click", e => {
+                e.stopPropagation();
+                if (!confirm('Delete project "' + p.name + '"?')) return;
+                state.projects = state.projects.filter(x => x.id !== p.id);
+                save(); render();
+            });
+
+            head.append(chev, name, badge, status, del);
+            head.addEventListener("click", () => { p.open = !p.open; save(); render(); });
+
+            const body = document.createElement("div");
+            body.className = "project-body";
+
+            const notes = document.createElement("textarea");
+            notes.className = "project-notes";
+            notes.placeholder = "Notes, key contacts, scope…";
+            notes.value = p.notes || "";
+            notes.addEventListener("input", () => { p.notes = notes.value; save(); });
+
+            const sub = document.createElement("div");
+            sub.className = "project-sub";
+            const h3 = document.createElement("h3");
+            h3.textContent = "Tasks";
+            sub.appendChild(h3);
+
+            const ul = document.createElement("ul");
+            ul.className = "item-list";
+
+            // Combined list: any legacy p.tasks plus items from global lists tagged with this project.
+            const combined = [];
+            (p.tasks || []).forEach(t => combined.push({ kind: "legacy", item: t }));
+            projectLinkedItems(p.id).forEach(({ item, listKey }) => combined.push({ kind: "linked", item, listKey }));
+
+            combined.sort((a, b) => {
+                const aDone = !!a.item.done ? 1 : 0;
+                const bDone = !!b.item.done ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone;
+                const ad = a.item.date || "";
+                const bd = b.item.date || "";
+                if (!ad && bd) return 1;
+                if (ad && !bd) return -1;
+                if (ad < bd) return -1;
+                if (ad > bd) return 1;
+                return 0;
+            });
+
+            combined.forEach(entry => {
+                if (entry.kind === "legacy") {
+                    ul.appendChild(renderProjectTask(p, entry.item));
+                } else {
+                    ul.appendChild(renderItem(entry.listKey, entry.item, { inProjectView: true }));
+                }
+            });
+            sub.appendChild(ul);
+
+            const addRow = document.createElement("div");
+            addRow.className = "add-row";
+            const addInput = document.createElement("input");
+            addInput.type = "text";
+            addInput.placeholder = "Add a to-do to this project…";
+            const addDate = document.createElement("input");
+            addDate.type = "date";
+            const addBtn = document.createElement("button");
+            addBtn.textContent = "Add";
+            const doAdd = () => {
+                const v = addInput.value.trim();
+                if (!v) return;
+                state.todos = state.todos || [];
+                state.todos.push({ id: makeId(), text: v, date: addDate.value || "", done: false, projectId: p.id });
+                addInput.value = ""; addDate.value = "";
+                save(); render();
+            };
+            addBtn.addEventListener("click", doAdd);
+            addInput.addEventListener("keydown", e => { if (e.key === "Enter") doAdd(); });
+            addRow.append(addInput, addDate, addBtn);
+            sub.appendChild(addRow);
+
+            body.append(notes, sub);
+            wrap.append(head, body);
+            return wrap;
+        }
+
+        function renderProjectTask(p, t) {
+            const li = document.createElement("li");
+            if (t.done) li.classList.add("done");
+
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = !!t.done;
+            cb.addEventListener("change", () => { t.done = cb.checked; save(); render(); });
+
+            const text = document.createElement("input");
+            text.type = "text";
+            text.className = "item-text";
+            text.value = t.text || "";
+            text.addEventListener("input", () => { t.text = text.value; save(); });
+
+            const date = document.createElement("input");
+            date.type = "date";
+            date.className = "item-date";
+            date.value = t.date || "";
+            date.addEventListener("change", () => { t.date = date.value; save(); });
+
+            const del = document.createElement("button");
+            del.className = "item-del";
+            del.textContent = "×";
+            del.addEventListener("click", () => {
+                p.tasks = (p.tasks || []).filter(x => x.id !== t.id);
+                save(); render();
+            });
+
+            li.append(cb, text, date, del);
+            return li;
+        }
+
+        // Completed section collapse toggle
+        const completedSection = document.getElementById("completed-section");
+        document.getElementById("completed-head").addEventListener("click", () => {
+            completedSection.classList.toggle("open");
+        });
+
+        // List card add buttons
+        document.querySelectorAll("section[data-list]").forEach(section => {
+            const key = section.dataset.list;
+            const textIn = section.querySelector(".add-row input[type=text]");
+            const dateIn = section.querySelector(".add-row input[type=date]");
+            const btn = section.querySelector(".add-row button");
+            const doAdd = () => {
+                const v = textIn.value.trim();
+                if (!v) return;
+                state[key] = state[key] || [];
+                state[key].push({ id: makeId(), text: v, date: dateIn.value || "", done: false });
+                textIn.value = ""; dateIn.value = "";
+                save(); render();
+            };
+            btn.addEventListener("click", doAdd);
+            textIn.addEventListener("keydown", e => { if (e.key === "Enter") doAdd(); });
+        });
+
+        // Add project
+        const newProj = document.getElementById("new-project");
+        const doAddProject = () => {
+            const v = newProj.value.trim();
+            if (!v) return;
+            state.projects = state.projects || [];
+            state.projects.push({
+                id: makeId(), name: v, status: "active", notes: "", open: true, tasks: []
+            });
+            newProj.value = "";
+            save(); render();
+        };
+        document.getElementById("add-project").addEventListener("click", doAddProject);
+        newProj.addEventListener("keydown", e => { if (e.key === "Enter") doAddProject(); });
+
+        // Export / Import (for moving data between browsers or backing up)
+        document.getElementById("export-btn").addEventListener("click", () => {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            const stamp = new Date().toISOString().slice(0, 10);
+            a.href = url;
+            a.download = "ngc-dashboard-" + stamp + ".json";
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+        document.getElementById("import-btn").addEventListener("click", () => {
+            document.getElementById("import-file").click();
+        });
+        document.getElementById("import-file").addEventListener("change", e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const data = JSON.parse(reader.result);
+                    if (!confirm("Replace current dashboard data with the imported file?")) return;
+                    state = Object.assign({}, DEFAULT_STATE, data);
+                    save(); render();
+                } catch {
+                    alert("That file doesn't look like a valid dashboard export.");
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = "";
+        });
+
+        // ---------- Settings modal (Anthropic API key) ----------
+        const settingsModal = document.getElementById("settings-modal");
+        const apiKeyInput = document.getElementById("api-key-input");
+        const savedKeyRow = document.getElementById("saved-key-row");
+        const savedKeyMask = document.getElementById("saved-key-mask");
+
+        function getApiKey() {
+            return localStorage.getItem(API_KEY_STORAGE) || "";
+        }
+        function maskKey(k) {
+            if (!k) return "";
+            if (k.length <= 12) return "•".repeat(k.length);
+            return k.slice(0, 7) + "…" + k.slice(-4);
+        }
+        function refreshSavedKeyView() {
+            const k = getApiKey();
+            if (k) {
+                savedKeyRow.style.display = "flex";
+                savedKeyMask.textContent = "Saved: " + maskKey(k);
+                apiKeyInput.placeholder = "Enter new key to replace…";
+            } else {
+                savedKeyRow.style.display = "none";
+                apiKeyInput.placeholder = "sk-ant-…";
+            }
+        }
+        function openSettings() {
+            apiKeyInput.value = "";
+            refreshSavedKeyView();
+            settingsModal.classList.add("open");
+            setTimeout(() => apiKeyInput.focus(), 50);
+        }
+        function closeSettings() {
+            settingsModal.classList.remove("open");
+        }
+        document.getElementById("settings-btn").addEventListener("click", openSettings);
+        document.getElementById("settings-cancel").addEventListener("click", closeSettings);
+        settingsModal.addEventListener("click", e => {
+            if (e.target === settingsModal) closeSettings();
+        });
+        document.getElementById("settings-save").addEventListener("click", () => {
+            const v = apiKeyInput.value.trim();
+            if (v) {
+                localStorage.setItem(API_KEY_STORAGE, v);
+            }
+            apiKeyInput.value = "";
+            refreshSavedKeyView();
+            closeSettings();
+        });
+        document.getElementById("clear-key").addEventListener("click", () => {
+            localStorage.removeItem(API_KEY_STORAGE);
+            refreshSavedKeyView();
+        });
+
+        // ---------- Brain Dump ----------
+        const bdInput = document.getElementById("brain-dump-input");
+        const bdParseBtn = document.getElementById("brain-dump-parse");
+        const bdClearBtn = document.getElementById("brain-dump-clear");
+        const bdStatus = document.getElementById("brain-dump-status");
+        const bdError = document.getElementById("brain-dump-error");
+        const bdReview = document.getElementById("brain-dump-review");
+
+        const LIST_LABELS = {
+            immediate: "Immediate Actions",
+            todos: "To-Dos",
+            meetings: "Meetings",
+            "visits-upcoming": "Upcoming Visits",
+            "visits-toplan": "Visits to Plan",
+            completed: "Recently Completed"
+        };
+        const LIST_KEYS_IN_RESPONSE = {
+            immediate: "immediate",
+            todos: "todos",
+            meetings: "meetings",
+            "visits-upcoming": "visits-upcoming",
+            "visits-toplan": "visits-toplan",
+            completed: "completed"
+        };
+
+        let pendingProposal = null;
+
+        function showError(msg) {
+            bdError.style.display = "block";
+            bdError.textContent = msg;
+        }
+        function clearError() {
+            bdError.style.display = "none";
+            bdError.textContent = "";
+        }
+        function setStatus(msg) { bdStatus.textContent = msg || ""; }
+
+        document.getElementById("brain-dump-clear").addEventListener("click", () => {
+            bdInput.value = "";
+            clearError();
+            bdReview.style.display = "none";
+            bdReview.innerHTML = "";
+            pendingProposal = null;
+            setStatus("");
+        });
+
+        bdParseBtn.addEventListener("click", runBrainDump);
+
+        async function runBrainDump() {
+            clearError();
+            const text = bdInput.value.trim();
+            if (!text) {
+                setStatus("Nothing to parse.");
+                return;
+            }
+            const key = getApiKey();
+            if (!key) {
+                setStatus("API key needed.");
+                showError("No Anthropic API key saved. Open settings (⚙) to add one.");
+                return;
+            }
+
+            bdParseBtn.disabled = true;
+            bdClearBtn.disabled = true;
+            setStatus("Parsing…");
+            bdReview.style.display = "none";
+            bdReview.innerHTML = "";
+            pendingProposal = null;
+
+            const today = todayISO();
+            const projectNames = (state.projects || []).map(p => p.name);
+
+            const systemPrompt = [
+                "You help a golf-course consultant organize their work. Extract structured action items from the user's free-form notes (the <brain_dump>).",
+                "",
+                "Today's date is " + today + ". Resolve all relative dates (\"tomorrow\", \"next Tuesday\", \"in two weeks\") to absolute ISO dates (YYYY-MM-DD). If no date is implied, use null.",
+                "",
+                "Every actionable item goes into exactly ONE global list based on what kind of work it is:",
+                "- immediate: urgent things needing action in the next day or so",
+                "- todos: general tasks without a strict deadline or urgency",
+                "- meetings: scheduled or to-be-scheduled meetings, calls, or conversations (who/what)",
+                "- visits-upcoming: site visits that already have a date or are firmly planned",
+                "- visits-toplan: site visits that need to be scheduled (no date yet, but intent is clear)",
+                "- completed: things the person says they already did or finished",
+                "",
+                "If an item is associated with a specific project (golf course, club, or named site), ALSO set the item's \"project\" field to that project's name. The item will then appear in BOTH the global list AND the project's view. Items not tied to a project should set \"project\" to null.",
+                "",
+                "The \"projects\" array in your output is ONLY for adding notes/context to a project (NOT for tasks — tasks go in the global lists with a \"project\" field). Use \"projects\" entries when the brain dump contains scope/status/context about a project that should be appended to that project's notes.",
+                "",
+                "Existing project names (use these exact spellings when matching):",
+                projectNames.length ? projectNames.map(n => "- " + n).join("\n") : "(none yet)",
+                "",
+                "When matching: be generous — \"Bass Rocks GC\", \"bass rocks\", \"Bass Rocks Country Club\" all match \"Bass Rocks\". Use the existing name verbatim. If a mentioned project doesn't match any existing name, you may propose a new project name — the user will confirm before it's created.",
+                "",
+                "Output ONLY a single JSON object with this exact shape, no prose, no markdown fences:",
+                "{",
+                "  \"immediate\": [{\"text\": \"...\", \"date\": \"YYYY-MM-DD or null\", \"project\": \"<project name or null>\"}],",
+                "  \"todos\": [...],",
+                "  \"meetings\": [...],",
+                "  \"visits-upcoming\": [...],",
+                "  \"visits-toplan\": [...],",
+                "  \"completed\": [...],",
+                "  \"projects\": [{\"name\": \"<project name>\", \"notes_to_append\": \"...\"}]",
+                "}",
+                "",
+                "Keep item text concise (typically under 12 words). Don't duplicate items. If a list has nothing, return [] for it. Omit nothing — every key must be present."
+            ].join("\n");
+
+            const userMessage = text;
+
+            let resp, raw;
+            try {
+                resp = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": key,
+                        "anthropic-version": "2023-06-01",
+                        "anthropic-dangerous-direct-browser-access": "true"
+                    },
+                    body: JSON.stringify({
+                        model: "claude-haiku-4-5",
+                        max_tokens: 2048,
+                        system: systemPrompt,
+                        messages: [
+                            { role: "user", content: userMessage }
+                        ]
+                    })
+                });
+                raw = await resp.text();
+            } catch (e) {
+                bdParseBtn.disabled = false;
+                bdClearBtn.disabled = false;
+                setStatus("Network error.");
+                showError("Network error contacting Anthropic API:\n\n" + (e && e.message ? e.message : String(e)));
+                return;
+            }
+
+            bdParseBtn.disabled = false;
+            bdClearBtn.disabled = false;
+
+            if (!resp.ok) {
+                setStatus("API error " + resp.status + ".");
+                showError("API returned HTTP " + resp.status + ":\n\n" + raw);
+                return;
+            }
+
+            let data;
+            try {
+                data = JSON.parse(raw);
+            } catch (e) {
+                setStatus("Couldn't parse API response.");
+                showError("Failed to parse API response as JSON:\n\n" + raw);
+                return;
+            }
+
+            const contentParts = (data && data.content) || [];
+            const textOut = contentParts
+                .filter(p => p.type === "text" && typeof p.text === "string")
+                .map(p => p.text)
+                .join("\n")
+                .trim();
+
+            if (!textOut) {
+                setStatus("Empty response.");
+                showError("Anthropic returned no text content. Raw response:\n\n" + raw);
+                return;
+            }
+
+            const jsonStr = extractJson(textOut);
+            let proposal;
+            try {
+                proposal = JSON.parse(jsonStr);
+            } catch (e) {
+                setStatus("Unparseable JSON from model.");
+                showError("Could not parse the model's output as JSON.\n\nRaw model output:\n" + textOut);
+                return;
+            }
+
+            pendingProposal = normalizeProposal(proposal);
+            if (pendingProposal._unmatchedProjects.length) {
+                setStatus("New project mentions need confirmation.");
+                openNewProjectModal(pendingProposal._unmatchedProjects);
+            } else {
+                setStatus("Parsed. Review below.");
+                renderReview(pendingProposal);
+            }
+        }
+
+        // ---------- New-project confirmation modal ----------
+        const newProjModal = document.getElementById("newproj-modal");
+        const newProjList = document.getElementById("newproj-list");
+
+        function openNewProjectModal(unmatched) {
+            newProjList.innerHTML = "";
+            const existing = (state.projects || []).map(p => p.name);
+            unmatched.forEach((pp, idx) => {
+                pp.decision = pp.decision || "create";  // default
+                const row = document.createElement("div");
+                row.className = "new-project-row-modal";
+                const nm = document.createElement("div");
+                nm.className = "np-name";
+                nm.textContent = "“" + pp.name + "”";
+                row.appendChild(nm);
+
+                const ctx = document.createElement("div");
+                ctx.className = "np-context";
+                const taskCount = pp.tasks.length;
+                const noteBits = pp.notes_to_append ? " and notes" : "";
+                ctx.textContent = taskCount + " task" + (taskCount === 1 ? "" : "s") + noteBits + " were extracted for this name.";
+                row.appendChild(ctx);
+
+                const choices = document.createElement("div");
+                choices.className = "np-choices";
+
+                const radioName = "np-" + idx;
+
+                const lblCreate = document.createElement("label");
+                const rCreate = document.createElement("input");
+                rCreate.type = "radio"; rCreate.name = radioName; rCreate.value = "create";
+                if (pp.decision === "create") rCreate.checked = true;
+                rCreate.addEventListener("change", () => { pp.decision = "create"; pp.mapTargetId = null; });
+                lblCreate.append(rCreate, document.createTextNode("Create new project"));
+
+                const lblMap = document.createElement("label");
+                const rMap = document.createElement("input");
+                rMap.type = "radio"; rMap.name = radioName; rMap.value = "map";
+                if (pp.decision === "map") rMap.checked = true;
+                const sel = document.createElement("select");
+                sel.disabled = !rMap.checked;
+                const placeholder = document.createElement("option");
+                placeholder.value = ""; placeholder.textContent = "— choose —";
+                sel.appendChild(placeholder);
+                (state.projects || []).forEach(ep => {
+                    const opt = document.createElement("option");
+                    opt.value = ep.id;
+                    opt.textContent = ep.name;
+                    if (pp.mapTargetId === ep.id) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+                rMap.addEventListener("change", () => {
+                    pp.decision = "map";
+                    sel.disabled = false;
+                });
+                sel.addEventListener("change", () => { pp.mapTargetId = sel.value || null; });
+                lblMap.append(rMap, document.createTextNode("Map to existing"), sel);
+
+                const lblSkip = document.createElement("label");
+                const rSkip = document.createElement("input");
+                rSkip.type = "radio"; rSkip.name = radioName; rSkip.value = "skip";
+                if (pp.decision === "skip") rSkip.checked = true;
+                rSkip.addEventListener("change", () => { pp.decision = "skip"; pp.mapTargetId = null; sel.disabled = true; });
+                lblSkip.append(rSkip, document.createTextNode("Skip"));
+
+                // When create/skip selected, disable the select; on map, enable
+                rCreate.addEventListener("change", () => { sel.disabled = true; });
+
+                choices.append(lblCreate, lblMap, lblSkip);
+                row.appendChild(choices);
+                newProjList.appendChild(row);
+            });
+            newProjModal.classList.add("open");
+        }
+
+        function closeNewProjectModal() { newProjModal.classList.remove("open"); }
+
+        document.getElementById("newproj-cancel").addEventListener("click", () => {
+            closeNewProjectModal();
+            pendingProposal = null;
+            setStatus("Parse cancelled.");
+        });
+        document.getElementById("newproj-continue").addEventListener("click", () => {
+            if (!pendingProposal) { closeNewProjectModal(); return; }
+            const bad = (pendingProposal._unmatchedProjects || []).filter(p => p.decision === "map" && !p.mapTargetId);
+            if (bad.length) {
+                alert("Please choose an existing project for each 'Map to existing' selection.");
+                return;
+            }
+            // Write each decision back into the projectMatchByName map so resolveProjectId picks it up.
+            (pendingProposal._unmatchedProjects || []).forEach(up => {
+                const key = up.name.toLowerCase();
+                if (up.decision === "map") {
+                    const target = (state.projects || []).find(x => x.id === up.mapTargetId);
+                    pendingProposal._projectMatchByName.set(key, { matched: true, id: up.mapTargetId, displayName: target ? target.name : up.name });
+                } else if (up.decision === "create") {
+                    pendingProposal._projectMatchByName.set(key, { matched: false, willCreate: true, displayName: up.name });
+                } else {
+                    pendingProposal._projectMatchByName.set(key, { matched: false, skip: true, displayName: up.name });
+                }
+            });
+            closeNewProjectModal();
+            if (pendingProposal.kind === "audit") {
+                setStatus("");
+                renderAuditReview(pendingProposal);
+            } else {
+                setStatus("Parsed. Review below.");
+                renderReview(pendingProposal);
+            }
+        });
+        newProjModal.addEventListener("click", e => {
+            if (e.target === newProjModal) closeNewProjectModal();
+        });
+
+        function extractJson(s) {
+            const trimmed = s.trim();
+            if (trimmed.startsWith("{")) return trimmed;
+            const fence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/);
+            if (fence) return fence[1].trim();
+            const first = trimmed.indexOf("{");
+            const last = trimmed.lastIndexOf("}");
+            if (first !== -1 && last !== -1 && last > first) {
+                return trimmed.slice(first, last + 1);
+            }
+            return trimmed;
+        }
+
+        function normalizeProposal(p) {
+            const norm = {
+                kind: "brain-dump",
+                immediate: [],
+                todos: [],
+                meetings: [],
+                "visits-upcoming": [],
+                "visits-toplan": [],
+                completed: [],
+                projects: [],
+                _projectMatchByName: new Map(),
+                _unmatchedProjects: []
+            };
+
+            function recordProjectName(rawName) {
+                if (!rawName || typeof rawName !== "string") return null;
+                const name = rawName.trim();
+                if (!name) return null;
+                if (norm._projectMatchByName.has(name.toLowerCase())) return name;
+                const match = (state.projects || []).find(x => x.name.toLowerCase() === name.toLowerCase());
+                if (match) {
+                    norm._projectMatchByName.set(name.toLowerCase(), { matched: true, id: match.id, displayName: match.name });
+                    return match.name;
+                } else {
+                    norm._projectMatchByName.set(name.toLowerCase(), { matched: false, displayName: name });
+                    norm._unmatchedProjects.push({ name, decision: "create", mapTargetId: null });
+                    return name;
+                }
+            }
+
+            Object.keys(LIST_LABELS).forEach(k => {
+                const arr = Array.isArray(p[k]) ? p[k] : [];
+                norm[k] = arr
+                    .map(it => {
+                        const text = (it && typeof it.text === "string") ? it.text.trim() : "";
+                        const date = (it && typeof it.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(it.date)) ? it.date : "";
+                        const projectRaw = (it && typeof it.project === "string") ? it.project : "";
+                        const project = recordProjectName(projectRaw);
+                        return { text, date, project };
+                    })
+                    .filter(it => it.text);
+            });
+
+            const projArr = Array.isArray(p.projects) ? p.projects : [];
+            norm.projects = projArr.map(pp => {
+                const name = (pp && typeof pp.name === "string") ? pp.name.trim() : "";
+                const resolved = recordProjectName(name);
+                const notes = (pp && typeof pp.notes_to_append === "string") ? pp.notes_to_append.trim() : "";
+                return { name: resolved || name, notes_to_append: notes };
+            }).filter(pp => pp.name && pp.notes_to_append);
+
+            return norm;
+        }
+
+        function resolveProjectId(prop, projectName) {
+            if (!projectName) return null;
+            const info = prop._projectMatchByName.get(projectName.toLowerCase());
+            if (info && info.matched) return info.id;
+            return null;
+        }
+
+
+        function renderReview(prop) {
+            bdReview.innerHTML = "";
+            bdReview.style.display = "block";
+
+            const total = totalProposalCount(prop);
+            const head = document.createElement("div");
+            head.className = "review-head";
+            const h3 = document.createElement("h3");
+            h3.textContent = "Proposed additions (" + total + ")";
+            const actions = document.createElement("div");
+            actions.className = "review-actions";
+            const applyBtn = document.createElement("button");
+            applyBtn.textContent = "Apply";
+            applyBtn.addEventListener("click", applyProposal);
+            const cancelBtn = document.createElement("button");
+            cancelBtn.textContent = "Cancel";
+            cancelBtn.addEventListener("click", () => {
+                pendingProposal = null;
+                bdReview.style.display = "none";
+                bdReview.innerHTML = "";
+                setStatus("");
+            });
+            actions.append(cancelBtn, applyBtn);
+            head.append(h3, actions);
+            bdReview.appendChild(head);
+
+            if (total === 0) {
+                const empty = document.createElement("p");
+                empty.style.color = "var(--muted)";
+                empty.style.fontSize = "0.9rem";
+                empty.textContent = "The model didn't extract any actionable items from that text.";
+                bdReview.appendChild(empty);
+                return;
+            }
+
+            Object.keys(LIST_LABELS).forEach(key => {
+                const items = prop[key] || [];
+                if (!items.length) return;
+                const group = document.createElement("div");
+                group.className = "review-group";
+                const h4 = document.createElement("h4");
+                h4.textContent = LIST_LABELS[key];
+                group.appendChild(h4);
+                const ul = document.createElement("ul");
+                items.forEach(it => {
+                    if (it._checked === undefined) it._checked = true;
+                    const li = document.createElement("li");
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.checked = it._checked;
+                    cb.addEventListener("change", () => { it._checked = cb.checked; });
+                    const textSpan = document.createElement("span");
+                    textSpan.className = "review-item-text";
+                    textSpan.textContent = it.text;
+                    if (it.project) {
+                        const info = prop._projectMatchByName.get(it.project.toLowerCase());
+                        if (info && !info.skip) {
+                            const chip = document.createElement("span");
+                            chip.className = "review-item-meta";
+                            const isNew = info.willCreate;
+                            chip.textContent = (info.displayName || it.project) + (isNew ? " (new)" : "");
+                            textSpan.appendChild(chip);
+                        }
+                    }
+                    const dateSpan = document.createElement("span");
+                    dateSpan.className = "review-item-date";
+                    dateSpan.textContent = it.date || "";
+                    li.append(cb, textSpan, dateSpan);
+                    ul.appendChild(li);
+                });
+                group.appendChild(ul);
+                bdReview.appendChild(group);
+            });
+
+            (prop.projects || []).forEach(pp => {
+                if (!pp.notes_to_append) return;
+                const info = prop._projectMatchByName.get(pp.name.toLowerCase());
+                if (info && info.skip) return;
+                const isNew = info && info.willCreate;
+                const group = document.createElement("div");
+                group.className = "review-group";
+                const h4 = document.createElement("h4");
+                h4.textContent = "Project notes — " + (info ? info.displayName : pp.name) + (isNew ? " (new)" : "");
+                group.appendChild(h4);
+                const ul = document.createElement("ul");
+
+                if (pp._notesChecked === undefined) pp._notesChecked = true;
+                const li = document.createElement("li");
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.checked = pp._notesChecked;
+                cb.addEventListener("change", () => { pp._notesChecked = cb.checked; });
+                const textSpan = document.createElement("span");
+                textSpan.className = "review-item-text";
+                textSpan.textContent = pp.notes_to_append;
+                const meta = document.createElement("span");
+                meta.className = "review-item-meta";
+                meta.textContent = "append to notes";
+                li.append(cb, textSpan, meta);
+                ul.appendChild(li);
+
+                group.appendChild(ul);
+                bdReview.appendChild(group);
+            });
+        }
+
+        function totalProposalCount(p) {
+            let n = 0;
+            Object.keys(LIST_LABELS).forEach(k => { n += (p[k] || []).length; });
+            n += (p.projects || []).filter(pp => pp.notes_to_append).length;
+            return n;
+        }
+
+        function applyProposal() {
+            if (!pendingProposal) return;
+            let added = 0;
+
+            // 1. Create any new projects the user chose. Update map so resolveProjectId can find them.
+            (pendingProposal._unmatchedProjects || []).forEach(up => {
+                if (up.decision !== "create") return;
+                const newProj = {
+                    id: makeId(),
+                    name: up.name,
+                    status: "active",
+                    notes: "",
+                    open: true,
+                    tasks: []
+                };
+                state.projects = state.projects || [];
+                state.projects.push(newProj);
+                pendingProposal._projectMatchByName.set(up.name.toLowerCase(), { matched: true, id: newProj.id, displayName: newProj.name });
+                added++;
+            });
+
+            // 2. New items from brain dump — each goes into its global list, with projectId set if applicable.
+            Object.keys(LIST_LABELS).forEach(key => {
+                (pendingProposal[key] || []).forEach(it => {
+                    if (!it._checked) return;
+                    const newItem = {
+                        id: makeId(),
+                        text: it.text,
+                        date: it.date || "",
+                        done: key === "completed"
+                    };
+                    const pid = resolveProjectId(pendingProposal, it.project);
+                    if (pid) newItem.projectId = pid;
+                    state[key] = state[key] || [];
+                    state[key].push(newItem);
+                    added++;
+                });
+            });
+
+            // 4. Project notes (notes_to_append only — tasks were already routed via global lists).
+            (pendingProposal.projects || []).forEach(pp => {
+                if (!pp.notes_to_append || pp._notesChecked === false) return;
+                const pid = resolveProjectId(pendingProposal, pp.name);
+                if (!pid) return;
+                const proj = (state.projects || []).find(x => x.id === pid);
+                if (!proj) return;
+                const sep = proj.notes && !proj.notes.endsWith("\n") ? "\n" : "";
+                proj.notes = (proj.notes || "") + sep + pp.notes_to_append;
+                added++;
+            });
+
+            pendingProposal = null;
+            bdReview.style.display = "none";
+            bdReview.innerHTML = "";
+            bdInput.value = "";
+
+            setStatus(added ? ("Added " + added + " item" + (added === 1 ? "" : "s") + ".") : "Nothing checked.");
+            save();
+            render();
+        }
+
+        // ---------- Update Projects (AI audit) ----------
+        const auditBtn = document.getElementById("update-projects-btn");
+        const auditReviewEl = document.getElementById("audit-review");
+        const ACTIVE_LIST_KEYS = ["immediate", "todos", "meetings", "visits-upcoming", "visits-toplan"];
+
+        function collectActiveItems() {
+            const out = [];
+            ACTIVE_LIST_KEYS.forEach(listKey => {
+                (state[listKey] || []).forEach(it => {
+                    if (it.done) return;
+                    const proj = it.projectId ? (state.projects || []).find(p => p.id === it.projectId) : null;
+                    out.push({
+                        id: it.id,
+                        text: it.text,
+                        list: listKey,
+                        project: proj ? proj.name : null,
+                        date: it.date || null
+                    });
+                });
+            });
+            return out;
+        }
+
+        async function runProjectAudit() {
+            clearError();
+            const key = getApiKey();
+            if (!key) {
+                showError("No Anthropic API key saved. Open settings (⚙) to add one.");
+                return;
+            }
+            const items = collectActiveItems();
+            if (!items.length) {
+                renderAuditEmpty("No open items to audit.");
+                return;
+            }
+
+            auditBtn.disabled = true;
+            auditBtn.textContent = "Auditing…";
+            auditReviewEl.style.display = "none";
+            auditReviewEl.innerHTML = "";
+
+            const projectNames = (state.projects || []).map(p => p.name);
+            const today = todayISO();
+
+            const systemPrompt = [
+                "You audit a list of action items for a golf-course consultant to make sure each is linked to the right project and is in the right global list.",
+                "",
+                "Today's date is " + today + ".",
+                "",
+                "Each item currently lives in one global list:",
+                "- immediate: urgent things needing action soon",
+                "- todos: general tasks without strict deadline",
+                "- meetings: meetings/calls/conversations",
+                "- visits-upcoming: planned site visits with date or firm intent",
+                "- visits-toplan: visits needing scheduling",
+                "",
+                "Each item may also be linked to one project (golf course, club, named site).",
+                "",
+                "Existing project names:",
+                projectNames.length ? projectNames.map(n => "- " + n).join("\n") : "(none yet)",
+                "",
+                "When matching projects, be generous — \"Bass Rocks GC\", \"bass rocks\" all match \"Bass Rocks\". Use the existing project name verbatim. If an item clearly belongs to a project that isn't in the list, you may propose a new project name; the user will confirm.",
+                "",
+                "For each item that should change, output an update with the NEW list and NEW project. Only include items where your suggestion DIFFERS from the current state in the input. Don't include items that are already correct. Don't invent new items.",
+                "",
+                "Output ONLY a JSON object with this shape, no prose, no markdown fences:",
+                "{",
+                "  \"updates\": [",
+                "    {\"id\": \"<item id from input>\", \"list\": \"todos\", \"project\": \"<project name or null>\"}",
+                "  ]",
+                "}"
+            ].join("\n");
+
+            const userMessage = "<items>\n" + JSON.stringify(items, null, 2) + "\n</items>";
+
+            let resp, raw;
+            try {
+                resp = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": key,
+                        "anthropic-version": "2023-06-01",
+                        "anthropic-dangerous-direct-browser-access": "true"
+                    },
+                    body: JSON.stringify({
+                        model: "claude-haiku-4-5",
+                        max_tokens: 2048,
+                        system: systemPrompt,
+                        messages: [{ role: "user", content: userMessage }]
+                    })
+                });
+                raw = await resp.text();
+            } catch (e) {
+                auditBtn.disabled = false;
+                auditBtn.textContent = "Update Projects";
+                showError("Network error contacting Anthropic API:\n\n" + (e && e.message ? e.message : String(e)));
+                return;
+            }
+
+            auditBtn.disabled = false;
+            auditBtn.textContent = "Update Projects";
+
+            if (!resp.ok) {
+                showError("API returned HTTP " + resp.status + ":\n\n" + raw);
+                return;
+            }
+
+            let data;
+            try { data = JSON.parse(raw); } catch (e) {
+                showError("Failed to parse API response as JSON:\n\n" + raw);
+                return;
+            }
+            const parts = (data && data.content) || [];
+            const textOut = parts.filter(p => p.type === "text").map(p => p.text).join("\n").trim();
+            if (!textOut) { showError("Empty response from Anthropic. Raw:\n\n" + raw); return; }
+
+            const jsonStr = extractJson(textOut);
+            let obj;
+            try { obj = JSON.parse(jsonStr); } catch (e) {
+                showError("Could not parse model output as JSON.\n\nRaw output:\n" + textOut);
+                return;
+            }
+
+            const audit = buildAuditProposal(obj, items);
+            if (!audit.updates.length) {
+                renderAuditEmpty("Everything already looks correctly organized.");
+                return;
+            }
+            pendingProposal = audit;
+            if (audit._unmatchedProjects.length) {
+                openNewProjectModal(audit._unmatchedProjects);
+            } else {
+                renderAuditReview(audit);
+            }
+        }
+
+        function buildAuditProposal(obj, originalItems) {
+            const itemsById = new Map(originalItems.map(i => [i.id, i]));
+            const audit = {
+                kind: "audit",
+                updates: [],
+                _projectMatchByName: new Map(),
+                _unmatchedProjects: []
+            };
+            const validLists = new Set(ACTIVE_LIST_KEYS);
+
+            function recordProjectName(rawName) {
+                if (!rawName || typeof rawName !== "string") return null;
+                const name = rawName.trim();
+                if (!name) return null;
+                const k = name.toLowerCase();
+                if (audit._projectMatchByName.has(k)) return name;
+                const match = (state.projects || []).find(x => x.name.toLowerCase() === k);
+                if (match) {
+                    audit._projectMatchByName.set(k, { matched: true, id: match.id, displayName: match.name });
+                    return match.name;
+                } else {
+                    audit._projectMatchByName.set(k, { matched: false, displayName: name });
+                    audit._unmatchedProjects.push({ name, decision: "create", mapTargetId: null });
+                    return name;
+                }
+            }
+
+            const arr = Array.isArray(obj && obj.updates) ? obj.updates : [];
+            arr.forEach(u => {
+                if (!u || typeof u !== "object") return;
+                const id = typeof u.id === "string" ? u.id : "";
+                const orig = itemsById.get(id);
+                if (!orig) return;
+                const newList = (typeof u.list === "string" && validLists.has(u.list)) ? u.list : orig.list;
+                const rawProject = (u.project === null || typeof u.project === "string") ? u.project : orig.project;
+                let newProject = null;
+                if (rawProject && typeof rawProject === "string" && rawProject.trim()) {
+                    newProject = recordProjectName(rawProject) || rawProject.trim();
+                }
+                // Only keep if something differs
+                const listChanged = newList !== orig.list;
+                const projectChanged = (newProject || null) !== (orig.project || null);
+                if (!listChanged && !projectChanged) return;
+                audit.updates.push({
+                    id,
+                    text: orig.text,
+                    fromList: orig.list,
+                    toList: newList,
+                    fromProject: orig.project || null,
+                    toProject: newProject,
+                    _checked: true
+                });
+            });
+            return audit;
+        }
+
+        function renderAuditEmpty(msg) {
+            auditReviewEl.innerHTML = "";
+            const p = document.createElement("p");
+            p.className = "audit-status";
+            p.textContent = msg;
+            auditReviewEl.appendChild(p);
+            auditReviewEl.style.display = "block";
+            setTimeout(() => {
+                if (auditReviewEl.contains(p)) {
+                    auditReviewEl.style.display = "none";
+                    auditReviewEl.innerHTML = "";
+                }
+            }, 4000);
+        }
+
+        function renderAuditReview(audit) {
+            auditReviewEl.innerHTML = "";
+            auditReviewEl.style.display = "block";
+
+            const head = document.createElement("div");
+            head.className = "audit-head";
+            const h3 = document.createElement("h3");
+            h3.textContent = "Project Audit — " + audit.updates.length + " suggested change" + (audit.updates.length === 1 ? "" : "s");
+            const actions = document.createElement("div");
+            actions.className = "audit-actions";
+            const applyBtn = document.createElement("button");
+            applyBtn.textContent = "Apply";
+            applyBtn.addEventListener("click", applyAudit);
+            const cancelBtn = document.createElement("button");
+            cancelBtn.textContent = "Cancel";
+            cancelBtn.addEventListener("click", () => {
+                pendingProposal = null;
+                auditReviewEl.style.display = "none";
+                auditReviewEl.innerHTML = "";
+            });
+            actions.append(cancelBtn, applyBtn);
+            head.append(h3, actions);
+            auditReviewEl.appendChild(head);
+
+            const ul = document.createElement("ul");
+            audit.updates.forEach(u => {
+                const li = document.createElement("li");
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.checked = u._checked;
+                cb.addEventListener("change", () => { u._checked = cb.checked; });
+
+                const textBlock = document.createElement("div");
+                textBlock.className = "audit-text";
+                const textRow = document.createElement("div");
+                textRow.textContent = u.text;
+                textBlock.appendChild(textRow);
+
+                const diffs = [];
+                if (u.fromList !== u.toList) {
+                    diffs.push({ label: "list", from: LIST_LABELS[u.fromList], to: LIST_LABELS[u.toList] });
+                }
+                if ((u.fromProject || null) !== (u.toProject || null)) {
+                    const info = u.toProject ? audit._projectMatchByName.get(u.toProject.toLowerCase()) : null;
+                    let toDisplay = "(none)";
+                    if (u.toProject) {
+                        if (info && info.skip) {
+                            // skipped — treat as no change for project
+                        } else {
+                            toDisplay = (info && info.displayName) || u.toProject;
+                            if (info && info.willCreate) toDisplay += " (new)";
+                        }
+                    }
+                    diffs.push({ label: "project", from: u.fromProject || "(none)", to: toDisplay });
+                }
+                diffs.forEach(d => {
+                    const diffDiv = document.createElement("div");
+                    diffDiv.className = "audit-diff";
+                    diffDiv.append(
+                        document.createTextNode(d.label + ": " + d.from + " "),
+                        spanWith("arrow", "→"),
+                        document.createTextNode(" "),
+                        spanWith("new", d.to)
+                    );
+                    textBlock.appendChild(diffDiv);
+                });
+
+                li.append(cb, textBlock);
+                ul.appendChild(li);
+            });
+            auditReviewEl.appendChild(ul);
+        }
+
+        function spanWith(cls, txt) {
+            const s = document.createElement("span");
+            s.className = cls;
+            s.textContent = txt;
+            return s;
+        }
+
+        function applyAudit() {
+            if (!pendingProposal || pendingProposal.kind !== "audit") return;
+
+            // 1. Create any new projects the user chose.
+            (pendingProposal._unmatchedProjects || []).forEach(up => {
+                if (up.decision !== "create") return;
+                const newProj = {
+                    id: makeId(), name: up.name, status: "active", notes: "", open: true, tasks: []
+                };
+                state.projects = state.projects || [];
+                state.projects.push(newProj);
+                pendingProposal._projectMatchByName.set(up.name.toLowerCase(), { matched: true, id: newProj.id, displayName: newProj.name });
+            });
+
+            let changed = 0;
+            (pendingProposal.updates || []).forEach(u => {
+                if (!u._checked) return;
+                // Find the item in its current list
+                const sourceList = state[u.fromList] || [];
+                const idx = sourceList.findIndex(x => x.id === u.id);
+                if (idx === -1) return;
+                const item = sourceList[idx];
+
+                // Resolve target project
+                let targetProjectId = item.projectId || null;
+                if ((u.fromProject || null) !== (u.toProject || null)) {
+                    if (!u.toProject) {
+                        targetProjectId = null;
+                    } else {
+                        const info = pendingProposal._projectMatchByName.get(u.toProject.toLowerCase());
+                        if (info && info.skip) {
+                            // user chose to skip this project — leave projectId unchanged
+                        } else if (info && info.matched) {
+                            targetProjectId = info.id;
+                        }
+                    }
+                }
+
+                // Apply project change
+                if (targetProjectId) item.projectId = targetProjectId;
+                else delete item.projectId;
+
+                // Apply list change
+                if (u.fromList !== u.toList) {
+                    sourceList.splice(idx, 1);
+                    state[u.toList] = state[u.toList] || [];
+                    state[u.toList].push(item);
+                }
+                changed++;
+            });
+
+            pendingProposal = null;
+            auditReviewEl.style.display = "none";
+            auditReviewEl.innerHTML = "";
+            setStatus(changed ? ("Updated " + changed + " item" + (changed === 1 ? "" : "s") + ".") : "Nothing changed.");
+            save();
+            render();
+        }
+
+        auditBtn.addEventListener("click", runProjectAudit);
+
+        // ---------- Theme (dark mode) ----------
+        const themeBtn = document.getElementById("theme-btn");
+        function applyTheme(t) {
+            if (t === "dark") {
+                document.documentElement.classList.add("dark");
+                themeBtn.textContent = "☀";
+                themeBtn.title = "Switch to light mode";
+            } else {
+                document.documentElement.classList.remove("dark");
+                themeBtn.textContent = "☾";
+                themeBtn.title = "Switch to dark mode";
+            }
+        }
+        applyTheme(localStorage.getItem(THEME_STORAGE) || "light");
+        themeBtn.addEventListener("click", () => {
+            const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
+            localStorage.setItem(THEME_STORAGE, next);
+            applyTheme(next);
+        });
+
+        // ---------- Dictation (Web Speech API) ----------
+        const dictateBtn = document.getElementById("brain-dump-dictate");
+        const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let dictating = false;
+
+        if (!SpeechRecognitionImpl) {
+            dictateBtn.disabled = true;
+            dictateBtn.title = "Your browser doesn't support speech recognition. Try Chrome or Edge.";
+        } else {
+            dictateBtn.addEventListener("click", () => {
+                if (dictating) {
+                    if (recognition) recognition.stop();
+                    return;
+                }
+                recognition = new SpeechRecognitionImpl();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = "en-US";
+
+                let baseText = bdInput.value;
+                if (baseText && !/[\s\n]$/.test(baseText)) baseText += " ";
+                let finalText = "";
+
+                recognition.onresult = (e) => {
+                    let interim = "";
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const transcript = e.results[i][0].transcript;
+                        if (e.results[i].isFinal) finalText += transcript;
+                        else interim += transcript;
+                    }
+                    bdInput.value = baseText + finalText + interim;
+                };
+                recognition.onend = () => {
+                    dictating = false;
+                    dictateBtn.classList.remove("recording");
+                    dictateBtn.textContent = "Dictate";
+                };
+                recognition.onerror = (e) => {
+                    dictating = false;
+                    dictateBtn.classList.remove("recording");
+                    dictateBtn.textContent = "Dictate";
+                    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+                        showError("Microphone permission denied. Allow microphone access for this page in your browser settings.");
+                    } else if (e.error && e.error !== "aborted" && e.error !== "no-speech") {
+                        showError("Speech recognition error: " + e.error);
+                    }
+                };
+                try {
+                    recognition.start();
+                    dictating = true;
+                    dictateBtn.classList.add("recording");
+                    dictateBtn.textContent = "Stop";
+                } catch (err) {
+                    showError("Could not start dictation: " + (err && err.message ? err.message : String(err)));
+                }
+            });
+        }
+
+        render();
+    </script>
+</body>
+</html>

@@ -6,18 +6,38 @@
     <title>The Northeast Golf Company</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-color: #ffffff;
             --text-main: #1a1a1a;
             --text-gray: #777777;
-            --nav-gray: #555555; 
+            --nav-gray: #555555;
             --address-gray: #888888;
             --akrobat-reg: 400;
             --akrobat-light: 300;
+            --bg-image-opacity: 0.2;
+            --divider-color: rgba(0,0,0,0.1);
+            --input-border: #cccccc;
+            --card-no-image-bg: #f0ece4;
+            --nav-overlay-bg: rgba(255, 255, 255, 0.97);
         }
+
+        [data-theme="dark"] {
+            --bg-color: #0f0f10;
+            --text-main: #ececec;
+            --text-gray: #9a9a9a;
+            --nav-gray: #b8b8b8;
+            --address-gray: #888888;
+            --bg-image-opacity: 0.08;
+            --divider-color: rgba(255,255,255,0.12);
+            --input-border: #3a3a3a;
+            --card-no-image-bg: #1c1c1d;
+            --nav-overlay-bg: rgba(15, 15, 16, 0.97);
+        }
+
+        html { background-color: var(--bg-color); transition: background-color 0.4s ease; }
 
         * {
             margin: 0;
@@ -28,11 +48,11 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Barlow Semi Condensed', sans-serif;
-            height: 2000vh; 
+            font-family: 'Newsreader', serif;
+            height: 2000vh;
             overflow-x: hidden;
-            opacity: 0; 
-            transition: opacity 0.8s ease-in-out;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out, background-color 0.4s ease, color 0.4s ease;
         }
 
         body.loaded {
@@ -50,8 +70,53 @@
             background-position: center;
             background-attachment: fixed;
             z-index: 0;
-            opacity: 0.2; 
+            opacity: var(--bg-image-opacity);
+            transition: opacity 0.4s ease;
         }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--divider-color);
+            background: var(--bg-color);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2500;
+            color: var(--nav-gray);
+            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+            padding: 0;
+        }
+
+        .theme-toggle:hover {
+            color: var(--text-main);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+        /* Invert NGC logo PNG in dark mode (black → white) */
+        .ngc-logo { transition: filter 0.4s ease; }
+        [data-theme="dark"] .ngc-logo { filter: invert(1) brightness(1.1); }
 
         .fixed-nav-container {
             position: fixed;
@@ -96,8 +161,7 @@
             color: var(--nav-gray);
             font-size: 0.85rem;
             font-weight: var(--akrobat-light);
-            letter-spacing: 0.2rem;
-            text-transform: uppercase;
+            letter-spacing: 0.05rem;
             cursor: pointer;
             transition: color 0.3s ease;
         }
@@ -107,10 +171,11 @@
         .nav-address {
             color: var(--address-gray);
             font-size: 0.75rem;
-            letter-spacing: 0.15rem;
-            text-transform: uppercase;
+            letter-spacing: 0.05rem;
             font-weight: var(--akrobat-light);
         }
+
+        .hamburger-btn { display: none; }
 
         .fixed-cross-nav {
             position: fixed;
@@ -159,18 +224,16 @@
         h1 {
             font-size: clamp(3.5rem, 8vw, 5.5rem);
             font-weight: var(--akrobat-reg);
-            text-transform: uppercase;
             line-height: 1;
-            letter-spacing: 0.05rem;
+            letter-spacing: 0.02rem;
             margin-bottom: 20px;
         }
 
         h2 {
             font-size: clamp(2.2rem, 5vw, 3.2rem);
             font-weight: var(--akrobat-reg);
-            text-transform: uppercase;
             line-height: 1;
-            letter-spacing: 0.05rem;
+            letter-spacing: 0.02rem;
             margin-bottom: 20px;
         }
 
@@ -257,9 +320,8 @@
 
         .more-link {
             display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
             color: var(--nav-gray);
             text-decoration: none;
             border-bottom: 1px solid var(--nav-gray);
@@ -307,7 +369,7 @@
         /* haverhill-1: Img Right, Txt Left (already handled by defaults) */
 
         /* haverhill-2: Img Left, Txt Right */
-        #haverhill-2 #peek-img-design { left: 8vw; right: auto; }
+
         #haverhill-2 #text-2 { right: 8vw; left: auto; }
 
         /* management-1: Img Right, Txt Left */
@@ -355,8 +417,7 @@
             text-decoration: none;
             color: var(--text-gray);
             font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.3px;
             transition: color 0.3s ease;
         }
 
@@ -365,13 +426,263 @@
         .contact-form input, .contact-form textarea {
             background: transparent;
             border: none;
-            border-bottom: 1px solid #cccccc;
+            border-bottom: 1px solid var(--input-border);
             padding: 10px 0;
             font-family: inherit;
             outline: none;
-            text-transform: uppercase;
             font-size: 0.85rem;
             width: 100%;
+            color: var(--text-main);
+        }
+
+        .contact-form input::placeholder, .contact-form textarea::placeholder {
+            color: var(--text-gray);
+        }
+
+        /* ---- START SECTION ---- */
+        #start {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0;
+        }
+
+        .start-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            gap: 18px;
+            position: relative;
+        }
+
+        .start-brand-mark {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .start-logo {
+            height: 110px;
+            width: auto;
+            opacity: 0.85;
+        }
+
+        .start-company-name {
+            font-size: 1.15rem;
+            letter-spacing: 0.1rem;
+            color: var(--text-gray);
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .start-scroll-hint {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            letter-spacing: 0.1rem;
+            color: var(--address-gray);
+            font-weight: 300;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        /* ---- PROJECTS SECTION: card grid ---- */
+        #projects-section {
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 5vh 3vw 0;
+            text-align: left;
+        }
+
+        .projects-section-header {
+            width: 100%;
+            margin-bottom: 2vh;
+            padding: 0 0.5vw;
+            flex-shrink: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+        }
+
+        .projects-section-header h2 {
+            margin: 0;
+        }
+
+        .projects-section-header p {
+            font-size: 0.8rem;
+            color: var(--address-gray);
+            letter-spacing: 0.05rem;
+            margin: 0;
+        }
+
+        .project-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        .project-card {
+            position: relative;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            background-color: var(--card-no-image-bg);
+        }
+
+        .project-card.has-image {
+            background-color: #1a1a1a;
+        }
+
+        .project-card-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-card-bg {
+            transform: scale(1.05);
+        }
+
+        .project-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%);
+        }
+
+        .project-card-number {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            font-size: 0.68rem;
+            font-weight: 300;
+            letter-spacing: 0.04rem;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .project-card.no-image .project-card-number {
+            color: var(--text-gray);
+        }
+
+        .project-card-arrow {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.55);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-card-arrow {
+            transform: translateX(3px);
+        }
+
+        .project-card.no-image .project-card-arrow {
+            color: var(--text-gray);
+        }
+
+        .project-card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px;
+        }
+
+        .project-card-tag {
+            display: inline-block;
+            font-size: 0.52rem;
+            letter-spacing: 0.12rem;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.6);
+            padding: 2px 5px;
+            margin-bottom: 6px;
+        }
+
+        .project-card.no-image .project-card-tag {
+            border-color: rgba(0,0,0,0.2);
+            color: var(--text-gray);
+        }
+
+        .project-card-name {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #ffffff;
+            line-height: 1.2;
+            margin: 0 0 2px 0;
+        }
+
+        .project-card.no-image .project-card-name {
+            color: var(--text-main);
+        }
+
+        .project-card-location {
+            font-size: 0.62rem;
+            letter-spacing: 0.03rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 300;
+        }
+
+        .project-card.no-image .project-card-location {
+            color: var(--text-gray);
+        }
+
+        /* ---- DESIGN SERVICES SECTION ---- */
+        #haverhill-2 {
+            text-align: left;
+        }
+
+        .services-layout {
+            display: flex;
+            gap: 7vw;
+            align-items: flex-start;
+            width: 82vw;
+            max-width: 1200px;
+        }
+
+        .services-left {
+            width: 28%;
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .services-left h2 {
+            margin-bottom: 18px;
+        }
+
+        .services-left .body-text {
+            color: var(--text-gray);
+            font-weight: 300;
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .services-list {
+            flex: 1;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid var(--divider-color);
+        }
+
+        .services-list li {
+            padding: 7px 0;
+            border-bottom: 1px solid var(--divider-color);
+            font-size: 1.05rem;
+            font-weight: 300;
+            color: var(--text-main);
+            font-family: 'Newsreader', serif;
+            line-height: 1.4;
         }
 
         /* CUSTOM STYLES FOR REDESIGNED SECTIONS */
@@ -411,6 +722,40 @@
         */
         @media (max-width: 900px) {
             
+            /* Design services section mobile */
+            .services-layout {
+                flex-direction: column;
+                width: 100%;
+                gap: 30px;
+            }
+            .services-left {
+                width: 100%;
+            }
+
+            /* Start section mobile overrides */
+            #start {
+                min-height: 100vh;
+            }
+            .start-inner {
+                min-height: 100vh;
+            }
+            .start-scroll-hint {
+                bottom: 110px !important;
+            }
+
+            /* Project cards mobile */
+            #projects-section {
+                padding: 6vh 0 80px !important;
+            }
+            .projects-section-header {
+                padding: 0 16px !important;
+                margin-bottom: 12px !important;
+            }
+            .project-cards {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 2px !important;
+            }
+
             /* 1. Reset Body & Scrolling */
             body {
                 height: 100vh !important;
@@ -425,9 +770,9 @@
                 height: 100vh;
                 overflow-y: auto;
                 opacity: 1 !important;
-                padding-bottom: 250px; /* Space so last content isn't masked */
-                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
-                mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+                padding-bottom: 80px;
+                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 96%);
+                mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 96%);
             }
 
             .horizontal-track {
@@ -449,7 +794,7 @@
                 align-items: center;
                 padding: 100px 5% 150px 5%; /* Adjusted padding */
                 position: relative;
-                border-bottom: 1px solid rgba(0,0,0,0.05);
+                border-bottom: 1px solid var(--divider-color);
             }
 
             /* 3. Reset All Absolute Positioning */
@@ -480,11 +825,13 @@
             .gallery-image,
             .peeking-img {
                 order: -1; /* Move to top of flex container */
-                margin-bottom: 40px !important;
-                max-height: 50vh !important;
-                width: 100% !important;
-                object-fit: contain !important;
+                width: 100vw !important;
+                max-width: 100vw !important;
+                max-height: none !important;
+                aspect-ratio: 16 / 9;
+                object-fit: cover !important;
                 display: block !important;
+                margin: 0 0 40px 0 !important; /* Override 0 auto so align-items: center controls positioning */
             }
 
             .portrait {
@@ -507,7 +854,7 @@
             .body-text {
                 font-size: 1.1rem;
                 line-height: 1.6;
-                text-align: center;
+                text-align: justify;
                 margin-bottom: 25px;
             }
 
@@ -525,35 +872,82 @@
             }
 
             .nav-logo-item {
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                transform: translateY(-50%);
+                display: none;
             }
 
-            .nav-logo-item img {
-                height: 60px; /* Matched desktop size */
-                margin-top: -15px; /* Matched desktop offset */
-            }
-            
-            .nav-links {
-                gap: 15px; /* Tighter gap for small screens */
-                flex-wrap: wrap;
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
                 justify-content: center;
-                margin-bottom: 5px; /* Tighter gap to address */
-                padding-left: 85px; /* Make room for the logo on the left */
+                align-items: center;
+                gap: 6px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 10px;
+                pointer-events: auto;
+                position: relative;
+                z-index: 1001;
             }
-
+            .hamburger-btn span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background-color: var(--nav-gray);
+                border-radius: 2px;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(2) {
+                opacity: 0;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            .nav-links {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 22px;
+                padding: 50px 40px 90px;
+                background: var(--nav-overlay-bg);
+                transform: translateY(110%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
+                z-index: 998;
+                pointer-events: none;
+            }
+            .fixed-nav-container.nav-open .nav-links {
+                transform: translateY(0);
+                pointer-events: auto;
+            }
             .nav-address {
-                font-size: 0.7rem; /* Slightly larger */
-                padding: 0 15px;
-                margin-top: 0;
-                letter-spacing: 0.1rem;
+                display: none;
             }
 
             /* Hide Desktop-only Elements */
-            .fixed-cross-nav, p[style*="SCROLL TO"] {
+            .fixed-cross-nav {
                 display: none !important;
+            }
+
+            /* Scroll to Continue: show at bottom center of section */
+            p[style*="SCROLL TO"] {
+                display: block !important;
+                position: absolute !important;
+                bottom: 100px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                white-space: nowrap !important;
+                margin: 0 !important;
+                text-align: center !important;
             }
 
             /* 7. Specific Section Fixes */
@@ -578,35 +972,9 @@
             }
 
             .team-text-container .body-text {
-                text-align: center !important;
+                text-align: justify !important;
             }
 
-            .projects-container {
-                text-align: center;
-                padding: 0 20px;
-            }
-
-            .projects-container h2 {
-                padding-left: 0 !important;
-            }
-
-            .projects-container p {
-                padding-left: 0 !important;
-            }
-
-            .project-list {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px 30px;
-                padding-left: 0;
-                text-align: left; /* Keep names left aligned within their column */
-                max-width: 600px;
-                margin: 0 auto;
-            }
-
-            .see-all-projects {
-                padding-left: 0 !important;
-                margin-top: 40px !important;
-            }
 
             .contact-container {
                 flex-direction: column;
@@ -630,9 +998,8 @@
             .nav-links { gap: 12px; }
             .nav-links a { font-size: 0.75rem; }
             
-            .project-list {
-                grid-template-columns: 1fr;
-                text-align: center;
+            .project-cards {
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -651,14 +1018,42 @@
         if (sessionStorage.getItem('scrollTarget')) {
             document.write('<style id="temp-hide">#main-viewport { opacity: 0 !important; }</style>');
         }
+        (function() {
+            try {
+                var saved = localStorage.getItem('ngc-theme');
+                var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+                var prefersDark = mq && mq.matches;
+                var theme = saved || (prefersDark ? 'dark' : 'light');
+                if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+                if (mq && !saved) {
+                    var apply = function(e) {
+                        if (localStorage.getItem('ngc-theme')) return;
+                        if (e.matches) document.documentElement.setAttribute('data-theme', 'dark');
+                        else document.documentElement.removeAttribute('data-theme');
+                    };
+                    if (mq.addEventListener) mq.addEventListener('change', apply);
+                    else if (mq.addListener) mq.addListener(apply);
+                }
+            } catch (e) {}
+        })();
     </script>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+    </button>
 
     <div class="fixed-background"></div>
 
     <div class="fixed-nav-container">
         <nav>
             <ul class="nav-links">
-                <li class="nav-logo-item"><img src="index/NGC_Logo.png" alt="NGC Logo" onclick="scrollToStage(0, true)" style="cursor: pointer;"></li>
+                <li class="nav-logo-item"><img src="index/NGC_Logo.png" alt="NGC Logo" class="ngc-logo" onclick="scrollToStage(0, true)" style="cursor: pointer;"></li>
                 <li><a onclick="scrollToStage(0, true)">Start</a></li>
                 <li><a onclick="scrollToStage(1, true)">What We Do</a></li>
                 <li><a onclick="scrollToStage(6, true)">Team</a></li>
@@ -666,20 +1061,24 @@
                 <li><a onclick="scrollToStage(10, true)">Contact</a></li>
             </ul>
         </nav>
-        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <div class="nav-address">Saunderstown, Rhode Island</div>
+        <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 
     <div class="viewport" id="main-viewport">
         <div class="horizontal-track" id="track">
             
             <section id="start">
-                <div class="project-text" style="opacity: 1;">
-                    <img src="index/NGC_Logo.png" alt="NGC Logo" style="width: 250px; height: auto; margin-bottom: 40px;">
-                    <h1>
-                        <span style="display: block; white-space: nowrap;">THE NORTHEAST</span>
-                        <span style="display: block; white-space: nowrap;">GOLF COMPANY</span>
-                    </h1>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px;">SCROLL TO CONTINUE</p>
+                <div class="start-inner">
+                    <div class="start-brand-mark">
+                        <img src="index/NGC_Logo.png" alt="NGC Logo" class="start-logo ngc-logo">
+                        <p class="start-company-name">The Northeast Golf Company</p>
+                    </div>
+                    <p class="start-scroll-hint">Scroll to continue</p>
                 </div>
             </section>
 
@@ -687,7 +1086,7 @@
                <img src="Projects/Mendham/Mendham_Image_ (6).jpg" class="what-we-do-image" alt="Mendham Image">
                 <div class="what-we-do-container">
                     <div class="what-we-do-text">
-                        <h2>WHAT WE DO</h2>
+                        <h2>What We Do</h2>
                         <p class="body-text">The Northeast Golf Company is a multi-disciplinary firm offering Comprehensive Golf Course Design and Operations Management services. From award-winning restorations to full-service agronomic programming and business analytics, we help clubs find the hidden value within their landscape while fostering unique "community cultures". Select a discipline to the right to learn more about our specific capabilities.</p>
                         <div class="service-links-right">
                             <a onclick="scrollToStage(2, true)" class="more-link">Golf Course Design</a>
@@ -702,9 +1101,9 @@
             <section id="haverhill-1">
                 <img src="Projects/Met_Links/Met_Links_Image_After (1).jpg" class="design-image-right" alt="Met Links Design">
                 <div class="project-text design-text-left" id="text-1">
-                    <h2>GOLF COURSE DESIGN</h2>
+                    <h2>Golf Course Design</h2>
                     <p class="body-text">The Northeast Golf Company provides Comprehensive Golf Course Design Services for all types of golf course development, renovation and restoration projects. We enjoy working on exceptional properties, but have become quite adept at embracing the challenges of difficult sites. We believe the best work results from an inherent understanding of the land or course we are given and to find the sometimes hidden values within the landscape. We work closely with our clients. We listen and take goals and objectives seriously. Our experience and commitment to our craft and the collaborative nature of our design approach allows us to take on any type of project. There is no project too small or too large.</p>
-                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-transform: uppercase;">See examples of our...</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-align: center;">See examples of our...</p>
                     <div class="service-links-left">
                         <a href="#" onclick="fadeAndNavigate(event, 'Projects/Master_Plans/master_plans.html')" class="more-link">Master Plans</a>
                         <a href="#" onclick="fadeAndNavigate(event, 'Projects/Renderings/renderings.html')" class="more-link">Renderings</a>
@@ -714,19 +1113,20 @@
             </section>
 
             <section id="haverhill-2">
-                <img src="Projects/Met_Links/Met_Links_Image_After (2).jpg" class="peeking-img" id="peek-img-design" alt="Haverhill Render 2">
-                <div class="project-text" id="text-2">
-                    <p class="body-text" style="text-align: center !important;">We offer a full range of golf course design services including:</p>
-                    <div style="text-align: left !important; max-width: 600px; margin: 20px auto 0 auto; display: block;">
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- New Golf Course Design</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Renovation of Existing Golf Courses</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Restoration of Classic Designs</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Comprehensive Golf Course Enhancement Planning</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Golf Community Planning</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Unique Golf Amenity Designs (short courses, putting courses, challenge courses)</p>
-                        <p class="body-text" style="margin-bottom: 0; text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Practice Facility Design</p>
-                        <p class="body-text" style="text-align: left !important; padding-left: 1.2rem; text-indent: -1.2rem;">- Clubhouse Circulation Planning</p>
+                <div class="services-layout" id="text-2">
+                    <div class="services-left">
+                        <h2>Design Services</h2>
                     </div>
+                    <ul class="services-list">
+                        <li>New Golf Course Design</li>
+                        <li>Renovation of Existing Golf Courses</li>
+                        <li>Restoration of Classic Designs</li>
+                        <li>Comprehensive Golf Course Enhancement Planning</li>
+                        <li>Golf Community Planning</li>
+                        <li>Unique Golf Amenity Designs</li>
+                        <li>Practice Facility Design</li>
+                        <li>Clubhouse Circulation Planning</li>
+                    </ul>
                 </div>
             </section>
 
@@ -738,6 +1138,13 @@
                     <h2 style="margin-bottom: 20px;">Golf Course Management</h2>
                     <p class="body-text">NGC Golf Operations Management provides full-service golf course operations management services to clubs, owners, municipalities and financial institutions. NGC is unique in many ways, most importantly in our collaborative approach to serving our partner clubs. We bring a seasoned team of thinkers to all aspects of golf operations including day to day management, staffing and training, agronomic care and food and beverage services.</p>
                     <p class="body-text">We specifically customize our approach to achieve measured success for our partners. Our management team brings over 50 years of combined experience and excellence to each relationship with the objective to provide the highest level of course conditioning and unmatched player experience. NGC brings the proper expertise to each property to guide the vision with unwavering work ethic, best practices, data driven decision making and out of the box marketing creativity to maximize property opportunities and profitability.</p>
+                    <p class="body-text" style="font-weight: bold; margin-top: 20px; text-align: center;">See the Courses We Manage...</p>
+                    <div class="service-links-left">
+                        <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="more-link">Met Links</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Kings Crossing</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">Bristol Golf Park</a>
+                        <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="more-link">The Orchards</a>
+                    </div>
                 </div>
             </section>
 
@@ -751,8 +1158,8 @@
 
             <section id="team-intro">
                 <div class="project-text" style="opacity: 1;">
-                    <h2>THE TEAM</h2>
-                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px;">SCROLL TO CONTINUE</p>
+                    <h2>The Team</h2>
+                    <p class="body-text" style="letter-spacing: 4px; font-size: 0.8rem; margin-top: 25px; color: #555555;">Scroll to continue</p>
                 </div>
             </section>
 
@@ -760,7 +1167,7 @@
                 <div class="team-wrapper">
                     <img src="Bio/Portrait_Robert.webp" alt="Robert McNeil" class="portrait">
                     <div class="team-text-container">
-                        <h2>ROBERT MCNEIL</h2>
+                        <h2>Robert McNeil</h2>
                         <p class="body-text">
                             My time is committed to your project. The work ethic and service commitment brought to each project is the foundation of our success. I have been finding, studying, designing, building and maintaining golf holes since I was a young boy.
                         </p>
@@ -782,7 +1189,7 @@
                 <div class="team-wrapper">
                     <img src="Bio/Portrait_Trey.webp" alt="Trey Jensen" class="portrait">
                     <div class="team-text-container">
-                        <h2>TREY JENSEN</h2>
+                        <h2>Trey Jensen</h2>
                         <p class="body-text">Originally from Las Vegas, Nevada, Trey has been with the Northeast Golf Company since 2021. He obtained his bachelor's degree from Brigham Young University in Utah, and is currently completing graduate work at Penn State in Landscape Architecture and Law School. With a deep understanding of golf course architecture and its history around the world, Trey is a valued asset at the Northeast Golf Company.</p>
                         <p class="body-text">Trey's diverse background adds much to our work at the Northeast Golf Company -- from historic project research, to 3D design work, to in-field construction and maintenance, Trey is able to adapt to any challenge he faces. Trey has previously worked as golf course maintenance staff in New England, as well as a turfgrass intern at the Prairie Club in the Sandhills of Nebraska. Trey was also a distinguished recipient of the 2023 Wadsworth Scholarship, presented by the ASGCA, which gave him the opportunity to attend the annual ASGCA meeting in Milwaukee, WI and learn from many of the greatest and most experienced golf course architects in the nation.</p>
                         <p class="body-text">Trey continues to learn each day and adapts to the project at hand by creating visualizations, presentations, planning and construction documents, and doing public engagement work.</p>
@@ -792,38 +1199,169 @@
             </section>
 
             <section id="projects-section">
-                <div class="projects-container">
-                    <h2 style="margin-bottom: 5px; padding-left: 35px;">PROJECTS</h2>
-                    <p style="font-size: 0.8rem; color: var(--address-gray); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 35px; padding-left: 65px;">Select to learn more</p>
-                    <ul class="project-list">
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Bass_Rocks/bass_rocks.html')">Bass Rocks Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bellevue Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Bergen County Golf Courses</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Burlington Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Fairmount Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Fall River Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Haverhill Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Kernwood Country Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Madison Golf Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Mendham/mendham.html')">Mendham Golf & Tennis Club</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')">Met Links</a></li>
-                        <li><a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')">Milton Hoosic Club</a></li>
-                    </ul>
-                    <a href="unavailable.html" class="see-all-projects" style="margin-top: 45px; display: block; padding-left: 35px; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem; color: var(--nav-gray); text-decoration: none;">See More Projects</a>
+                <div class="projects-section-header">
+                    <h2>Projects</h2>
+                    <p>Select to learn more</p>
+                </div>
+                <div class="project-cards">
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Bass_Rocks/bass_rocks.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Bass_Rocks/BR_Hole07_Render_Aerial_Before (2).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">01</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Bass Rocks Golf Club</div>
+                            <div class="project-card-location">Gloucester, MA</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">02</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Bellevue Golf Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Bergen_County/bergen_county.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Bergen_County/Bergen_County_Master_Plan.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">03</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Bergen County Golf</div>
+                            <div class="project-card-location">Bergen County, NJ</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">04</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Burlington Country Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Fairmount/fairmount.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Fairmount/Fairmount_Master_Plan.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">05</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Fairmount Country Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Fall_River/fall_river.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Fall_River/Fall_River_Master_Plan.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">06</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Fall River Country Club</div>
+                            <div class="project-card-location">Fall River, MA</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Haverhill/haverhill.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Haverhill/Behind Hole 1 - PathTracer.jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">07</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Haverhill Country Club</div>
+                            <div class="project-card-location">Haverhill, MA</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">08</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Kernwood Country Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Madison/madison.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Madison/Madison_Image_(1).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">09</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Madison Golf Club</div>
+                            <div class="project-card-location">Madison, NJ</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Mendham/mendham.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Mendham/Mendham_Image_ (1).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">10</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Mendham Golf &amp; Tennis</div>
+                            <div class="project-card-location">Mendham, NJ</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'Projects/Met_Links/met_links.html')" class="project-card has-image">
+                        <div class="project-card-bg" style="background-image: url('Projects/Met_Links/Met_Links_Image_After (1).jpg')"></div>
+                        <div class="project-card-overlay"></div>
+                        <span class="project-card-number">11</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">MANAGEMENT</div>
+                            <div class="project-card-name">Met Links</div>
+                            <div class="project-card-location">Staten Island, NY</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="fadeAndNavigate(event, 'unavailable.html')" class="project-card no-image">
+                        <span class="project-card-number">12</span>
+                        <span class="project-card-arrow">→</span>
+                        <div class="project-card-footer">
+                            <div class="project-card-tag">RENOVATION</div>
+                            <div class="project-card-name">Milton Hoosic Club</div>
+                            <div class="project-card-location"></div>
+                        </div>
+                    </a>
+
                 </div>
             </section>
 
             <section id="contact">
                 <div class="contact-container">
                     <div class="contact-info-left">
-                        <h2>CONTACT US</h2>
+                        <h2>Contact Us</h2>
                     </div>
                     <form class="contact-form" style="margin-top: 0; width: 50%; max-width: 500px;">
-                        <input type="text" placeholder="NAME" required style="width: 100%; margin: 0;">
-                        <input type="email" placeholder="EMAIL" required style="width: 100%; margin: 0;">
-                        <textarea placeholder="QUESTION" rows="4" style="width: 100%; margin: 0;"></textarea>
-                        <button type="submit" style="background: none; border: none; color: var(--nav-gray); font-family: inherit; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; align-self: flex-start;">SUBMIT</button>
+                        <input type="text" placeholder="Name" required style="width: 100%; margin: 0;">
+                        <input type="email" placeholder="Email" required style="width: 100%; margin: 0;">
+                        <textarea placeholder="Question or message" rows="4" style="width: 100%; margin: 0;"></textarea>
+                        <button type="submit" style="background: none; border: none; color: var(--nav-gray); font-family: inherit; font-size: 1rem; letter-spacing: 0.5px; cursor: pointer; align-self: flex-start;">Submit</button>
                     </form>
+                </div>
+            </section>
+
+            <section id="closing-card">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;">
+                    <img src="index/NGC_Logo.png" alt="NGC Logo" class="ngc-logo" style="height: 120px; width: auto; opacity: 0.9;">
+                    <div class="nav-address" style="display: block; font-size: 0.8rem; letter-spacing: 0.05rem; text-align: center;">The Northeast Golf Company<br>Saunderstown, Rhode Island</div>
                 </div>
             </section>
 
@@ -833,6 +1371,12 @@
     <script>
         // Fade In on Load
         window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                document.body.style.opacity = '';
+                document.body.classList.add('loaded');
+            }
+        });
 
         // Fade Out on Navigate
         function fadeAndNavigate(e, url) {
@@ -856,7 +1400,7 @@
             document.getElementById('text-3'),
             document.getElementById('text-4')
         ];
-        const totalStages = 11; 
+        const totalStages = 12;
 
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
@@ -969,6 +1513,36 @@
     </script>
 
     <script>
+        (function() {
+            var btn = document.getElementById('themeToggle');
+            if (!btn) return;
+            btn.addEventListener('click', function() {
+                var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                if (isDark) {
+                    document.documentElement.removeAttribute('data-theme');
+                    try { localStorage.setItem('ngc-theme', 'light'); } catch (e) {}
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    try { localStorage.setItem('ngc-theme', 'dark'); } catch (e) {}
+                }
+            });
+        })();
+
+        function toggleNav() {
+            document.querySelector('.fixed-nav-container').classList.toggle('nav-open');
+        }
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.querySelector('.fixed-nav-container').classList.remove('nav-open');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            var nav = document.querySelector('.fixed-nav-container');
+            if (nav && nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+                nav.classList.remove('nav-open');
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             const targetId = sessionStorage.getItem('scrollTarget');
             const savedScrollPos = sessionStorage.getItem('savedScrollPos');
@@ -984,9 +1558,17 @@
 
                 const sections = Array.from(document.querySelectorAll('#track > section'));
                 const index = sections.findIndex(sec => sec.id === targetId);
-                
-                if (index !== -1) {
-                    const totalStages = 11; 
+
+                if (window.innerWidth <= 1300) {
+                    // Mobile: scroll viewport vertically to the section
+                    if (index !== -1 && sections[index]) {
+                        const vp = document.getElementById('main-viewport');
+                        setTimeout(function() {
+                            vp.scrollTo({ top: sections[index].offsetTop, behavior: 'auto' });
+                        }, 100);
+                    }
+                } else if (index !== -1) {
+                    const totalStages = 12;
                     const scrollHeight = document.body.scrollHeight - window.innerHeight;
                     const bucketSize = 1 / totalStages;
                     const targetPos = index * bucketSize * scrollHeight;
@@ -994,7 +1576,7 @@
 
                     const track = document.getElementById('track');
                     const viewport = document.getElementById('main-viewport');
-                    
+
                     track.style.transition = 'none';
                     viewport.style.opacity = 0;
 
@@ -1016,8 +1598,8 @@
                 const track = document.getElementById('track');
                 const viewport = document.getElementById('main-viewport');
                 const scrollHeight = document.body.scrollHeight - window.innerHeight;
-                const totalStages = 11;
-                
+                const totalStages = 12;
+
                 // Calculate which stage was mostly visible
                 const bucketSize = 1 / totalStages;
                 const savedProgress = parseFloat(savedScrollPos) / scrollHeight;

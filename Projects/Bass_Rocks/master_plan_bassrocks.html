@@ -243,13 +243,15 @@
             transition: color 0.3s ease;
         }
         .nav-links a:hover { color: var(--text-main); }
-        .nav-address { 
-            color: var(--address-gray); 
-            font-size: 0.75rem; 
-            letter-spacing: 0.15rem; 
-            text-transform: uppercase; 
-            font-weight: var(--akrobat-light); 
+        .nav-address {
+            color: var(--address-gray);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            font-weight: var(--akrobat-light);
         }
+
+        .hamburger-btn { display: none; }
 
         @media (max-width: 1300px) {
             .fixed-nav-container {
@@ -259,32 +261,67 @@
             }
 
             .nav-logo-item {
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                transform: translateY(-50%);
+                display: none;
             }
 
-            .nav-logo-item img {
-                height: 60px;
-                margin-top: -15px;
-            }
-
-            .nav-links {
-                gap: 15px;
-                flex-wrap: wrap;
-                margin-bottom: 5px;
-                padding-left: 85px;
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
                 justify-content: center;
+                align-items: center;
+                gap: 6px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 10px;
+                pointer-events: auto;
+                position: relative;
+                z-index: 1001;
             }
-
+            .hamburger-btn span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background-color: var(--nav-gray);
+                border-radius: 2px;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(2) {
+                opacity: 0;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            .nav-links {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 22px;
+                padding: 50px 40px 90px;
+                background: rgba(255, 255, 255, 0.97);
+                transform: translateY(110%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                z-index: 998;
+                pointer-events: none;
+            }
+            .fixed-nav-container.nav-open .nav-links {
+                transform: translateY(0);
+                pointer-events: auto;
+            }
             .nav-address {
-                font-size: 0.7rem;
-                padding: 0 15px;
-                margin-top: 0;
-                letter-spacing: 0.1rem;
-                text-align: center;
+                display: none;
             }
+        }
 
         /* TABLET PORTRAIT */
         @media (max-width: 768px) {
@@ -432,6 +469,11 @@
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 
     <script>
@@ -443,6 +485,21 @@
             sessionStorage.setItem('scrollTarget', sectionId);
             window.location.href = '../../landing_page.html';
         }
+
+        function toggleNav() {
+            document.querySelector('.fixed-nav-container').classList.toggle('nav-open');
+        }
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.querySelector('.fixed-nav-container').classList.remove('nav-open');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            var nav = document.querySelector('.fixed-nav-container');
+            if (nav && nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+                nav.classList.remove('nav-open');
+            }
+        });
 
         // 2. Faster Threshold and Video Pause Logic
         window.addEventListener('scroll', () => {

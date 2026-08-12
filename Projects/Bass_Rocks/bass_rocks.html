@@ -349,13 +349,16 @@
             transition: color 0.3s ease;
         }
         .nav-links a:hover { color: var(--text-main); }
-        .nav-address { 
-            color: var(--address-gray); 
-            font-size: 0.75rem; 
-            letter-spacing: 0.15rem; 
-            text-transform: uppercase; 
-            font-weight: var(--akrobat-light); 
+        .nav-address {
+            color: var(--address-gray);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            font-weight: var(--akrobat-light);
         }
+
+        .hamburger-btn { display: none; }
+        .mobile-intro { display: none; }
 
         /* INTERMEDIATE RESPONSIVE */
         @media (max-width: 1200px) and (min-width: 901px) {
@@ -377,137 +380,231 @@
 
         /* RESPONSIVE */
         @media (max-width: 900px) {
-            /* Layout Conversion */
+            /* Layout: project-wrapper becomes the scroll container */
             .project-wrapper {
                 flex-direction: column;
-                overflow: hidden;
                 height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             .info-panel {
                 width: 100%;
                 height: auto;
-                padding: 100px 5% 30px 5%;
+                padding: 0;
                 display: block;
                 position: static;
                 flex-shrink: 0;
             }
 
-            .static-header { margin-bottom: 25px; }
+            .static-header {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                background: rgba(255, 255, 255, 0.92);
+                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+                padding: 20px 6% 14px;
+                margin-bottom: 0;
+            }
 
-            h1 { font-size: 2.8rem; }
+            h1 {
+                font-size: 1.2rem;
+                letter-spacing: 0.2rem;
+                line-height: 1.2;
+            }
+            h1 br { display: none; }
 
-            /* Hide static dynamic text in header on mobile - it now scrolls with images */
+            .location-sub { display: none; }
+
+            /* Hide dynamic desktop text — mobile uses static intro + per-image captions */
             .dynamic-content-wrapper, #dynamic-link {
                 display: none !important;
             }
 
+            .mobile-intro {
+                display: block;
+                font-size: 1rem;
+                color: var(--text-gray);
+                line-height: 1.6;
+                font-weight: 300;
+                padding: 24px 6% 28px;
+            }
+
+            /* Scroll container: no longer scrolls itself */
             .scroll-container {
                 width: 100%;
-                flex-grow: 1;
-                overflow-y: auto;
-                padding: 20px 5% 250px;
+                height: auto;
+                overflow-y: visible;
+                overflow-x: hidden;
+                padding: 0 0 120px;
                 display: block;
-                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
-                mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 85%);
+                flex-grow: 0;
+                -webkit-mask-image: none !important;
+                mask-image: none !important;
             }
 
             .gallery-track {
                 flex-direction: column;
-                gap: 40px;
+                gap: 0;
                 padding-left: 0;
                 padding-right: 0;
                 width: 100%;
-                align-items: center;
+                align-items: stretch;
+                white-space: normal;
             }
 
             .gallery-item {
-                width: 90%;
-                max-width: 500px;
+                width: 100%;
+                max-width: 100%;
                 height: auto;
-                min-height: 250px;
+                min-height: unset;
                 margin-top: 0 !important;
                 opacity: 1;
                 filter: none;
                 transform: none;
+                flex-shrink: unset;
+            }
+
+            /* Prevent active state from scaling/overlapping on mobile */
+            .gallery-item.active {
+                transform: none !important;
+                z-index: auto !important;
+                filter: none !important;
+                opacity: 1 !important;
+            }
+
+            /* Landscape items need explicit mobile dimensions to win over higher-specificity desktop rule */
+            .gallery-item.landscape-item {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 16 / 9;
+            }
+            .gallery-item.landscape-item img {
+                object-fit: contain !important;
+                background: transparent !important;
+            }
+
+            .gallery-item img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            .gallery-item iframe {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                height: auto;
+                display: block;
+                pointer-events: auto;
             }
 
             .mobile-caption {
                 display: block !important;
-                margin-top: 25px;
-                text-align: center;
-                padding-bottom: 30px;
-                max-width: 600px;
-                margin-left: auto;
-                margin-right: auto;
+                padding: 22px 6% 32px;
+                text-align: left;
+                border-bottom: 1px solid rgba(0,0,0,0.06);
             }
 
             .mobile-caption h3 {
                 font-family: 'Barlow Semi Condensed', sans-serif;
-                font-size: clamp(1.2rem, 4vw, 1.5rem);
+                font-size: 1.15rem;
                 font-weight: 400;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
                 text-transform: uppercase;
-                letter-spacing: 1px;
+                letter-spacing: 1.5px;
                 color: var(--text-main);
             }
 
             .mobile-caption p {
                 font-family: 'Barlow Semi Condensed', sans-serif;
-                font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+                font-size: 1rem;
                 color: var(--text-gray);
-                line-height: 1.6;
-                margin-bottom: 15px;
+                line-height: 1.65;
+                margin-bottom: 12px;
                 font-weight: 300;
             }
 
             .mobile-caption a {
                 display: inline-block;
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 text-transform: uppercase;
                 letter-spacing: 1.5px;
                 color: var(--text-main);
                 text-decoration: none;
                 border-bottom: 1px solid var(--text-main);
                 padding-bottom: 2px;
-                margin-top: 5px;
+                margin-top: 4px;
             }
 
-            /* Navigation Fixes */
+            /* Navigation */
             .fixed-nav-container { bottom: 30px; }
-            
-            .nav-logo-item {
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
 
-            .nav-logo-item img {
-                height: 60px;
-                margin-top: -15px;
-            }
+            .nav-logo-item { display: none; }
 
-            .nav-links {
-                gap: 15px;
-                flex-wrap: wrap;
-                margin-bottom: 5px;
-                padding-left: 85px;
+            .back-projects-link-bottom { display: none; }
+
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
                 justify-content: center;
+                align-items: center;
+                gap: 6px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 10px;
+                pointer-events: auto;
+                position: relative;
+                z-index: 1001;
             }
-
-            .nav-address {
-                font-size: 0.7rem;
-                padding: 0 15px;
-                margin-top: 0;
-                letter-spacing: 0.1rem;
-                text-align: center;
+            .hamburger-btn span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background-color: var(--nav-gray);
+                border-radius: 2px;
+                transition: transform 0.25s ease, opacity 0.25s ease;
             }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(2) {
+                opacity: 0;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            .nav-links {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 22px;
+                padding: 50px 40px 90px;
+                background: rgba(255, 255, 255, 0.97);
+                transform: translateY(110%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                z-index: 998;
+                pointer-events: none;
+            }
+            .fixed-nav-container.nav-open .nav-links {
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+            .nav-address { display: none; }
 
             /* Next Project Section */
             .next-project-wrapper {
                 opacity: 1;
-                padding: 30px 0 120px 0;
+                padding: 30px 0 60px 0;
             }
         }
 
@@ -531,7 +628,9 @@
                 <h1>Bass Rocks<br>Golf Club</h1>
                 <span class="location-sub">Gloucester, Massachusetts</span>
             </div>
-            
+
+            <p class="mobile-intro">Founded in 1896, Bass Rocks is one of New England's most storied clubs. Scroll to explore Robert McNeil's ongoing restoration and the 2024 Master Plan.</p>
+
             <div class="dynamic-content-wrapper">
                 <h2 class="section-subtitle" id="dynamic-subtitle">Club History</h2>
                 
@@ -550,19 +649,7 @@
         <div class="scroll-container" id="scrollContainer">
             <div class="gallery-track">
                 
-                <div class="gallery-item landscape-item" 
-                     data-subtitle="2024 Master Plan"
-                     data-description="The 2024 Master Plan focuses on strategic, aesthetic, and functional enhancements to the golf course. This video captures the vision for the future of Bass Rocks Golf Club and the key improvements prioritized by the membership."
-                     data-link-text=""
-                     data-link-url="">
-                    <iframe src="https://www.youtube.com/embed/Ag653DcvD6U" 
-                            title="Bass Rocks Master Plan Video" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
-                </div>
-
-                <div class="gallery-item" 
+                <div class="gallery-item"
                      data-subtitle="Club History"
                      data-description='Bass Rocks Golf Club was founded in 1896 and golf was first played by members in the area now known as "The Meadows," our current 15th through 18th holes. At the time this was a six hole course designed by the Scottish golfer, Alex Findlay. Over the years multiple expansions occurred at the Club, most notably the 1913 expansion to 18 holes by the golf course designer H.C. Leeds (architect of Myopia Hunt Club).<br><br>Robert McNeil has been working with the Club for many years, recently presenting a guiding master plan of improvements to the membership in 2024. Scroll through the image gallery to the right to learn more about the master plan and the completed phases of the project.'
                      data-link-text=""
@@ -570,12 +657,24 @@
                     <img src="Image_BassRocks (5).jpg" alt="Bass Rocks History">
                 </div>
 
-                <div class="gallery-item landscape-item" 
+                <div class="gallery-item landscape-item"
                      data-subtitle="2024 Master Plan Map"
                      data-description="The 2024 Master Plan focused on enhancing the strategic, aesthetic, and functional characteristics and needs of Bass Rocks. The plan prioritizes high value improvements, including the reconstruction of the second and seventh holes (completed) and reimagining the strategy and styling of the holes in The Meadows."
                      data-link-text="Learn More about the 2024 Master Plan"
                      data-link-url="master_plan_bassrocks.html">
                     <img src="Image_BassRocks (1).jpg" alt="Master Plan Overview">
+                </div>
+
+                <div class="gallery-item landscape-item"
+                     data-subtitle="2024 Master Plan"
+                     data-description="The 2024 Master Plan focuses on strategic, aesthetic, and functional enhancements to the golf course. This video captures the vision for the future of Bass Rocks Golf Club and the key improvements prioritized by the membership."
+                     data-link-text=""
+                     data-link-url="">
+                    <iframe src="https://www.youtube.com/embed/Ag653DcvD6U"
+                            title="Bass Rocks Master Plan Video"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                    </iframe>
                 </div>
 
                 <div class="gallery-item" 
@@ -594,15 +693,7 @@
                     <img src="Image_BassRocks (8).jpg" alt="Hole 7 Renovation">
                 </div>
 
-                <div class="gallery-item landscape-item" 
-                     data-subtitle="Hole 7 Vision"
-                     data-description="Architectural renderings visualize the potential of Hole 7, showing the proposed enhancements to bunkering, green complexes, and the overall strategic layout before construction begins."
-                     data-link-text=""
-                     data-link-url="">
-                    <img src="BR_Hole07_Render_BirdsEye_After (1).jpg" alt="Hole 7 Render">
-                </div>
-
-                <div class="gallery-item" 
+                <div class="gallery-item"
                      data-subtitle="Modern Standards"
                      data-description="The improvements at Bass Rocks ensure that the course meets modern standards of playability and maintenance while honoring its rich history and unique landscape."
                      data-link-text=""
@@ -618,47 +709,8 @@
                     <img src="BR_Hole_07_Construction (1).JPG" alt="Construction Progress">
                 </div>
 
-                <div class="gallery-item" 
-                     data-subtitle="Scenic Views"
-                     data-description="Bass Rocks Golf Club is renowned for its stunning vistas and unique New England coastal terrain. The rocky outcrops and rolling fairways provide a visually spectacular golfing experience."
-                     data-link-text=""
-                     data-link-url="">
-                    <img src="Image_BassRocks (3).jpg" alt="Scenic Course View">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Course Atmosphere"
-                     data-description="The interplay of light, shadow, and the natural ruggedness of the terrain creates a distinct atmosphere at Bass Rocks, making every round a memorable walk through a beautiful landscape."
-                     data-link-text=""
-                     data-link-url="">
-                    <img src="Image_BassRocks (6).jpg" alt="Course Atmosphere">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Rugged Bunker Styling"
-                     data-description="New bunkering at Bass Rocks features a rugged, natural aesthetic that complements the rocky surroundings and provides both strategic challenge and visual interest."
-                     data-link-text=""
-                     data-link-url="">
-                    <img src="Image_BassRocks (4).jpg" alt="Bunker Styling">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Strategic Challenges"
-                     data-description="The course design encourages thoughtful play, with well-placed hazards and green complexes that require precision and strategy to navigate successfully."
-                     data-link-text=""
-                     data-link-url="">
-                    <img src="Image_BassRocks (7).jpg" alt="Strategic Challenge">
-                </div>
-
-                <div class="gallery-item" 
-                     data-subtitle="Coastal Character"
-                     data-description="The unique coastal environment of Gloucester is reflected in the course's character, with fescue areas and wind-swept vistas defining the experience."
-                     data-link-text=""
-                     data-link-url="">
-                    <img src="Image_BassRocks (10).jpg" alt="Coastal Character">
-                </div>
-
                 <div class="next-project-wrapper" id="nextBtn">
+                    <a href="../../unavailable.html" class="text-link-small">Image Gallery</a>
                     <a href="../Mendham/mendham.html" class="text-link-large">Next Project</a>
                     <a href="#" onclick="navigateTo(event, 'projects-section')" class="text-link-small">All Projects</a>
                 </div>
@@ -682,6 +734,11 @@
             </ul>
         </nav>
         <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 
     <script>
@@ -694,7 +751,7 @@
 
         // 2. Horizontal Scroll on Mouse Wheel
         const scrollContainer = document.getElementById('scrollContainer');
-        scrollContainer.addEventListener('wheel', (evt) => {
+        window.addEventListener('wheel', (evt) => {
             if (window.innerWidth > 900) {
                 if (evt.deltaY !== 0) {
                     evt.preventDefault();
@@ -704,7 +761,7 @@
                     scrollContainer.scrollLeft += evt.deltaX;
                 }
             }
-        });
+        }, { passive: false });
 
         // 3. Dynamic Text & Link Logic
         const subtitleElement = document.getElementById('dynamic-subtitle');
@@ -801,6 +858,21 @@
         
         // Run on load
         initMobileCaptions();
+
+        function toggleNav() {
+            document.querySelector('.fixed-nav-container').classList.toggle('nav-open');
+        }
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.querySelector('.fixed-nav-container').classList.remove('nav-open');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            var nav = document.querySelector('.fixed-nav-container');
+            if (nav && nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+                nav.classList.remove('nav-open');
+            }
+        });
 
     </script>
 

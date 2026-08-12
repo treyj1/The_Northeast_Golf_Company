@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bergen County Golf Courses | The Northeast Golf Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200;300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-gray: #777777;
+            --nav-gray: #555555;
+            --address-gray: #888888;
+            --akrobat-reg: 400;
+            --akrobat-light: 300;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            height: 150vh;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .fixed-background {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-image: url('../../index/Topo_Whitinsville.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .fixed-page-title {
+            position: fixed;
+            top: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            font-weight: var(--akrobat-reg);
+            color: var(--text-main);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .full-screen-section {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 5% 40px 5%;
+        }
+
+        .plan-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 1000px;
+            height: 75vh;
+            justify-content: center;
+        }
+
+        .plan-image {
+            max-width: 100%;
+            max-height: 55vh;
+            object-fit: contain;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .plan-image:hover { transform: scale(1.02); }
+
+        .description-text {
+            font-weight: var(--akrobat-light);
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        .sub-nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            width: 100%;
+        }
+
+        .sub-nav-link {
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 3px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .sub-nav-link:hover { color: var(--nav-gray); border-bottom-color: var(--nav-gray); }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(255,255,255,0);
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.5s ease;
+        }
+        .lightbox.active { background-color: rgba(255,255,255,0.98); }
+        .lightbox-content {
+            max-width: 92%;
+            max-height: 92%;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .lightbox.active .lightbox-content { opacity: 1; transform: scale(1); }
+        .close-lightbox {
+            position: absolute;
+            top: 30px; right: 40px;
+            font-size: 40px;
+            color: #333;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .lightbox.active .close-lightbox { opacity: 1; }
+
+        .fixed-nav-container {
+            position: fixed;
+            bottom: 50px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+            pointer-events: none;
+        }
+        .nav-logo-item { display: flex; align-items: center; justify-content: center; pointer-events: auto; }
+        .nav-logo-item img { height: 60px; width: auto; opacity: 0.9; transition: opacity 0.3s ease; margin-top: -15px; cursor: pointer; }
+        .nav-logo-item img:hover { opacity: 1; }
+        .nav-links, .nav-address { pointer-events: auto; }
+        .nav-links { display: flex; gap: 40px; list-style: none; justify-content: center; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--nav-gray); font-size: 0.85rem; font-weight: var(--akrobat-light); letter-spacing: 0.2rem; text-transform: uppercase; cursor: pointer; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-address { color: var(--address-gray); font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase; font-weight: var(--akrobat-light); }
+
+        .hamburger-btn { display: none; }
+
+        @media (max-width: 1300px) {
+            .fixed-nav-container { bottom: 30px; padding: 10px 0; left: 0; }
+            .nav-logo-item { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); }
+            .nav-logo-item img { height: 60px; margin-top: -15px; }
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 10px;
+                pointer-events: auto;
+                position: relative;
+                z-index: 1001;
+            }
+            .hamburger-btn span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background-color: var(--nav-gray);
+                border-radius: 2px;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(2) {
+                opacity: 0;
+            }
+            .fixed-nav-container.nav-open .hamburger-btn span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            .nav-links {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 22px;
+                padding: 50px 40px 90px;
+                background: rgba(255, 255, 255, 0.97);
+                transform: translateY(110%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+                z-index: 998;
+                pointer-events: none;
+            }
+            .fixed-nav-container.nav-open .nav-links {
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+            .nav-address {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .fixed-page-title { font-size: 1.3rem; line-height: 1.3; }
+            .sub-nav-link { font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .fixed-page-title { font-size: 1.1rem; top: 20px; letter-spacing: 0.08rem; }
+            .full-screen-section { padding-top: 60px; }
+            .plan-content { height: auto; padding-bottom: 120px; }
+            .plan-image { max-height: 35vh; margin-bottom: 20px; }
+            .description-text { font-size: 0.95rem; margin-bottom: 30px; }
+            .sub-nav-container { flex-direction: column; gap: 20px; }
+            .sub-nav-link { font-size: 0.85rem; }
+        }
+
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .fixed-nav-container { padding-bottom: env(safe-area-inset-bottom); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-background"></div>
+
+    <div class="fixed-page-title">Soldier Hill Golf Course — Golf Course Enhancement Plan</div>
+
+    <div class="full-screen-section">
+        <div class="plan-content">
+            <img src="Bergen_County_Master_Plan.jpg" alt="Soldier Hill Golf Course Enhancement Plan" class="plan-image" onclick="openLightbox(this)">
+
+            <p class="description-text">
+                In 2025, Bergen County engaged Robert McNeil, ASGCA to develop a Golf Course Enhancement Plan for Soldier Hill Golf Course at 99 Palisade Avenue in Emerson, New Jersey. The plan provides hole-by-hole recommendations spanning bunkering, green complexes, tree management, drainage, cart paths, and practice facilities — establishing a clear framework for elevating one of Bergen County's public golf offerings.
+            </p>
+
+            <div class="sub-nav-container">
+                <a href="#" onclick="navigateTo(event, 'projects-section')" class="sub-nav-link">&#8592; All Projects</a>
+                <a href="../Master_Plans/master_plans.html" class="sub-nav-link">Master Plans &#8594;</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <div class="fixed-nav-container">
+        <nav>
+            <ul class="nav-links">
+                <li class="nav-logo-item">
+                    <img src="../../index/NGC_Logo.png" alt="NGC Logo" onclick="navigateTo(event, 'start')">
+                </li>
+                <li><a href="#" onclick="navigateTo(event, 'start')">Start</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'what-we-do')">What We Do</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'team-intro')">Team</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'projects-section')">Projects</a></li>
+                <li><a href="#" onclick="navigateTo(event, 'contact')">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="nav-address">THE NORTHEAST GOLF COMPANY, 118 SAUNDERSTOWN, RHODE ISLAND 02874</div>
+        <button class="hamburger-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <script>
+        function navigateTo(e, sectionId) {
+            e.preventDefault();
+            sessionStorage.setItem('scrollTarget', sectionId);
+            window.location.href = '../../landing_page.html';
+        }
+
+        function toggleNav() {
+            document.querySelector('.fixed-nav-container').classList.toggle('nav-open');
+        }
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.querySelector('.fixed-nav-container').classList.remove('nav-open');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            var nav = document.querySelector('.fixed-nav-container');
+            if (nav && nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+                nav.classList.remove('nav-open');
+            }
+        });
+
+        function openLightbox(element) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightbox.style.display = 'flex';
+            lightboxImg.src = element.src;
+            void lightbox.offsetWidth;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            setTimeout(() => { lightbox.style.display = 'none'; }, 500);
+        }
+    </script>
+
+</body>
+</html>
